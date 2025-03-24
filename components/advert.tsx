@@ -2,7 +2,6 @@
 
 import * as React from "react"
 import { useState, useEffect, useCallback } from "react"
-import { Card, CardContent } from "@/components/ui/card"
 import {
   Carousel,
   CarouselContent,
@@ -20,13 +19,11 @@ export default function Advert() {
   ]
   const [api, setApi] = useState<CarouselApi>()
   const [current, setCurrent] = useState(0)
-  const count = 5
+  const [isVisible, setIsVisible] = useState(true)
 
   // Update current index when slide changes
   useEffect(() => {
-    if (!api) {
-      return
-    }
+    if (!api) return
 
     const handleSelect = () => {
       setCurrent(api.selectedScrollSnap())
@@ -41,16 +38,8 @@ export default function Advert() {
   // Function to advance slide with smooth transition
   const advanceSlide = useCallback(() => {
     if (!api) return
-
-    if (current === count - 1) {
-      // If at last slide, first silently jump to start without animation
-      // then animate to the next slide
-      api.scrollTo(0, false)
-      setTimeout(() => api.scrollNext(), 50)
-    } else {
-      api.scrollNext()
-    }
-  }, [api, current, count])
+    api.scrollNext()
+  }, [api])
 
   // Set up automatic slide advancement
   useEffect(() => {
@@ -58,24 +47,39 @@ export default function Advert() {
     return () => clearInterval(timer)
   }, [advanceSlide])
 
+  if (!isVisible) return null
+
   return (
-    <Carousel
-      className="w-full text-center py-2 bg-black"
-      setApi={setApi}
-      opts={{ loop: true }}
-    >
-      <CarouselContent className="w-full">
-        {adverts.map((advert, index) => (
-          <CarouselItem
-            key={index}
-            className="text-xs md:text-sm text-white mx-auto w-full"
-          >
-            {advert}
-          </CarouselItem>
-        ))}
-      </CarouselContent>
-      <CarouselPrevious className="hidden" />
-      <CarouselNext className="hidden" />
-    </Carousel>
+    <div className="relative">
+      <Carousel
+        className="w-full text-center py-2 bg-black"
+        setApi={setApi}
+        opts={{
+          loop: true,
+          startIndex: 0,
+          // initial: 0,
+        }}
+      >
+        <CarouselContent>
+          {adverts.map((advert, index) => (
+            <CarouselItem
+              key={index}
+              className="text-xs md:text-sm text-white mx-auto w-full"
+            >
+              {advert}
+            </CarouselItem>
+          ))}
+        </CarouselContent>
+        <CarouselPrevious className="hidden" />
+        <CarouselNext className="hidden" />
+      </Carousel>
+      <button
+        onClick={() => setIsVisible(false)}
+        className="absolute right-2 top-1/2 -translate-y-1/2 text-white hover:underline cursor-pointer"
+        aria-label="Close advertisement"
+      >
+        ✕
+      </button>
+    </div>
   )
 }
