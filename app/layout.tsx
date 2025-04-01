@@ -25,10 +25,12 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${roboto.className} antialiased`}>
+      <body
+        suppressHydrationWarning={true}
+        className={`${roboto.className} antialiased`}
+      >
         <Advert />
         <Header />
-        <Navbar />
         {children}
         <Footer />
       </body>

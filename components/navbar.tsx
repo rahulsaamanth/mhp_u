@@ -25,32 +25,13 @@ import Link from "next/link"
 import { usePathname } from "next/navigation"
 import React, { memo, useState } from "react"
 
-const Navbar = () => {
+const DesktopNavbar = () => {
   return (
-    <nav className="grid place-items-center border-t border-b">
+    <nav className="hidden md:grid place-items-center md:border-t md:border-b">
       <div className="container mx-auto py-2">
         {/* Desktop Navigation */}
-        <div className="hidden items-center justify-start lg:flex">
-          <DesktopNavigation />
-        </div>
 
-        {/* Mobile Navigation */}
-        <div className="flex items-center justify-between lg:hidden">
-          <Sheet>
-            <SheetTrigger asChild>
-              <Button variant="outline" size="icon">
-                <Menu className="h-5 w-5" />
-              </Button>
-            </SheetTrigger>
-            <SheetContent
-              side="right"
-              className="w-[300px] overflow-y-auto sm:w-[350px]"
-            >
-              <SheetTitle>Menu</SheetTitle>
-              <MobileNavigation />
-            </SheetContent>
-          </Sheet>
-        </div>
+        <DesktopNavigation />
       </div>
     </nav>
   )
@@ -91,7 +72,7 @@ function SubmenuLink({
 }
 
 // Desktop Navigation Component
-const DesktopNavigation = memo(() => {
+const DesktopNavigation = () => {
   const aboutPopover = useNestedPopover()
   const homeopathicPopover = useNestedPopover()
   const personalCarePopover = useNestedPopover()
@@ -100,12 +81,12 @@ const DesktopNavigation = memo(() => {
   const pathname = usePathname()
 
   return (
-    <div className="flex justify-center items-center space-x-8 w-full">
+    <div className="flex justify-center items-center w-full gap-4 lg:gap-8">
       {/* HOME */}
       <Button
         variant="link"
         className={cn(
-          "h-auto cursor-pointer p-0 font-semibold hover:text-[#1DA827] hover:underline hover:underline-offset-8",
+          "h-auto cursor-pointer p-0 font-semibold hover:text-[#1DA827] hover:underline hover:underline-offset-8 text-xs lg:text-base",
           pathname === "/" ? "text-brand" : ""
         )}
       >
@@ -122,7 +103,7 @@ const DesktopNavigation = memo(() => {
         <PopoverTrigger asChild>
           <Button
             variant="link"
-            className="h-auto cursor-pointer p-0 font-medium hover:text-[#1DA827] hover:underline hover:underline-offset-8"
+            className="h-auto cursor-pointer p-0 font-medium hover:text-[#1DA827] hover:underline hover:underline-offset-8 text-xs lg:text-base"
           >
             ABOUT US ⏷
           </Button>
@@ -154,7 +135,7 @@ const DesktopNavigation = memo(() => {
         <PopoverTrigger asChild>
           <Button
             variant="link"
-            className="h-auto cursor-pointer p-0 font-medium hover:text-[#1DA827] hover:underline hover:underline-offset-8"
+            className="h-auto cursor-pointer p-0 font-medium hover:text-[#1DA827] hover:underline hover:underline-offset-8 text-xs lg:text-base"
           >
             HOMEOPATHIC ⏷
           </Button>
@@ -206,7 +187,7 @@ const DesktopNavigation = memo(() => {
         <PopoverTrigger asChild>
           <Button
             variant="link"
-            className="h-auto cursor-pointer p-0 font-medium hover:text-[#1DA827] hover:underline hover:underline-offset-8"
+            className="h-auto cursor-pointer p-0 font-medium hover:text-[#1DA827] hover:underline hover:underline-offset-8 text-xs lg:text-base"
           >
             PERSONAL CARE ⏷
           </Button>
@@ -253,7 +234,7 @@ const DesktopNavigation = memo(() => {
       {/* AILMENT */}
       <Button
         variant="link"
-        className="h-auto cursor-pointer p-0 font-medium hover:text-[#1DA827] hover:underline hover:underline-offset-8"
+        className="h-auto cursor-pointer p-0 font-medium hover:text-[#1DA827] hover:underline hover:underline-offset-8 text-xs lg:text-base"
       >
         <Link href="/products/ointments" className="font-medium">
           AILMENT
@@ -263,7 +244,7 @@ const DesktopNavigation = memo(() => {
       {/* BRANDS */}
       <Button
         variant="link"
-        className="h-auto cursor-pointer p-0 font-medium hover:text-[#1DA827] hover:underline hover:underline-offset-8"
+        className="h-auto cursor-pointer p-0 font-medium hover:text-[#1DA827] hover:underline hover:underline-offset-8 text-xs lg:text-base"
       >
         <Link href="/brands" className="font-medium">
           BRANDS
@@ -278,7 +259,7 @@ const DesktopNavigation = memo(() => {
         <PopoverTrigger asChild>
           <Button
             variant="link"
-            className="h-auto cursor-pointer p-0 font-medium hover:text-[#1DA827] hover:underline hover:underline-offset-8"
+            className="h-auto cursor-pointer p-0 font-medium hover:text-[#1DA827] hover:underline hover:underline-offset-8 text-xs lg:text-base"
           >
             OTHER PRODUCTS ⏷
           </Button>
@@ -311,7 +292,7 @@ const DesktopNavigation = memo(() => {
       {/* ABOUT HOMEOPATHY */}
       <Button
         variant="link"
-        className="h-auto cursor-pointer p-0 font-medium hover:text-[#1DA827] hover:underline hover:underline-offset-8"
+        className="h-auto cursor-pointer p-0 font-medium hover:text-[#1DA827] hover:underline hover:underline-offset-8 text-xs lg:text-base"
       >
         <Link href="/products/about-homeopathy" className="font-medium">
           ABOUT HOMEOPATHY
@@ -319,143 +300,6 @@ const DesktopNavigation = memo(() => {
       </Button>
     </div>
   )
-})
-
-// Mobile Navigation Component using Accordion
-const MobileNavigation = () => {
-  return (
-    <div className="py-4">
-      <Accordion type="single" collapsible className="w-full">
-        <AccordionItem value="home">
-          <SheetClose asChild>
-            <Link href="/" className="flex w-full py-2">
-              HOME
-            </Link>
-          </SheetClose>
-        </AccordionItem>
-
-        <AccordionItem value="about">
-          <AccordionTrigger>ABOUT US</AccordionTrigger>
-          <AccordionContent>
-            <div className="flex flex-col space-y-2 pl-4">
-              <SheetClose asChild>
-                <Link href="/about/who-we-are" className="py-1">
-                  Who We Are
-                </Link>
-              </SheetClose>
-              <SheetClose asChild>
-                <Link href="/about/our-team" className="py-1">
-                  Our Team
-                </Link>
-              </SheetClose>
-            </div>
-          </AccordionContent>
-        </AccordionItem>
-
-        <AccordionItem value="products">
-          <AccordionTrigger>OUR PRODUCTS</AccordionTrigger>
-          <AccordionContent>
-            <div className="flex flex-col space-y-2 pl-4">
-              <SheetClose asChild>
-                <Link href="/products" className="py-1">
-                  All Products
-                </Link>
-              </SheetClose>
-
-              <Accordion type="single" collapsible className="w-full">
-                <AccordionItem value="homoeopathic">
-                  <AccordionTrigger className="py-1">
-                    Homoeopathic
-                  </AccordionTrigger>
-                  <AccordionContent>
-                    <div className="flex flex-col space-y-2 pl-4">
-                      <SheetClose asChild>
-                        <Link
-                          href="/products/homoeopathic/dilutions"
-                          className="py-1"
-                        >
-                          Dilutions
-                        </Link>
-                      </SheetClose>
-
-                      <Accordion type="single" collapsible className="w-full">
-                        <AccordionItem value="biochemics">
-                          <AccordionTrigger className="py-1">
-                            Bio Chemics & Bio Combinations
-                          </AccordionTrigger>
-                          <AccordionContent>
-                            <div className="flex flex-col space-y-2 pl-4">
-                              <SheetClose asChild>
-                                <Link
-                                  href="/products/homoeopathic/biochemics/tablets"
-                                  className="py-1"
-                                >
-                                  Bio Chemic Tablets
-                                </Link>
-                              </SheetClose>
-                              <SheetClose asChild>
-                                <Link
-                                  href="/products/homoeopathic/biochemics/dilutions"
-                                  className="py-1"
-                                >
-                                  Bio Chemic Dilutions
-                                </Link>
-                              </SheetClose>
-                            </div>
-                          </AccordionContent>
-                        </AccordionItem>
-                      </Accordion>
-
-                      <SheetClose asChild>
-                        <Link
-                          href="/products/homoeopathic/mother-tinctures"
-                          className="py-1"
-                        >
-                          Mother Tinctures
-                        </Link>
-                      </SheetClose>
-                    </div>
-                  </AccordionContent>
-                </AccordionItem>
-              </Accordion>
-
-              <SheetClose asChild>
-                <Link href="/products/ointments" className="py-1">
-                  Ointments
-                </Link>
-              </SheetClose>
-              <SheetClose asChild>
-                <Link href="/products/herbals" className="py-1">
-                  Herbals
-                </Link>
-              </SheetClose>
-              <SheetClose asChild>
-                <Link href="/products/eye-ear-drops" className="py-1">
-                  Eye/Ear Drop
-                </Link>
-              </SheetClose>
-            </div>
-          </AccordionContent>
-        </AccordionItem>
-
-        <AccordionItem value="ailment">
-          <SheetClose asChild>
-            <Link href="/ailment" className="flex w-full py-2">
-              AILMENT
-            </Link>
-          </SheetClose>
-        </AccordionItem>
-
-        <AccordionItem value="about-homoeopathy">
-          <SheetClose asChild>
-            <Link href="/about-homoeopathy" className="flex w-full py-2">
-              ABOUT HOMOEOPATHY
-            </Link>
-          </SheetClose>
-        </AccordionItem>
-      </Accordion>
-    </div>
-  )
 }
 
-export default Navbar
+export default DesktopNavbar
