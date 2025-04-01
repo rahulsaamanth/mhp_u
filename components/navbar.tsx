@@ -1,36 +1,36 @@
-"use client";
+"use client"
 
-import React, { useState } from "react";
-import Link from "next/link";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
-import {
-  Sheet,
-  SheetContent,
-  SheetTrigger,
-  SheetClose,
-  SheetTitle,
-} from "@/components/ui/sheet";
 import {
   Accordion,
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
-} from "@/components/ui/accordion";
-import { Button } from "@/components/ui/button";
-import { ChevronDown, ChevronRight, Menu } from "lucide-react";
-import { cn } from "@/lib/utils";
-import { usePathname } from "next/navigation";
+} from "@/components/ui/accordion"
+import { Button } from "@/components/ui/button"
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover"
+import {
+  Sheet,
+  SheetClose,
+  SheetContent,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet"
+import { cn } from "@/lib/utils"
+import { Menu } from "lucide-react"
+import Link from "next/link"
+import { usePathname } from "next/navigation"
+import React, { memo, useState } from "react"
 
 const Navbar = () => {
   return (
-    <section>
-      <div className="container mx-auto py-4">
+    <nav className="grid place-items-center border-t border-b">
+      <div className="container mx-auto py-2">
         {/* Desktop Navigation */}
-        <div className="hidden items-center justify-start space-x-6 lg:flex">
+        <div className="hidden items-center justify-start lg:flex">
           <DesktopNavigation />
         </div>
 
@@ -52,40 +52,61 @@ const Navbar = () => {
           </Sheet>
         </div>
       </div>
-    </section>
-  );
-};
+    </nav>
+  )
+}
 
 // Nested Popover Hook - to help with closing parent popovers
 const useNestedPopover = () => {
-  const [isOpen, setIsOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState(false)
 
   return {
     isOpen,
     setIsOpen,
     onOpenChange: (open: boolean | ((prevState: boolean) => boolean)) =>
       setIsOpen(open),
-  };
-};
+  }
+}
+
+// Submenu Link
+
+function SubmenuLink({
+  title,
+  href,
+  onClick,
+}: {
+  title: string
+  href: string
+  onClick?: () => void
+}) {
+  return (
+    <Link
+      href={href}
+      className="hover:bg-accent hover:text-brand hover:border-brand px-4 py-2 hover:border-b"
+      onClick={onClick}
+    >
+      {title}
+    </Link>
+  )
+}
 
 // Desktop Navigation Component
-const DesktopNavigation = () => {
-  const aboutPopover = useNestedPopover();
-  const productsPopover = useNestedPopover();
-  const homoeopathicPopover = useNestedPopover();
-  const bioChemicsPopover = useNestedPopover();
+const DesktopNavigation = memo(() => {
+  const aboutPopover = useNestedPopover()
+  const homeopathicPopover = useNestedPopover()
+  const personalCarePopover = useNestedPopover()
+  const otherProductsPopover = useNestedPopover()
 
-  const pathname = usePathname();
+  const pathname = usePathname()
 
   return (
-    <div className="flex items-center space-x-4">
+    <div className="flex justify-center items-center space-x-8 w-full">
       {/* HOME */}
-
       <Button
         variant="link"
         className={cn(
-          "h-auto cursor-pointer p-0 font-semibold text-neutral-600 underline underline-offset-4 hover:text-[#1DA827]",
-          pathname.includes("/") ? "text-brand" : "",
+          "h-auto cursor-pointer p-0 font-semibold hover:text-[#1DA827] hover:underline hover:underline-offset-8",
+          pathname === "/" ? "text-brand" : ""
         )}
       >
         <Link href="/" className="font-medium">
@@ -101,189 +122,204 @@ const DesktopNavigation = () => {
         <PopoverTrigger asChild>
           <Button
             variant="link"
-            className="h-auto cursor-pointer p-0 font-medium underline underline-offset-4 hover:text-[#1DA827]"
+            className="h-auto cursor-pointer p-0 font-medium hover:text-[#1DA827] hover:underline hover:underline-offset-8"
           >
             ABOUT US ⏷
           </Button>
         </PopoverTrigger>
-        <PopoverContent className="w-[200px] p-0">
-          <div className="flex flex-col py-2">
-            <Link
-              href="/about/who-we-are"
-              className="hover:bg-accent px-4 py-2"
-            >
-              Who We Are
-            </Link>
-            <Link href="/about/our-team" className="hover:bg-accent px-4 py-2">
-              Our Team
-            </Link>
-          </div>
+        <PopoverContent className="flex w-fit flex-col rounded-none p-0">
+          <SubmenuLink
+            href="/about/who-we-are"
+            title="Company Profile"
+            onClick={() => {
+              aboutPopover.onOpenChange(false)
+            }}
+          />
+
+          <SubmenuLink
+            href="/about/message"
+            title="Founder's Message"
+            onClick={() => {
+              aboutPopover.onOpenChange(false)
+            }}
+          />
         </PopoverContent>
       </Popover>
 
-      {/* OUR PRODUCTS */}
+      {/* HOMEOPATHIC */}
       <Popover
-        open={productsPopover.isOpen}
-        onOpenChange={productsPopover.onOpenChange}
+        open={homeopathicPopover.isOpen}
+        onOpenChange={homeopathicPopover.onOpenChange}
       >
         <PopoverTrigger asChild>
           <Button
             variant="link"
-            className="h-auto cursor-pointer p-0 font-medium underline underline-offset-4 hover:text-[#1DA827]"
+            className="h-auto cursor-pointer p-0 font-medium hover:text-[#1DA827] hover:underline hover:underline-offset-8"
           >
-            OUR PRODUCTS ⏷
+            HOMEOPATHIC ⏷
           </Button>
         </PopoverTrigger>
-        <PopoverContent className="w-[400px] p-0">
-          <div className="flex flex-col py-2">
-            <Link href="/products" className="hover:bg-accent px-4 py-2">
-              All Products
-            </Link>
+        <PopoverContent className="flex w-fit flex-col rounded-none p-0">
+          <SubmenuLink
+            href="/products/homeopathic/dilutions"
+            title="Dilutions (Potencies)"
+            onClick={() => {
+              homeopathicPopover.onOpenChange(false)
+            }}
+          />
+          <SubmenuLink
+            href="/products/homeopathic/mother-tinctures"
+            title="Mother Tinctures"
+            onClick={() => {
+              homeopathicPopover.onOpenChange(false)
+            }}
+          />
+          <SubmenuLink
+            href="/products/homeopathic/biochemic"
+            title="Biochemic & Biocombinations"
+            onClick={() => {
+              homeopathicPopover.onOpenChange(false)
+            }}
+          />
+          <SubmenuLink
+            href="/products/homeopathic/trituration"
+            title="Trituration Tablets"
+            onClick={() => {
+              homeopathicPopover.onOpenChange(false)
+            }}
+          />
+          <SubmenuLink
+            href="/products/homeopathic/bach-flower"
+            title="Bach Flower Remedies"
+            onClick={() => {
+              homeopathicPopover.onOpenChange(false)
+            }}
+          />
+        </PopoverContent>
+      </Popover>
 
-            {/* Homoeopathic - with nested popover */}
-            <div className="relative">
-              <Popover
-                open={homoeopathicPopover.isOpen}
-                onOpenChange={homoeopathicPopover.onOpenChange}
-              >
-                <PopoverTrigger asChild>
-                  <button
-                    className="hover:bg-accent flex w-full items-center justify-between px-4 py-2 text-left text-sm"
-                    onClick={(e) => e.stopPropagation()}
-                  >
-                    <span>Homoeopathic</span>
-                    <ChevronRight className="h-4 w-4" />
-                  </button>
-                </PopoverTrigger>
-                <PopoverContent
-                  side="right"
-                  align="start"
-                  className="w-56 p-0"
-                  onClick={(e) => e.stopPropagation()}
-                >
-                  <div className="flex flex-col py-2">
-                    <Link
-                      href="/products/homoeopathic/dilutions"
-                      className="hover:bg-accent px-4 py-2"
-                      onClick={() => {
-                        homoeopathicPopover.setIsOpen(false);
-                        productsPopover.setIsOpen(false);
-                      }}
-                    >
-                      Dilutions
-                    </Link>
-
-                    {/* Bio Chemics - nested popover */}
-                    <div className="relative">
-                      <Popover
-                        open={bioChemicsPopover.isOpen}
-                        onOpenChange={bioChemicsPopover.onOpenChange}
-                      >
-                        <PopoverTrigger asChild>
-                          <button
-                            className="hover:bg-accent flex w-full items-center justify-between px-4 py-2 text-left text-sm"
-                            onClick={(e) => e.stopPropagation()}
-                          >
-                            <span>Bio Chemics & Bio Combinations</span>
-                            <ChevronRight className="h-4 w-4" />
-                          </button>
-                        </PopoverTrigger>
-                        <PopoverContent
-                          side="right"
-                          align="start"
-                          className="w-56 p-0"
-                          onClick={(e) => e.stopPropagation()}
-                        >
-                          <div className="flex flex-col py-2">
-                            <Link
-                              href="/products/homoeopathic/biochemics/tablets"
-                              className="hover:bg-accent px-4 py-2"
-                              onClick={() => {
-                                bioChemicsPopover.setIsOpen(false);
-                                homoeopathicPopover.setIsOpen(false);
-                                productsPopover.setIsOpen(false);
-                              }}
-                            >
-                              Bio Chemic Tablets
-                            </Link>
-                            <Link
-                              href="/products/homoeopathic/biochemics/dilutions"
-                              className="hover:bg-accent px-4 py-2"
-                              onClick={() => {
-                                bioChemicsPopover.setIsOpen(false);
-                                homoeopathicPopover.setIsOpen(false);
-                                productsPopover.setIsOpen(false);
-                              }}
-                            >
-                              Bio Chemic Dilutions
-                            </Link>
-                          </div>
-                        </PopoverContent>
-                      </Popover>
-                    </div>
-
-                    <Link
-                      href="/products/homoeopathic/mother-tinctures"
-                      className="hover:bg-accent px-4 py-2"
-                      onClick={() => {
-                        homoeopathicPopover.setIsOpen(false);
-                        productsPopover.setIsOpen(false);
-                      }}
-                    >
-                      Mother Tinctures
-                    </Link>
-                  </div>
-                </PopoverContent>
-              </Popover>
-            </div>
-
-            <Link
-              href="/products/ointments"
-              className="hover:bg-accent px-4 py-2"
-              onClick={() => productsPopover.setIsOpen(false)}
-            >
-              Ointments
-            </Link>
-            <Link
-              href="/products/herbals"
-              className="hover:bg-accent px-4 py-2"
-              onClick={() => productsPopover.setIsOpen(false)}
-            >
-              Herbals
-            </Link>
-            <Link
-              href="/products/eye-ear-drops"
-              className="hover:bg-accent px-4 py-2"
-              onClick={() => productsPopover.setIsOpen(false)}
-            >
-              Eye/Ear Drop
-            </Link>
-          </div>
+      {/* PERSONAL CARE */}
+      <Popover
+        open={personalCarePopover.isOpen}
+        onOpenChange={personalCarePopover.onOpenChange}
+      >
+        <PopoverTrigger asChild>
+          <Button
+            variant="link"
+            className="h-auto cursor-pointer p-0 font-medium hover:text-[#1DA827] hover:underline hover:underline-offset-8"
+          >
+            PERSONAL CARE ⏷
+          </Button>
+        </PopoverTrigger>
+        <PopoverContent className="flex w-fit flex-col rounded-none p-0">
+          <SubmenuLink
+            href="/products/personal-care/skin"
+            title="Skin Care"
+            onClick={() => {
+              personalCarePopover.onOpenChange(false)
+            }}
+          />
+          <SubmenuLink
+            href="/products/personal-care/hair"
+            title="Hair Care"
+            onClick={() => {
+              personalCarePopover.onOpenChange(false)
+            }}
+          />
+          <SubmenuLink
+            href="/products/personal-care/hygiene"
+            title="Hygiene"
+            onClick={() => {
+              personalCarePopover.onOpenChange(false)
+            }}
+          />
+          <SubmenuLink
+            href="/products/personal-care/baby"
+            title="Baby Care"
+            onClick={() => {
+              personalCarePopover.onOpenChange(false)
+            }}
+          />
+          <SubmenuLink
+            href="/products/personal-care/oral"
+            title="Oral Care"
+            onClick={() => {
+              personalCarePopover.onOpenChange(false)
+            }}
+          />
         </PopoverContent>
       </Popover>
 
       {/* AILMENT */}
       <Button
         variant="link"
-        className="h-auto cursor-pointer p-0 font-medium underline underline-offset-4 hover:text-[#1DA827]"
+        className="h-auto cursor-pointer p-0 font-medium hover:text-[#1DA827] hover:underline hover:underline-offset-8"
       >
-        <Link href="/ailments" className="font-medium">
+        <Link href="/products/ointments" className="font-medium">
           AILMENT
         </Link>
       </Button>
 
-      {/* ABOUT HOMOEOPATHY */}
+      {/* BRANDS */}
       <Button
         variant="link"
-        className="h-auto cursor-pointer p-0 font-medium underline underline-offset-4 hover:text-[#1DA827]"
+        className="h-auto cursor-pointer p-0 font-medium hover:text-[#1DA827] hover:underline hover:underline-offset-8"
       >
-        <Link href="/about-homeo" className="font-medium">
+        <Link href="/brands" className="font-medium">
+          BRANDS
+        </Link>
+      </Button>
+
+      {/* OTHER PRODUCTS */}
+      <Popover
+        open={otherProductsPopover.isOpen}
+        onOpenChange={otherProductsPopover.onOpenChange}
+      >
+        <PopoverTrigger asChild>
+          <Button
+            variant="link"
+            className="h-auto cursor-pointer p-0 font-medium hover:text-[#1DA827] hover:underline hover:underline-offset-8"
+          >
+            OTHER PRODUCTS ⏷
+          </Button>
+        </PopoverTrigger>
+        <PopoverContent className="flex w-fit flex-col rounded-none p-0">
+          <SubmenuLink
+            href="/products/ointments"
+            title="OINTMENTS"
+            onClick={() => {
+              otherProductsPopover.onOpenChange(false)
+            }}
+          />
+          <SubmenuLink
+            href="/products/herbals"
+            title="HERBALS"
+            onClick={() => {
+              otherProductsPopover.onOpenChange(false)
+            }}
+          />
+          <SubmenuLink
+            href="/products/eye-ear-drops"
+            title="EYE/EAR DROP"
+            onClick={() => {
+              otherProductsPopover.onOpenChange(false)
+            }}
+          />
+        </PopoverContent>
+      </Popover>
+
+      {/* ABOUT HOMEOPATHY */}
+      <Button
+        variant="link"
+        className="h-auto cursor-pointer p-0 font-medium hover:text-[#1DA827] hover:underline hover:underline-offset-8"
+      >
+        <Link href="/products/about-homeopathy" className="font-medium">
           ABOUT HOMEOPATHY
         </Link>
       </Button>
     </div>
-  );
-};
+  )
+})
 
 // Mobile Navigation Component using Accordion
 const MobileNavigation = () => {
@@ -419,7 +455,7 @@ const MobileNavigation = () => {
         </AccordionItem>
       </Accordion>
     </div>
-  );
-};
+  )
+}
 
-export default Navbar;
+export default Navbar
