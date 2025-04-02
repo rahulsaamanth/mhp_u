@@ -2,16 +2,23 @@
 
 import Link from "next/link"
 import { Button } from "./ui/button"
+import { useCurrentUser } from "@/hooks/use-current-user"
 
 export default function UserButton() {
-  return (
-    <Link href="/login">
-      <Button
-        variant="link"
-        className="cursor-pointer font-medium hover:text-brand"
-      >
-        <span className="text-sm md:text-base">Login</span>
-      </Button>
-    </Link>
-  )
+  const { user } = useCurrentUser()
+
+  if (!user)
+    return (
+      <Link href="/login">
+        <Button
+          variant="default"
+          size="sm"
+          className="cursor-pointer text-xs bg-brand rounded-none hover:bg-brand/80"
+        >
+          Login/Register
+        </Button>
+      </Link>
+    )
+
+  return <p>{user.name}</p>
 }

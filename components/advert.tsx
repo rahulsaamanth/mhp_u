@@ -73,7 +73,7 @@ export default function Advert() {
         {adverts.map((advert, index) => (
           <CarouselItem
             key={index}
-            className="mx-auto w-full text-xs font-medium text-white md:text-sm"
+            className="mx-auto w-full text-xs font-medium md:text-sm text-white"
           >
             {advert}
           </CarouselItem>

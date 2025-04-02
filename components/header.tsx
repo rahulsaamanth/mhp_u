@@ -18,21 +18,21 @@ export default function Header() {
   const isDesktop = useMediaQuery({ minWidth: 1024 })
 
   const getLogoSize = () => {
-    if (isMobile) return { width: 100, height: 80 } // Increased mobile size
-    if (isTablet) return { width: 120, height: 100 } // Increased tablet size
-    return { width: 160, height: 100 } // Increased desktop size
+    if (isMobile) return { width: 100, height: 80 }
+    if (isTablet) return { width: 120, height: 100 }
+    return { width: 160, height: 100 }
   }
 
   const { width, height } = getLogoSize()
 
   return (
-    <header className="flex flex-col">
-      <section className="flex w-full flex-col items-center justify-center gap-4 px-4 py-2 md:flex-row md:gap-x-12 lg:gap-x-20 md:px-8">
+    <header className="sticky top-0 z-50 bg-white">
+      <section className="flex w-full flex-col items-center justify-center gap-4 px-4 py-2 md:flex-row md:gap-x-12 lg:gap-x-32 md:px-8">
         {/* Logo */}
         <div className="flex justify-between items-center w-full md:w-auto shrink-0">
           <Link href="/" className="relative">
             <Image
-              src="/_text_logo.png"
+              src="/text_logo.png"
               alt="LOGO"
               width={width}
               height={height}
@@ -40,20 +40,21 @@ export default function Header() {
               className="object-contain"
             />
           </Link>
-          {/* cart and login */}
-          <div className="flex md:hidden items-center justify-center gap-4 ml-auto">
-            <Cart />
+          {/* Mobile cart and login */}
+          <div className="flex md:hidden items-center justify-center gap-3 md:gap-4 ml-auto">
             <UserButton />
-          </div>
-          <div className="block md:hidden">
-            <MobileNavigation />
+            <Cart />
+            <div className="block md:hidden">
+              <MobileNavigation />
+            </div>
           </div>
         </div>
+
         {/* Search */}
-        <div className="w-full max-w-2xl md:w-6xl">
+        <div className="w-full max-w-2xl">
           <div className="flex items-center justify-center">
             <Input
-              className="rounded-none bg-none focus-visible:border-none focus-visible:ring-0 focus-visible:outline-none"
+              className="rounded-none focus-visible:ring-offset-0 focus-visible:ring-0 border-r-0"
               placeholder={
                 isMobile
                   ? "Search products..."
@@ -62,13 +63,14 @@ export default function Header() {
             />
             <Button
               variant="default"
-              className="bg-brand hover:bg-brand cursor-pointer rounded-none"
+              className="bg-brand hover:bg-brand/90 rounded-none transition-colors cursor-pointer"
             >
-              <Search className={isMobile ? "h-4 w-4" : "h-5 w-5"} />
+              <Search className="h-5 w-5" />
             </Button>
           </div>
         </div>
-        {/* cart and login */}
+
+        {/* Desktop cart and login */}
         <div className="hidden md:flex items-center justify-center gap-4">
           <Cart />
           <UserButton />

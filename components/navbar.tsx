@@ -27,7 +27,7 @@ import React, { memo, useState } from "react"
 
 const DesktopNavbar = () => {
   return (
-    <nav className="hidden md:grid place-items-center md:border-t md:border-b">
+    <nav className="hidden md:grid place-items-center md:border-t md:border-b w-full">
       <div className="container mx-auto py-2">
         {/* Desktop Navigation */}
 
@@ -86,7 +86,7 @@ const DesktopNavigation = () => {
       <Button
         variant="link"
         className={cn(
-          "h-auto cursor-pointer p-0 font-semibold hover:text-[#1DA827] hover:underline hover:underline-offset-8 text-xs lg:text-base",
+          "h-auto cursor-pointer p-0 font-semibold hover:text-brand hover:underline hover:underline-offset-8 text-xs lg:text-base",
           pathname === "/" ? "text-brand" : ""
         )}
       >
@@ -103,7 +103,7 @@ const DesktopNavigation = () => {
         <PopoverTrigger asChild>
           <Button
             variant="link"
-            className="h-auto cursor-pointer p-0 font-medium hover:text-[#1DA827] hover:underline hover:underline-offset-8 text-xs lg:text-base"
+            className="h-auto cursor-pointer p-0 font-medium hover:text-brand hover:underline hover:underline-offset-8 text-xs lg:text-base"
           >
             ABOUT US ⏷
           </Button>
@@ -135,7 +135,7 @@ const DesktopNavigation = () => {
         <PopoverTrigger asChild>
           <Button
             variant="link"
-            className="h-auto cursor-pointer p-0 font-medium hover:text-[#1DA827] hover:underline hover:underline-offset-8 text-xs lg:text-base"
+            className="h-auto cursor-pointer p-0 font-medium hover:text-brand hover:underline hover:underline-offset-8 text-xs lg:text-base"
           >
             HOMEOPATHIC ⏷
           </Button>
@@ -187,7 +187,7 @@ const DesktopNavigation = () => {
         <PopoverTrigger asChild>
           <Button
             variant="link"
-            className="h-auto cursor-pointer p-0 font-medium hover:text-[#1DA827] hover:underline hover:underline-offset-8 text-xs lg:text-base"
+            className="h-auto cursor-pointer p-0 font-medium hover:text-brand hover:underline hover:underline-offset-8 text-xs lg:text-base"
           >
             PERSONAL CARE ⏷
           </Button>
@@ -234,7 +234,7 @@ const DesktopNavigation = () => {
       {/* AILMENT */}
       <Button
         variant="link"
-        className="h-auto cursor-pointer p-0 font-medium hover:text-[#1DA827] hover:underline hover:underline-offset-8 text-xs lg:text-base"
+        className="h-auto cursor-pointer p-0 font-medium hover:text-brand hover:underline hover:underline-offset-8 text-xs lg:text-base"
       >
         <Link href="/products/ointments" className="font-medium">
           AILMENT
@@ -244,7 +244,7 @@ const DesktopNavigation = () => {
       {/* BRANDS */}
       <Button
         variant="link"
-        className="h-auto cursor-pointer p-0 font-medium hover:text-[#1DA827] hover:underline hover:underline-offset-8 text-xs lg:text-base"
+        className="h-auto cursor-pointer p-0 font-medium hover:text-brand hover:underline hover:underline-offset-8 text-xs lg:text-base"
       >
         <Link href="/brands" className="font-medium">
           BRANDS
@@ -259,7 +259,7 @@ const DesktopNavigation = () => {
         <PopoverTrigger asChild>
           <Button
             variant="link"
-            className="h-auto cursor-pointer p-0 font-medium hover:text-[#1DA827] hover:underline hover:underline-offset-8 text-xs lg:text-base"
+            className="h-auto cursor-pointer p-0 font-medium hover:text-brand hover:underline hover:underline-offset-8 text-xs lg:text-base"
           >
             OTHER PRODUCTS ⏷
           </Button>
@@ -292,7 +292,7 @@ const DesktopNavigation = () => {
       {/* ABOUT HOMEOPATHY */}
       <Button
         variant="link"
-        className="h-auto cursor-pointer p-0 font-medium hover:text-[#1DA827] hover:underline hover:underline-offset-8 text-xs lg:text-base"
+        className="h-auto cursor-pointer p-0 font-medium hover:text-brand hover:underline hover:underline-offset-8 text-xs lg:text-base"
       >
         <Link href="/products/about-homeopathy" className="font-medium">
           ABOUT HOMEOPATHY

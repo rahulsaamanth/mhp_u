@@ -1,39 +1,48 @@
 import type { Metadata } from "next"
-import { Roboto } from "next/font/google"
+import { DM_Sans } from "next/font/google"
 import "./globals.css"
 import Advert from "@/components/advert"
 import Footer from "@/components/footer"
 import Header from "@/components/header"
-import Navbar from "@/components/navbar"
 
-const roboto = Roboto({
-  weight: ["100", "200", "400", "600", "800"],
+import { SessionProvider } from "next-auth/react"
+import { auth as Auth } from "@/auth"
+
+const dmSans = DM_Sans({
   subsets: ["latin"],
-  variable: "--font-roboto",
+  weight: ["100", "200", "300", "400", "500", "600", "700"],
+  variable: "--font-dm-sans",
   display: "swap",
 })
 
 export const metadata: Metadata = {
   title: "Buy Homeopathic Remedies Online - Homeo South",
-  description: "Onlie Homeopathic remedies for all your ailments",
+  description: "Online Homeopathic remedies for all your ailments",
 }
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
+  auth,
 }: Readonly<{
   children: React.ReactNode
+  auth: React.ReactNode
 }>) {
+  const session = await Auth()
+
   return (
-    <html lang="en">
-      <body
-        suppressHydrationWarning={true}
-        className={`${roboto.className} antialiased`}
-      >
-        <Advert />
-        <Header />
-        {children}
-        <Footer />
-      </body>
-    </html>
+    <SessionProvider session={session}>
+      <html lang="en">
+        <body
+          className={`${dmSans.className} antialiased`}
+          // suppressHydrationWarning={true}
+        >
+          <Advert />
+          <Header />
+          {children}
+          {auth}
+          <Footer />
+        </body>
+      </html>
+    </SessionProvider>
   )
 }

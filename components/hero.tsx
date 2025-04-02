@@ -1,3 +1,3 @@
 export default function Hero() {
-  return <div>Hero component</div>;
+  return <div className="h-screen bg-black">Hero component</div>
 }
