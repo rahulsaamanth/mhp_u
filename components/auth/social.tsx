@@ -1,17 +1,14 @@
 "use client"
 
-import { signIn } from "next-auth/react"
 import { Button } from "@/components/ui/button"
-import { useRouter } from "next/navigation"
 import { Icon } from "@iconify/react"
+import { signIn } from "next-auth/react"
 
 interface SignInModalProps {
   callbackUrl?: string
 }
 
 export function Social({ callbackUrl }: SignInModalProps) {
-  const router = useRouter()
-
   return (
     <Button
       size={"lg"}

@@ -1,29 +1,15 @@
 "use client"
 
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from "@/components/ui/accordion"
 import { Button } from "@/components/ui/button"
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover"
-import {
-  Sheet,
-  SheetClose,
-  SheetContent,
-  SheetTitle,
-  SheetTrigger,
-} from "@/components/ui/sheet"
 import { cn } from "@/lib/utils"
-import { Menu } from "lucide-react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
-import React, { memo, useState } from "react"
+import { useState } from "react"
 
 const DesktopNavbar = () => {
   return (

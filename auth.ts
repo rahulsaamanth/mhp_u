@@ -96,14 +96,10 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       return true
     },
     async redirect({ url, baseUrl }) {
-      // Allows relative callback URLs
-      if (url.startsWith("/")) return `${baseUrl}${url}`
-      // Allows callback URLs on the same origin
-      else if (new URL(url).origin === baseUrl) return url
-      // Default redirect handling
-      if (url.startsWith("login")) return `${baseUrl}/`
-      if (url.startsWith("logout")) return `${baseUrl}/login`
-      return baseUrl
+      const appUrl = process.env.APP_URL || baseUrl
+      if (url.startsWith("/")) return `${appUrl}${url}`
+      else if (new URL(url).origin === appUrl) return url
+      return appUrl
     },
   },
   events: {
@@ -137,4 +133,16 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     accountsTable: account,
     sessionsTable: session,
   }),
+  trustHost: true,
+  cookies: {
+    sessionToken: {
+      name: `__Secure-next-auth-token`,
+      options: {
+        httpOnly: true,
+        sameSite: "lax",
+        path: "/",
+        secure: process.env.NODE_ENV === "production",
+      },
+    },
+  },
 })

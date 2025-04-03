@@ -4,16 +4,16 @@ import { LoginForm } from "@/components/auth/login-form"
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
   DialogHeader,
   DialogTitle,
-  DialogDescription,
 } from "@/components/ui/dialog"
-import { usePathname, useRouter, useSearchParams } from "next/navigation"
 import Link from "next/link"
+import { useRouter, useSearchParams } from "next/navigation"
 
 export default function LoginModal() {
   const router = useRouter()
-  const pathname = usePathname()
+
   const searchParams = useSearchParams()
 
   const callbackUrl = searchParams.get("callbackUrl") || "/"

@@ -1,15 +1,12 @@
 "use client"
 
-import * as React from "react"
-import { useState, useEffect, useCallback } from "react"
 import {
   Carousel,
   CarouselContent,
   CarouselItem,
-  CarouselNext,
-  CarouselPrevious,
   type CarouselApi,
 } from "@/components/ui/carousel"
+import { useCallback, useEffect, useState } from "react"
 
 export default function Advert() {
   const adverts = [
@@ -18,8 +15,6 @@ export default function Advert() {
     "⚡  Flash Sale: Buy 2 Get 1 Free on all supplements",
   ]
   const [api, setApi] = useState<CarouselApi>()
-  const [current, setCurrent] = useState(0)
-  const [isVisible, setIsVisible] = useState(true)
   const [isTabActive, setIsTabActive] = useState(true)
 
   useEffect(() => {
@@ -33,19 +28,6 @@ export default function Advert() {
     }
   }, [])
 
-  useEffect(() => {
-    if (!api) return
-
-    const handleSelect = () => {
-      setCurrent(api.selectedScrollSnap())
-    }
-    api.on("select", handleSelect)
-
-    return () => {
-      api.off("select", handleSelect)
-    }
-  }, [api])
-
   const advanceSlide = useCallback(() => {
     if (!api || !isTabActive) return
     api.scrollNext()
@@ -57,8 +39,6 @@ export default function Advert() {
     const timer = setInterval(advanceSlide, 4000)
     return () => clearInterval(timer)
   }, [advanceSlide, isTabActive])
-
-  if (!isVisible) return null
 
   return (
     <Carousel

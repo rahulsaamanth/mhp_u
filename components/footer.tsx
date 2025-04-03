@@ -1,6 +1,3 @@
-import Link from "next/link"
-import { Mail, Phone, MapPin } from "lucide-react"
-
 export default function Footer() {
   return (
     <footer className="bg-brand border-t w-full h-[768px]">

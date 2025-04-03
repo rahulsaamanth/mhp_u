@@ -1,14 +1,14 @@
 "use client"
 
-import { Search, ShoppingCart } from "lucide-react"
+import { Search } from "lucide-react"
 import Image from "next/image"
 import Link from "next/link"
+import Cart from "./cart"
+import MobileNavigation from "./mobile-navbar"
+import DesktopNavbar from "./navbar"
 import { Button } from "./ui/button"
 import { Input } from "./ui/input"
-import DesktopNavbar from "./navbar"
-import Cart from "./cart"
 import UserButton from "./user-button"
-import MobileNavigation from "./mobile-navbar"
 
 export default function Header() {
   return (

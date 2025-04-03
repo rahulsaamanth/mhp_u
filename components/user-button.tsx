@@ -52,7 +52,7 @@ export default function UserButton() {
       <DropdownMenuContent className="w-fit" align="end">
         <DropdownMenuItem className="flex items-center justify-center gap-3 pb-2">
           <Avatar className="size-8">
-            <AvatarImage src={user?.image!} alt={user?.name || "Profile"} />
+            <AvatarImage src={user.image || ""} alt={user.name || "Profile"} />
 
             <AvatarFallback>
               {user.name?.[0]?.toUpperCase() || (

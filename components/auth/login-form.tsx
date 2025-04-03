@@ -3,7 +3,6 @@
 import { Button } from "@/components/ui/button"
 import { LoginSchema } from "@/schemas"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { Icon } from "@iconify/react/dist/iconify.js"
 import { signIn } from "next-auth/react"
 import React from "react"
 import { useForm } from "react-hook-form"
