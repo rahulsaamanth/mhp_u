@@ -1,24 +1,24 @@
 "use client"
 
 import { Button } from "@/components/ui/button"
+import { LoginSchema } from "@/schemas"
+import { zodResolver } from "@hookform/resolvers/zod"
 import { Icon } from "@iconify/react/dist/iconify.js"
 import { signIn } from "next-auth/react"
-import { Form, FormControl, FormField, FormItem, FormMessage } from "../ui/form"
 import React from "react"
-import { LoginSchema } from "@/schemas"
-import * as z from "zod"
 import { useForm } from "react-hook-form"
-import { zodResolver } from "@hookform/resolvers/zod"
-import { Input } from "../ui/input"
+import * as z from "zod"
 import { FormError } from "../form-error"
 import { FormSuccess } from "../form-success"
-import { login } from "@/actions/auth/login"
+import { Form, FormControl, FormField, FormItem, FormMessage } from "../ui/form"
+import { Input } from "../ui/input"
+import { Social } from "./social"
 
 interface LoginFormProps {
   callbackUrl?: string
 }
 
-export function LoginForm({ callbackUrl = "/" }: LoginFormProps) {
+export function LoginForm({ callbackUrl }: LoginFormProps) {
   const [_error, setError] = React.useState<string | undefined>("")
   const [_success, setSuccess] = React.useState<string | undefined>("")
 
@@ -34,19 +34,21 @@ export function LoginForm({ callbackUrl = "/" }: LoginFormProps) {
 
   const onSubmit = (values: z.infer<typeof LoginSchema>) => {
     startTransition(async () => {
-      await login(values)
+      try {
+        await signIn("resend", {
+          email: values.email,
+          redirectTo: callbackUrl,
+        })
+        setSuccess("Click the link sent to your mailid")
+      } catch (error) {
+        setError("something went wrong! try again later.")
+        console.error(error)
+      }
     })
   }
   return (
     <div className="flex flex-col gap-4">
-      <Button
-        variant="outline"
-        className="w-full p-6 flex items-center gap-3 hover:bg-gray-50 cursor-pointer"
-        onClick={() => signIn("google", { callbackUrl })}
-      >
-        <Icon icon="flat-color-icons:google" />
-        Continue with Google
-      </Button>
+      <Social callbackUrl={callbackUrl} />
 
       <div className="relative my-4">
         <div className="absolute inset-0 flex items-center">

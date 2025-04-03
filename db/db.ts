@@ -1,15 +1,12 @@
-import { drizzle } from "drizzle-orm/postgres-js";
-import postgres from "postgres";
-import * as _shcema from "@rahulsaamanth/mhp_shared-schema";
+import { neon, neonConfig } from "@neondatabase/serverless"
+import { drizzle } from "drizzle-orm/neon-serverless"
+import * as _db from "@rahulsaamanth/mhp-schema"
 
-const connectionPool = postgres(process.env.DATABASE_URL!, {
-  max: 10,
-  idle_timeout: 20,
-  connect_timeout: 10,
-  prepare: false,
-});
+const sql = neon(process.env.DATABASE_URL!)
 
-export const db = drizzle(connectionPool, {
-  schema: _shcema,
-  // logger:true
-});
+export const db = drizzle(process.env.DATABASE_URL!, {
+  schema: _db,
+  logger: true,
+})
+
+export { sql }

@@ -3,28 +3,14 @@
 import { Search, ShoppingCart } from "lucide-react"
 import Image from "next/image"
 import Link from "next/link"
-import { useMediaQuery } from "react-responsive"
 import { Button } from "./ui/button"
 import { Input } from "./ui/input"
-
 import DesktopNavbar from "./navbar"
 import Cart from "./cart"
 import UserButton from "./user-button"
 import MobileNavigation from "./mobile-navbar"
 
 export default function Header() {
-  const isMobile = useMediaQuery({ maxWidth: 767 })
-  const isTablet = useMediaQuery({ minWidth: 768, maxWidth: 1023 })
-  const isDesktop = useMediaQuery({ minWidth: 1024 })
-
-  const getLogoSize = () => {
-    if (isMobile) return { width: 100, height: 80 }
-    if (isTablet) return { width: 120, height: 100 }
-    return { width: 160, height: 100 }
-  }
-
-  const { width, height } = getLogoSize()
-
   return (
     <header className="sticky top-0 z-50 bg-white">
       <section className="flex w-full flex-col items-center justify-center gap-4 px-4 py-2 md:flex-row md:gap-x-12 lg:gap-x-32 md:px-8">
@@ -34,10 +20,10 @@ export default function Header() {
             <Image
               src="/text_logo.png"
               alt="LOGO"
-              width={width}
-              height={height}
+              width={160}
+              height={100}
+              className="object-contain w-[100px] h-[80px] md:w-[120px] md:h-[100px] lg:w-[160px] lg:h-[100px]"
               priority
-              className="object-contain"
             />
           </Link>
           {/* Mobile cart and login */}
@@ -56,10 +42,9 @@ export default function Header() {
             <Input
               className="rounded-none focus-visible:ring-offset-0 focus-visible:ring-0 border-r-0"
               placeholder={
-                isMobile
-                  ? "Search products..."
-                  : "Search products by ailment, brand, category, potency..."
+                "Search products by ailment, brand, category, potency..."
               }
+              // Mobile placeholder using Tailwind's sr-only
             />
             <Button
               variant="default"

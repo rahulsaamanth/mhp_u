@@ -9,21 +9,15 @@ interface SignInModalProps {
   callbackUrl?: string
 }
 
-export function Social({ callbackUrl = "/" }: SignInModalProps) {
+export function Social({ callbackUrl }: SignInModalProps) {
   const router = useRouter()
-
-  const onClick = async (provider: string) => {
-    await signIn(provider, {
-      callbackUrl: callbackUrl,
-    })
-  }
 
   return (
     <Button
       size={"lg"}
       className="w-full cursor-pointer"
       variant={"outline"}
-      onClick={() => onClick("google")}
+      onClick={() => signIn("google", { redirectTo: callbackUrl })}
     >
       <Icon icon="flat-color-icons:google" width="24" height="24" />
       Continue with Google

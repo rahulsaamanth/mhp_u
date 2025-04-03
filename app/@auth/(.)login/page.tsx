@@ -8,14 +8,15 @@ import {
   DialogTitle,
   DialogDescription,
 } from "@/components/ui/dialog"
-import { usePathname, useRouter } from "next/navigation"
+import { usePathname, useRouter, useSearchParams } from "next/navigation"
 import Link from "next/link"
 
 export default function LoginModal() {
   const router = useRouter()
   const pathname = usePathname()
+  const searchParams = useSearchParams()
 
-  const callbackUrl = pathname.replace("/.login", "") || "/"
+  const callbackUrl = searchParams.get("callbackUrl") || "/"
 
   return (
     <Dialog open onOpenChange={() => router.back()}>

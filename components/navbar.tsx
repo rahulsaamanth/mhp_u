@@ -294,7 +294,7 @@ const DesktopNavigation = () => {
         variant="link"
         className="h-auto cursor-pointer p-0 font-medium hover:text-brand hover:underline hover:underline-offset-8 text-xs lg:text-base"
       >
-        <Link href="/products/about-homeopathy" className="font-medium">
+        <Link href="/about-homeopathy" className="font-medium">
           ABOUT HOMEOPATHY
         </Link>
       </Button>
