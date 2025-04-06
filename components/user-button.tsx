@@ -17,7 +17,6 @@ import { usePathname } from "next/navigation"
 export default function UserButton() {
   const { user } = useCurrentUser()
   const pathname = usePathname()
-  console.log(user)
 
   const callbackUrl = encodeURIComponent(pathname)
   if (!user)

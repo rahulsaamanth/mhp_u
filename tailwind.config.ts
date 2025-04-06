@@ -8,19 +8,32 @@ const config = {
           DEFAULT: "var(--brand)",
           foreground: "var(--brand-foreground)",
           hover: "var(--brand-hover)",
+          dardk: "var(--brand-dark)",
         },
       },
       backdropFilter: {
         none: "none",
         blur: "blur(20px)",
       },
+      animation: {
+        "fade-in": "fadeIn 0.8s ease-out forwards",
+      },
+      keyframes: {
+        fadeIn: {
+          "0%": { opacity: 0, transform: "translateY(20px)" },
+          "100%": { opacity: 1, transform: "translateY(0)" },
+        },
+      },
+      utilities: {
+        ".animation-delay-200": {
+          "animation-delay": "200ms",
+        },
+        ".animation-delay-400": {
+          "animation-delay": "400ms",
+        },
+      },
     },
   },
-  // variants: {
-  //   extend: {
-  //     backdropFilter: ['responsive'],
-  //   },
-  // },
 } satisfies Config
 
 export default config

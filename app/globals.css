@@ -39,6 +39,7 @@
   --brand: #7cb518;
   --brand-foreground: #ffffff;
   --brand-hover: #38b000; /* slightly darker shade for hover states */
+  --brand-dark: #38b000; /* slightly darker shade for hover states */
 }
 
 @theme inline {

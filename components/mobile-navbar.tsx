@@ -162,7 +162,7 @@ const MobileNavigationHelper = () => {
 
         <AccordionItem value="about-homoeopathy">
           <SheetClose asChild>
-            <Link href="/about-homoeopathy" className="flex w-full py-2">
+            <Link href="/about-homeopathy" className="flex w-full py-2">
               ABOUT HOMOEOPATHY
             </Link>
           </SheetClose>

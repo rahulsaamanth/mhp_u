@@ -133,16 +133,16 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     accountsTable: account,
     sessionsTable: session,
   }),
-  trustHost: true,
-  cookies: {
-    sessionToken: {
-      name: `__Secure-next-auth-token`,
-      options: {
-        httpOnly: true,
-        sameSite: "lax",
-        path: "/",
-        secure: process.env.NODE_ENV === "production",
-      },
-    },
-  },
+  // trustHost: true,
+  // cookies: {
+  //   sessionToken: {
+  //     name: `__Secure-next-auth-token`,
+  //     options: {
+  //       httpOnly: true,
+  //       sameSite: "lax",
+  //       path: "/",
+  //       secure: process.env.NODE_ENV === "production",
+  //     },
+  //   },
+  // },
 })

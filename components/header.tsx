@@ -13,7 +13,7 @@ import UserButton from "./user-button"
 export default function Header() {
   return (
     <header className="sticky top-0 z-50 bg-white">
-      <section className="flex w-full flex-col items-center justify-center gap-4 px-4 py-2 md:flex-row md:gap-x-12 lg:gap-x-32 md:px-8">
+      <section className="flex w-full flex-col items-center justify-center px-4 py-2 md:flex-row md:gap-x-12 lg:gap-x-32">
         {/* Logo */}
         <div className="flex justify-between items-center w-full md:w-auto shrink-0">
           <Link href="/" className="relative">
@@ -37,7 +37,7 @@ export default function Header() {
         </div>
 
         {/* Search */}
-        <div className="w-full max-w-2xl">
+        <div className="w-full max-w-2xl px-2 sm:px-0">
           <div className="flex items-center justify-center">
             <Input
               className="rounded-none focus-visible:ring-offset-0 focus-visible:ring-0 border-r-0"
