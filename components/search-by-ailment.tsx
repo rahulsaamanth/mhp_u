@@ -37,7 +37,7 @@ export default function SearchByAilment() {
   ]
 
   return (
-    <section className="border-b border-t overflow-x-hidden">
+    <section className="border-b overflow-x-hidden">
       <h1 className="text-center text-base md:text-4xl font-bold py-2">
         Search By Ailment
       </h1>
@@ -60,12 +60,12 @@ export default function SearchByAilment() {
           {ailments.map((ailment, index) => (
             <CarouselItem
               key={index}
-              className="basis-full sm:basis-1/2 md:basis-1/3 lg:basis-1/4 xl:basis-1/6"
+              className="basis-full sm:basis-1/2 md:basis-1/3 lg:basis-1/4 xl:basis-1/5 2xl:basis-1/6"
             >
               <Link href={`/ailments/${ailment}`}>
                 <Card className="w-full border-0 outline-0 shadow-none px-1">
                   <CardContent className="flex items-center justify-center p-2">
-                    <div className="border-2 border-solid border-brand/30 hover:border-dashed hover:border-brand rounded-xl overflow-hidden p-2 transition-all duration-400">
+                    <div className="border-2 border-solid border-brand/30 hover:border-dashed hover:border-brand rounded-xl p-2 transition-all duration-500">
                       <Image
                         src={`/assets/ailments/${ailment}.webp`}
                         alt={ailment}

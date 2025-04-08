@@ -27,7 +27,7 @@ export default function Hero() {
 
       {/* Content container */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-20">
-        <div className="h-[60vh] md:h-[70vh] flex items-center justify-start">
+        <div className="h-[65vh] flex items-center justify-start">
           {/* Text content */}
           <div className="max-w-xl space-y-2 sm:space-y-6 z-10">
             <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold leading-tight animate-fade-in ">

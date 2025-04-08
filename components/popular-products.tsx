@@ -1,8 +1,9 @@
 import { db, sql } from "@/db/db"
 import { JsonViewer } from "@/utils/json-viewer"
+import ProductCard, { ProductCardProps } from "./product-card"
 
 export default async function PopularProducts() {
-  const popularProducts = await sql`
+  const popularProducts = (await sql`
     WITH SalesRanking AS (
       SELECT 
         p."id",
@@ -25,20 +26,29 @@ export default async function PopularProducts() {
       (SELECT pv."discountType" FROM "ProductVariant" pv WHERE pv."productId" = p."id" LIMIT 1) as "discountType",
       (SELECT pv."discount" FROM "ProductVariant" pv WHERE pv."productId" = p."id" LIMIT 1) as "discount",
       (
-        SELECT jsonb_agg(DISTINCT pv."potency")
-        FROM "ProductVariant" pv
-        WHERE pv."productId" = p."id"
+        CASE 
+          WHEN (
+            SELECT COUNT(DISTINCT pv."potency") = 1 AND MAX(pv."potency") = 'NONE'  
+            FROM "ProductVariant" pv
+            WHERE pv."productId" = p."id"
+          ) THEN NULL
+          ELSE (
+            SELECT jsonb_agg(DISTINCT pv."potency")
+            FROM "ProductVariant" pv
+            WHERE pv."productId" = p."id"
+          )
+        END
       ) as "potencies"
     FROM "Product" p
     JOIN SalesRanking sr ON p."id" = sr."id"
     ORDER BY sr."sales" DESC
-  `
+  `) as ProductCardProps[]
 
   console.log(popularProducts)
 
   return (
     <div>
-      <JsonViewer data={popularProducts} />
+      <ProductCard product={popularProducts[0]} />
     </div>
   )
 }
