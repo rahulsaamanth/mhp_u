@@ -11,6 +11,16 @@ const nextConfig: NextConfig = {
   },
   // assetPrefix: process.env.APP_URL,
   basePath: "",
+  images: {
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "mhp-local.s3.ap-south-1.amazonaws.com",
+        port: "",
+        pathname: "/**",
+      },
+    ],
+  },
 }
 
 export default nextConfig

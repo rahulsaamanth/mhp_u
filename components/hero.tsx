@@ -27,14 +27,14 @@ export default function Hero() {
 
       {/* Content container */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-20">
-        <div className="h-[60vh] md:h-[70vh] pt-6 sm:pt-10 xl:pt-24">
+        <div className="h-[60vh] md:h-[70vh] flex items-center justify-start">
           {/* Text content */}
           <div className="max-w-xl space-y-2 sm:space-y-6 z-10">
             <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold leading-tight animate-fade-in ">
               Natural Healing For Modern Living
             </h1>
 
-            <p className="text-lg sm:text-xl text-white/90 max-w-lg animate-fade-in animation-delay-200 italic">
+            <p className="text-base sm:text-xl text-white/90 max-w-lg animate-fade-in animation-delay-200 italic">
               Discover premium homeopathic remedies that harness the power of
               nature for your wellbeing. <br />
             </p>
@@ -70,8 +70,7 @@ export default function Hero() {
       </div>
 
       {/* Bottom wave shape */}
-      <div className="absolute bottom-0 w-full z-20 overflow-hidden pointer-events-none">
-        {/* Added extra height to prevent gap */}
+      {/* <div className="absolute bottom-0 w-full z-20 overflow-hidden pointer-events-none">
         <div className="bg-white h-1 w-full absolute bottom-0 left-0 right-0 z-10"></div>
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -85,7 +84,7 @@ export default function Hero() {
             d="M0,48L48,56C96,64,192,80,288,90.7C384,101,480,107,576,101.3C672,96,768,80,864,82.7C960,85,1056,107,1152,104C1248,101,1344,75,1392,61.3L1440,48L1440,160L1392,160C1344,160,1248,160,1152,160C1056,160,960,160,864,160C768,160,672,160,576,160C480,160,384,160,288,160C192,160,96,160,48,160L0,160Z"
           ></path>
         </svg>
-      </div>
+      </div> */}
     </section>
   )
 }

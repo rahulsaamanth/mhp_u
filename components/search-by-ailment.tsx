@@ -23,7 +23,7 @@ export default function SearchByAilment() {
     "diabetes",
     "kidney-liver-care",
     "cough-cold-care",
-    "viralinfections",
+    "infections",
     "eye-ear-care",
     "weakness",
     "sexualwellness",
@@ -38,7 +38,7 @@ export default function SearchByAilment() {
 
   return (
     <section className="border-b border-t overflow-x-hidden">
-      <h1 className="text-center text-base  md:text-4xl font-bold py-2">
+      <h1 className="text-center text-base md:text-4xl font-bold py-2">
         Search By Ailment
       </h1>
       <Carousel
@@ -46,36 +46,36 @@ export default function SearchByAilment() {
           align: "start",
           slidesToScroll: 1,
           containScroll: "trimSnaps",
-          dragFree: false,
         }}
         plugins={[
           Autoplay({
             delay: 4000,
-            stopOnInteraction: false,
+            stopOnFocusIn: true,
             jump: false,
           }),
         ]}
         className="max-w-3/4 mx-auto"
       >
-        <CarouselContent className="">
+        <CarouselContent>
           {ailments.map((ailment, index) => (
             <CarouselItem
               key={index}
-              className="basis-full sm:basis-1/2 lg:basis-1/3 xl:basis-1/6"
+              className="basis-full sm:basis-1/2 md:basis-1/3 lg:basis-1/4 xl:basis-1/6"
             >
               <Link href={`/ailments/${ailment}`}>
                 <Card className="w-full border-0 outline-0 shadow-none px-1">
                   <CardContent className="flex items-center justify-center p-2">
-                    <div className="border hover:outline-dashed hover:outline-2 hover:outline-brand rounded-2xl overflow-hidden">
+                    <div className="border-2 border-solid border-brand/30 hover:border-dashed hover:border-brand rounded-xl overflow-hidden p-2 transition-all duration-400">
                       <Image
                         src={`/assets/ailments/${ailment}.webp`}
                         alt={ailment}
                         width={200}
                         height={160}
                         quality={100}
-                        className="size-48 object-cover"
+                        className="size-48 object-cover rounded-xl"
+                        loading="lazy"
                       />
-                      <h3 className="text-center font-semibold py-2 border-t">
+                      <h3 className="text-center font-semibold py-2">
                         {ailment}
                       </h3>
                     </div>
@@ -85,9 +85,9 @@ export default function SearchByAilment() {
             </CarouselItem>
           ))}
         </CarouselContent>
-        <CarouselPrevious className="absolute left-0 sm:-left-8 md:-left-24 lg:-left-48 top-1/2 transform -translate-y-1/2 h-8 w-8 sm:h-10 sm:w-10" />
+        <CarouselPrevious className="absolute left-0 sm:-left-16 md:-left-24 top-1/2 transform -translate-y-1/2 h-8 w-8 sm:h-10 sm:w-10" />
 
-        <CarouselNext className="absolute right-0 sm:-right-8 md:-right-24 lg:-right-48 top-1/2 transform -translate-y-1/2 h-8 w-8 sm:h-10 sm:w-10" />
+        <CarouselNext className="absolute right-0 sm:-right-16 md:-right-24 top-1/2 transform -translate-y-1/2 h-8 w-8 sm:h-10 sm:w-10" />
       </Carousel>
     </section>
   )

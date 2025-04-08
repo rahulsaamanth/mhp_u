@@ -1,6 +1,6 @@
 import type { Metadata } from "next"
 import { DM_Sans } from "next/font/google"
-import "./globals.css"
+import "./styles/globals.css"
 import Advert from "@/components/advert"
 import Footer from "@/components/footer"
 import Header from "@/components/header"

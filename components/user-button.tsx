@@ -49,16 +49,7 @@ export default function UserButton() {
         </Avatar>
       </DropdownMenuTrigger>
       <DropdownMenuContent className="w-fit" align="end">
-        <DropdownMenuItem className="flex items-center justify-center gap-3 pb-2">
-          <Avatar className="size-8">
-            <AvatarImage src={user.image || ""} alt={user.name || "Profile"} />
-
-            <AvatarFallback>
-              {user.name?.[0]?.toUpperCase() || (
-                <User className="text-black size-4" />
-              )}
-            </AvatarFallback>
-          </Avatar>
+        <DropdownMenuItem className="cursor-default pb-2 hover:bg-none">
           <span className="text-xs">{user?.name || "User"}</span>
         </DropdownMenuItem>
         <hr />
