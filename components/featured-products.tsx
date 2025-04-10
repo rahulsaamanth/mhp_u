@@ -1,9 +1,7 @@
-import { db, executeRawQuery } from "@/db/db"
-import { product, type Variant } from "@rahulsaamanth/mhp-schema"
-import { and, eq, ilike } from "drizzle-orm"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "./ui/tabs"
-import { ProductCardProps } from "./product-card"
+import { executeRawQuery } from "@/db/db"
 import { JsonViewer } from "@/utils/json-viewer"
+import { ProductCardProps } from "./product-card"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "./ui/tabs"
 
 async function getProductsByCategory(
   category: string
@@ -51,8 +49,13 @@ async function getProductsByCategory(
 
 export default async function FeaturedProducts() {
   const dilutions = await getProductsByCategory("dilutions")
-
-  console.log(dilutions)
+  const motherTinctures = await getProductsByCategory("mothertinctures")
+  const biochemics = await getProductsByCategory("biochemics")
+  const biocombinations = await getProductsByCategory("biocombinations")
+  const personalCare = await getProductsByCategory("personal-care")
+  const nutritionSupplements = await getProductsByCategory(
+    "nutrition-supplements"
+  )
 
   return (
     <section className="py-10 border-b">
@@ -75,15 +78,19 @@ export default async function FeaturedProducts() {
             <JsonViewer data={dilutions} />
           </TabsContent>
           <TabsContent value="mother-tinctures">
-            mother-tinctures content
+            <JsonViewer data={motherTinctures} />
           </TabsContent>
-          <TabsContent value="biochemics">biochemics content</TabsContent>
+          <TabsContent value="biochemics">
+            <JsonViewer data={biochemics} />
+          </TabsContent>
           <TabsContent value="biocombinations">
-            biocombinations content
+            <JsonViewer data={biocombinations} />
           </TabsContent>
-          <TabsContent value="personal-care">personal-care content</TabsContent>
+          <TabsContent value="personal-care">
+            <JsonViewer data={personalCare} />
+          </TabsContent>
           <TabsContent value="nutrition-supplements">
-            nutrition-supplements content
+            <JsonViewer data={nutritionSupplements} />
           </TabsContent>
         </Tabs>
       </div>

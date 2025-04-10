@@ -65,7 +65,10 @@ export default function SearchByAilment() {
               <Link href={`/ailments/${ailment}`}>
                 <Card className="w-full border-0 outline-0 shadow-none px-1">
                   <CardContent className="flex items-center justify-center p-2">
-                    <div className="outline-1 outline-zinc-200 hover:outline-2 hover:outline-brand hover:outline-dashed p-2 rounded-xl">
+                    <div
+                      className="relative outline  outline-zinc-200 p-2 rounded-xl hover:outline-none
+                      transition-all duration-200 before:content-[''] before:absolute before:inset-0 before:outline-brand before:outline-dashed before:outline-2 before:opacity-0 before:rounded-xl before:-outline-offset-1 hover:before:opacity-100 before:transition-opacity before:duration-400"
+                    >
                       <Image
                         src={`/assets/ailments/${ailment}.webp`}
                         alt={ailment}
