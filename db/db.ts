@@ -1,6 +1,5 @@
-import { neon, neonConfig } from "@neondatabase/serverless"
-import { drizzle } from "drizzle-orm/neon-http"
 import { Pool } from "@neondatabase/serverless"
+import { drizzle } from "drizzle-orm/neon-serverless" // Note: using neon-serverless, not neon-http
 import * as schema from "@rahulsaamanth/mhp-schema"
 
 let pool: Pool
@@ -17,26 +16,18 @@ try {
   throw new Error("Database connection failed")
 }
 
-const sql = neon(process.env.DATABASE_URL!)
+export const db = drizzle(pool, { schema })
+export { pool }
 
-export const db = drizzle(sql, { schema })
-
-export { sql, pool }
-
-// // Add this to your db.ts file
-// const cleanup = async () => {
-//   await pool.end()
-//   console.log("Connection pool closed")
-// }
-
-// // Only run on server side
-// if (typeof window === "undefined") {
-//   // For normal Node.js shutdowns (Ctrl+C)
-//   process.on("SIGINT", cleanup)
-
-//   // For production deployments (cloud platform sending termination signal)
-//   process.on("SIGTERM", cleanup)
-
-//   // For natural process completion
-//   process.on("beforeExit", cleanup)
-// }
+export async function executeRawQuery<T = any>(
+  query: string,
+  params: any[] = []
+): Promise<T[]> {
+  const client = await pool.connect()
+  try {
+    const result = await client.query(query, params)
+    return result.rows as T[]
+  } finally {
+    client.release()
+  }
+}

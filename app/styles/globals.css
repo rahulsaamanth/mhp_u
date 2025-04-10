@@ -95,3 +95,16 @@
     @apply bg-background text-foreground;
   }
 }
+
+.underline-animate {
+  display: inline;
+  background-image: linear-gradient(currentColor, currentColor);
+  background-position: 0 100%;
+  background-repeat: no-repeat;
+  background-size: 0% 1px;
+  transition: background-size 0.5s ease;
+}
+
+.group:hover .underline-animate {
+  background-size: 100% 1px;
+}

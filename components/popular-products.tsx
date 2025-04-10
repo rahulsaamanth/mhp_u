@@ -1,9 +1,8 @@
-import { db, sql } from "@/db/db"
-import { JsonViewer } from "@/utils/json-viewer"
+import { executeRawQuery } from "@/db/db"
 import ProductCard, { ProductCardProps } from "./product-card"
 
 export default async function PopularProducts() {
-  const popularProducts = (await sql`
+  const popularProducts = await executeRawQuery<ProductCardProps>(`
     WITH SalesRanking AS (
       SELECT 
         p."id",
@@ -19,12 +18,14 @@ export default async function PopularProducts() {
       p."id",
       p."name",
       p."form",
+      p."unit",
       sr."sales",
       (SELECT pv."variantImage" FROM "ProductVariant" pv WHERE pv."productId" = p."id" LIMIT 1) as "image",
       (SELECT pv."mrp" FROM "ProductVariant" pv WHERE pv."productId" = p."id" LIMIT 1) as "mrp",
       (SELECT pv."sellingPrice" FROM "ProductVariant" pv WHERE pv."productId" = p."id" LIMIT 1) as "sellingPrice",
       (SELECT pv."discountType" FROM "ProductVariant" pv WHERE pv."productId" = p."id" LIMIT 1) as "discountType",
       (SELECT pv."discount" FROM "ProductVariant" pv WHERE pv."productId" = p."id" LIMIT 1) as "discount",
+      (SELECT jsonb_agg(DISTINCT pv."packSize") FROM "ProductVariant" pv WHERE pv."productId" = p."id") as "packSizes",
       (
         CASE 
           WHEN (
@@ -42,13 +43,33 @@ export default async function PopularProducts() {
     FROM "Product" p
     JOIN SalesRanking sr ON p."id" = sr."id"
     ORDER BY sr."sales" DESC
-  `) as ProductCardProps[]
-
-  console.log(popularProducts)
+  `)
 
   return (
-    <div>
-      <ProductCard product={popularProducts[0]} />
-    </div>
+    <section className="py-10 border-b">
+      <div className="space-y-8 max-w-7xl mx-auto px-4 pb-8">
+        <h2 className="text-base md:text-4xl font-bold text-center">
+          Popular Products
+        </h2>
+        {popularProducts.length > 0 && (
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            {/* Left side - featured product (full height) */}
+            <div className="h-full flex">
+              <ProductCard
+                key={popularProducts[0].id}
+                product={popularProducts[0]}
+                featured={true}
+              />
+            </div>
+            {/* Right side - 4 products in a 2x2 grid */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 h-full">
+              {popularProducts.slice(1).map((product) => (
+                <ProductCard key={product.id} product={product} />
+              ))}
+            </div>
+          </div>
+        )}
+      </div>
+    </section>
   )
 }
