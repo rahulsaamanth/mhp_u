@@ -7,6 +7,7 @@ import Header from "@/components/header"
 
 import { SessionProvider } from "next-auth/react"
 import { auth as Auth } from "@/auth"
+import { CartProvider } from "./cart/_components/cart-provider"
 
 const dmSans = DM_Sans({
   subsets: ["latin"],
@@ -36,11 +37,13 @@ export default async function RootLayout({
           className={`${dmSans.className} antialiased`}
           // suppressHydrationWarning={true}
         >
-          <Advert />
-          <Header />
-          {children}
-          {auth}
-          <Footer />
+          <CartProvider>
+            <Advert />
+            <Header />
+            {children}
+            {auth}
+            <Footer />
+          </CartProvider>
         </body>
       </html>
     </SessionProvider>

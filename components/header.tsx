@@ -1,5 +1,3 @@
-"use client"
-
 import { Search } from "lucide-react"
 import Image from "next/image"
 import Link from "next/link"
@@ -58,6 +56,7 @@ export default function Header() {
         {/* Desktop cart and login */}
         <div className="hidden md:flex items-center justify-center gap-4">
           <Cart />
+
           <UserButton />
         </div>
       </section>

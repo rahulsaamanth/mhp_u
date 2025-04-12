@@ -11,6 +11,7 @@ import {
 import Autoplay from "embla-carousel-autoplay"
 import Image from "next/image"
 import Link from "next/link"
+import React from "react"
 
 export default function SearchByAilment() {
   const ailments = [
@@ -35,10 +36,11 @@ export default function SearchByAilment() {
     "oral-care",
     "baby-care",
   ]
+  // const autoPlayRef = React.useRef<ReturnType<typeof Autoplay> | null>(null)
 
   return (
     <section className="border-b overflow-x-hidden">
-      <h1 className="text-center text-base md:text-4xl font-bold py-2">
+      <h1 className="text-center text-xl md:text-4xl font-bold py-2">
         Search By Ailment
       </h1>
       <Carousel
@@ -52,6 +54,8 @@ export default function SearchByAilment() {
             delay: 4000,
             stopOnFocusIn: true,
             jump: false,
+            stopOnMouseEnter: true,
+            stopOnInteraction: true,
           }),
         ]}
         className="max-w-3/4 mx-auto"
@@ -67,7 +71,7 @@ export default function SearchByAilment() {
                   <CardContent className="flex items-center justify-center p-2">
                     <div
                       className="relative outline  outline-zinc-200 p-2 rounded-xl hover:outline-none
-                      transition-all duration-200 before:content-[''] before:absolute before:inset-0 before:outline-brand before:outline-dashed before:outline-2 before:opacity-0 before:rounded-xl before:-outline-offset-1 hover:before:opacity-100 before:transition-opacity before:duration-400"
+                      transition-all duration-200 before:content-[''] before:absolute before:inset-0 before:outline-brand before:outline-dashed before:outline-2 before:opacity-0 before:rounded-xl before:-outline-offset-1 hover:before:opacity-100 before:transition-opacity before:duration-500"
                     >
                       <Image
                         src={`/assets/ailments/${ailment}.webp`}
@@ -88,9 +92,15 @@ export default function SearchByAilment() {
             </CarouselItem>
           ))}
         </CarouselContent>
-        <CarouselPrevious className="absolute left-0 sm:-left-16 md:-left-24 top-1/2 transform -translate-y-1/2 h-8 w-8 sm:h-10 sm:w-10" />
+        <CarouselPrevious
+          className="absolute -left-6 sm:-left-16 md:-left-24 top-1/2 transform -translate-y-1/2 h-8 w-8 sm:h-10 sm:w-10 bg-brand"
+          variant="default"
+        />
 
-        <CarouselNext className="absolute right-0 sm:-right-16 md:-right-24 top-1/2 transform -translate-y-1/2 h-8 w-8 sm:h-10 sm:w-10" />
+        <CarouselNext
+          className="absolute -right-6 sm:-right-16 md:-right-24 top-1/2 transform -translate-y-1/2 h-8 w-8 sm:h-10 sm:w-10 bg-brand"
+          variant="default"
+        />
       </Carousel>
     </section>
   )

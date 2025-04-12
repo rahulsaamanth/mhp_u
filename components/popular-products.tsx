@@ -20,6 +20,7 @@ export default async function PopularProducts() {
       p."form",
       p."unit",
       sr."sales",
+      (SELECT pv."id" FROM "ProductVariant" pv WHERE pv."productId" = p."id" LIMIT 1) as "variantId",
       (SELECT pv."variantImage" FROM "ProductVariant" pv WHERE pv."productId" = p."id" LIMIT 1) as "image",
       (SELECT pv."mrp" FROM "ProductVariant" pv WHERE pv."productId" = p."id" LIMIT 1) as "mrp",
       (SELECT pv."sellingPrice" FROM "ProductVariant" pv WHERE pv."productId" = p."id" LIMIT 1) as "sellingPrice",
@@ -47,12 +48,12 @@ export default async function PopularProducts() {
 
   return (
     <section className="py-10 border-b">
-      <div className="space-y-8 max-w-7xl mx-auto px-4 pb-8">
-        <h2 className="text-base md:text-4xl font-bold text-center">
+      <div className="space-y-8 w-full lg:max-w-3/5 mx-auto px-8 lg:px-4 pb-8">
+        <h2 className="text-xl md:text-4xl font-bold text-center">
           Popular Products
         </h2>
         {popularProducts.length > 0 && (
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+          <div className="grid grid-cols-1 2xl:grid-cols-2 gap-8">
             {/* Left side - featured product (full height) */}
             <div className="h-full flex">
               <ProductCard

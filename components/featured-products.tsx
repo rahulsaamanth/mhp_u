@@ -1,7 +1,8 @@
 import { executeRawQuery } from "@/db/db"
 import { JsonViewer } from "@/utils/json-viewer"
-import { ProductCardProps } from "./product-card"
+import ProductCard, { ProductCardProps } from "./product-card"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "./ui/tabs"
+import FeaturedProductsCarousel from "./featured-products-carousel"
 
 async function getProductsByCategory(
   category: string
@@ -14,6 +15,7 @@ async function getProductsByCategory(
         p."form",
         p."unit",
         c."name" as "category",
+        (SELECT pv."id" FROM "ProductVariant" pv WHERE pv."productId" = p."id" LIMIT 1) as "variantId",
         (SELECT pv."variantImage" FROM "ProductVariant" pv WHERE pv."productId" = p."id" LIMIT 1) as "image",
         (SELECT pv."mrp" FROM "ProductVariant" pv WHERE pv."productId" = p."id" LIMIT 1) as "mrp",
         (SELECT pv."sellingPrice" FROM "ProductVariant" pv WHERE pv."productId" = p."id" LIMIT 1) as "sellingPrice",
@@ -59,12 +61,15 @@ export default async function FeaturedProducts() {
 
   return (
     <section className="py-10 border-b">
-      <div className="max-w-7xl mx-auto px-4 space-y-8">
+      <div className=" mx-auto px-4 space-y-8">
         <h2 className="text-base md:text-4xl font-bold text-center">
           Featured Products
         </h2>
-        <Tabs defaultValue="dilutions" className="w-full h-full">
-          <TabsList className="bg-transparent flex items-center justify-between flex-wrap gap-x-6 h-fit">
+        <Tabs
+          defaultValue="biocombinations"
+          className="mx-auto h-full space-y-8"
+        >
+          <TabsList className="bg-transparent flex items-center justify-between flex-wrap gap-6 h-fit mx-auto">
             <TabsTrigger value="dilutions">dilutions</TabsTrigger>
             <TabsTrigger value="mother-tinctures">mother-tinctures</TabsTrigger>
             <TabsTrigger value="biochemics">biochemics</TabsTrigger>
@@ -75,22 +80,22 @@ export default async function FeaturedProducts() {
             </TabsTrigger>
           </TabsList>
           <TabsContent value="dilutions">
-            <JsonViewer data={dilutions} />
+            <FeaturedProductsCarousel products={dilutions} />
           </TabsContent>
           <TabsContent value="mother-tinctures">
-            <JsonViewer data={motherTinctures} />
+            <FeaturedProductsCarousel products={motherTinctures} />
           </TabsContent>
           <TabsContent value="biochemics">
-            <JsonViewer data={biochemics} />
+            <FeaturedProductsCarousel products={biochemics} />
           </TabsContent>
           <TabsContent value="biocombinations">
-            <JsonViewer data={biocombinations} />
+            <FeaturedProductsCarousel products={biocombinations} />
           </TabsContent>
           <TabsContent value="personal-care">
-            <JsonViewer data={personalCare} />
+            <FeaturedProductsCarousel products={personalCare} />
           </TabsContent>
-          <TabsContent value="nutrition-supplements">
-            <JsonViewer data={nutritionSupplements} />
+          <TabsContent value="nutrition-supplements" className="pb-8">
+            <FeaturedProductsCarousel products={nutritionSupplements} />
           </TabsContent>
         </Tabs>
       </div>
