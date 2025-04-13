@@ -57,6 +57,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       },
     }),
   ],
+  trustHost: true,
   callbacks: {
     async session({ session, user: _user }) {
       if (session.user) {

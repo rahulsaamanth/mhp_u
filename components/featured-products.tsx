@@ -1,8 +1,7 @@
 import { executeRawQuery } from "@/db/db"
-import { JsonViewer } from "@/utils/json-viewer"
-import ProductCard, { ProductCardProps } from "./product-card"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "./ui/tabs"
 import FeaturedProductsCarousel from "./featured-products-carousel"
+import type { ProductCardProps } from "./product-card"
 
 async function getProductsByCategory(
   category: string

@@ -1,24 +1,18 @@
+import "./styles/globals.css"
 import type { Metadata } from "next"
 import { DM_Sans } from "next/font/google"
-import "./styles/globals.css"
 import Advert from "@/components/advert"
-import Footer from "@/components/footer"
 import Header from "@/components/header"
-
-import { SessionProvider } from "next-auth/react"
+import Footer from "@/components/footer"
+import { Toaster } from "@/components/ui/sonner"
 import { auth as Auth } from "@/auth"
-import { CartProvider } from "./cart/_components/cart-provider"
+import { SessionProvider } from "next-auth/react"
 
-const dmSans = DM_Sans({
-  subsets: ["latin"],
-  weight: ["100", "200", "300", "400", "500", "600", "700"],
-  variable: "--font-dm-sans",
-  display: "swap",
-})
+const dmSans = DM_Sans({ subsets: ["latin"] })
 
 export const metadata: Metadata = {
-  title: "Buy Homeopathic Remedies Online - Homeo South",
-  description: "Online Homeopathic remedies for all your ailments",
+  title: "Homeo South",
+  description: "Homeo South - Premium quality homeopathic remedies from India",
 }
 
 export default async function RootLayout({
@@ -37,13 +31,12 @@ export default async function RootLayout({
           className={`${dmSans.className} antialiased`}
           // suppressHydrationWarning={true}
         >
-          <CartProvider>
-            <Advert />
-            <Header />
-            {children}
-            {auth}
-            <Footer />
-          </CartProvider>
+          <Advert />
+          <Header />
+          {children}
+          {auth}
+          <Footer />
+          <Toaster richColors theme="light" toastOptions={{}} />
         </body>
       </html>
     </SessionProvider>

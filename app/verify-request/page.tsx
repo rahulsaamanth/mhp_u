@@ -50,7 +50,7 @@ export default function VerifyRequest() {
           </motion.div>
           <h1 className="text-2xl font-bold">Check Your Email</h1>
           <p className="mt-2 text-white/80">
-            We've sent a magic link to your email address
+            We&apos;ve sent a magic link to your email address
           </p>
         </div>
 
@@ -72,8 +72,8 @@ export default function VerifyRequest() {
               <AlertCircle className="h-5 w-5 text-amber-500 mt-0.5" />
               <div>
                 <p className="text-sm text-amber-700">
-                  If you don't see the email, check your spam folder or make
-                  sure you entered the correct email address.
+                  If you don&apos;t see the email, check your spam folder or
+                  make sure you entered the correct email address.
                 </p>
               </div>
             </div>

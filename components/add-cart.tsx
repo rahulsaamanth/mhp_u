@@ -2,11 +2,13 @@
 
 import { useState } from "react"
 import { Button } from "./ui/button"
-import { useCartStore } from "@/store/cart"
 import { useCurrentUser } from "@/hooks/use-current-user"
 import { addToCart } from "@/app/cart/_lib/actions"
-import { ShoppingCart, Check } from "lucide-react"
+import { Check } from "lucide-react"
 import { toast } from "sonner"
+import { useRouter } from "next/navigation"
+import { cartEvents } from "@/lib/cart-events"
+import { AddToCartInput } from "@/store/cart"
 
 interface AddToCartButtonProps {
   productId: string
@@ -31,13 +33,21 @@ export function AddToCartButton({
 }: AddToCartButtonProps) {
   const [adding, setAdding] = useState(false)
   const [added, setAdded] = useState(false)
-  const { addItem, isLocalCart } = useCartStore()
   const { user } = useCurrentUser()
+  const router = useRouter()
 
   const handleAddToCart = async () => {
+    // If user is not logged in, redirect to login page
+    if (!user) {
+      const currentPath = window.location.pathname
+      router.push(`/login?callbackUrl=${encodeURIComponent(currentPath)}`)
+      return
+    }
+
     setAdding(true)
     try {
-      const item = {
+      // Create an object that matches the AddToCartInput interface
+      const item: AddToCartInput = {
         productId,
         variantId,
         name,
@@ -48,29 +58,24 @@ export function AddToCartButton({
         packSize,
       }
 
-      console.log("Adding item to cart:", {
-        item,
-        isUserLoggedIn: !!user,
-        isLocalCart,
-      })
+      // Add to database cart
+      const result = await addToCart(item)
 
-      // Always add to local state for immediate feedback
-      addItem(item)
+      if (result.success) {
+        setAdded(true)
+        toast.success("Added to cart!")
 
-      // If user is logged in and we're using server cart, also add to server
-      if (user && !isLocalCart) {
-        console.log("Adding to server cart")
-        const result = await addToCart(item)
-        console.log("Server cart add result:", result)
+        // Notify cart components that an item was added
+        cartEvents.notifyCartChanged()
+
+        // Reset added state after 1.5 seconds
+        setTimeout(() => {
+          setAdded(false)
+        }, 1500)
+      } else {
+        // Display the specific error message from the server
+        toast.error(result.error || "Failed to add to cart. Please try again.")
       }
-
-      setAdded(true)
-      toast.success("Added to cart!")
-
-      // Reset added state after 1.5 seconds
-      setTimeout(() => {
-        setAdded(false)
-      }, 1500)
     } catch (error) {
       console.error("Failed to add to cart:", error)
       toast.error("Failed to add to cart. Please try again.")
@@ -84,7 +89,7 @@ export function AddToCartButton({
       variant="default"
       onClick={handleAddToCart}
       disabled={adding || disabled}
-      className={`rounded-none py-5 px-4 md:px-3 xl:px-4 cursor-pointer bg-zinc-200 hover:bg-zinc-300 text-black flex items-center justify-center gap-1 sm:gap-2 ${
+      className={`rounded-none py-5 px-4 md:px-3 xl:px-4 cursor-pointer bg-zinc-200 hover:bg-zinc-300 text-black flex items-center justify-center ${
         disabled
           ? "bg-zinc-100 text-gray-400"
           : "bg-zinc-200 hover:bg-zinc-300 text-black"
@@ -98,10 +103,7 @@ export function AddToCartButton({
           Added
         </>
       ) : (
-        <>
-          <ShoppingCart className="size-4" />
-          Add to Cart
-        </>
+        <span>Add to Cart</span>
       )}
     </Button>
   )

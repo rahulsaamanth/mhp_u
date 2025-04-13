@@ -1,9 +1,30 @@
-import { generateId } from "@/lib/generate-id"
 import { create } from "zustand"
 import { persist } from "zustand/middleware"
 
-export type CartItem = {
+// Interface for items in the cart
+export interface CartItem {
   id: string
+  productId: string
+  variantId: string
+  name: string // Changed from productName for compatibility
+  image: string // Changed from image array to single string
+  price: number
+  quantity: number
+  potency?: string // Made optional
+  packSize?: string // Made optional
+  totalStock?: number
+
+  // These fields might be present in the full cart item but not required for addToCart
+  mrp?: number
+  discount?: number
+  discountType?: string
+  unit?: string
+  variantName?: string
+  productName?: string // Added for backward compatibility
+}
+
+// Simpler interface specifically for adding items to cart
+export interface AddToCartInput {
   productId: string
   variantId: string
   name: string
@@ -14,70 +35,78 @@ export type CartItem = {
   packSize?: string
 }
 
-type CartStore = {
+interface CartState {
   items: CartItem[]
-  isLocalCart: boolean
-  addItem: (item: Omit<CartItem, "id">) => void
-  removeItem: (itemId: string) => void
-  updateQuantity: (itemId: string, quantity: number) => void
+  addToCart: (item: AddToCartInput) => void
+  removeFromCart: (id: string) => void
   clearCart: () => void
-  mergeWithServerCart: (serverItems: CartItem[]) => void
-  setIsLocalCart: (isLocal: boolean) => void
+  updateQuantity: (id: string, quantity: number) => void // Add function to update quantity
+  getItemCount: () => number
+  getTotalPrice: () => number
 }
 
-export const useCartStore = create<CartStore>()(
+export const useCartStore = create<CartState>()(
   persist(
     (set, get) => ({
       items: [],
-      isLocalCart: true,
 
-      addItem: (item) => {
-        const { items } = get()
-        const existingItemIndex = items.findIndex(
-          (i) =>
-            i.variantId === item.variantId &&
-            i.potency === item.potency &&
-            i.packSize === item.packSize
-        )
+      addToCart: (item: AddToCartInput) => {
+        set((state) => {
+          // Check if item already exists
+          const existingItemIndex = state.items.findIndex(
+            (i) =>
+              i.productId === item.productId && i.variantId === item.variantId
+          )
 
-        if (existingItemIndex > -1) {
-          const updatedItems = [...items]
-          updatedItems[existingItemIndex].quantity += item.quantity
-          set({ items: updatedItems })
-        } else {
-          set({ items: [...items, { ...item, id: generateId() }] })
-        }
+          // If item exists, update quantity
+          if (existingItemIndex !== -1) {
+            const updatedItems = [...state.items]
+            updatedItems[existingItemIndex].quantity += item.quantity
+            return { items: updatedItems }
+          }
+
+          // Otherwise add new item
+          const newItem: CartItem = {
+            ...item,
+            id: `${item.productId}-${item.variantId}`,
+          }
+          return { items: [...state.items, newItem] }
+        })
       },
 
-      removeItem: (itemId) => {
-        set({ items: get().items.filter((item) => item.id !== itemId) })
-      },
-
-      updateQuantity: (itemId, quantity) => {
-        const { items } = get()
-        const updatedItems = items.map((item) =>
-          item.id === itemId ? { ...item, quantity } : item
-        )
-        set({ items: updatedItems })
+      removeFromCart: (id: string) => {
+        set((state) => ({
+          items: state.items.filter((item) => item.id !== id),
+        }))
       },
 
       clearCart: () => {
         set({ items: [] })
       },
 
-      mergeWithServerCart: (serverItems) => {
-        set({
-          items: serverItems,
-          isLocalCart: false,
-        })
+      updateQuantity: (id: string, quantity: number) => {
+        set((state) => ({
+          items: state.items.map((item) =>
+            item.id === id ? { ...item, quantity: quantity } : item
+          ),
+        }))
       },
 
-      setIsLocalCart: (isLocal) => {
-        set({ isLocalCart: isLocal })
+      getItemCount: () => {
+        // Return total number of items (sum of quantities)
+        return get().items.reduce((total, item) => total + item.quantity, 0)
+      },
+
+      getTotalPrice: () => {
+        // Calculate total price (price * quantity for each item)
+        return get().items.reduce(
+          (total, item) => total + item.price * item.quantity,
+          0
+        )
       },
     }),
     {
-      name: "cart",
+      name: "cart-storage",
     }
   )
 )

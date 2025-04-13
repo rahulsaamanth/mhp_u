@@ -1,20 +1,19 @@
-"use client";
+"use client"
 
-import Link from "next/link";
-import { useSearchParams } from "next/navigation";
+import Link from "next/link"
+import { useSearchParams } from "next/navigation"
 import {
   ArrowLeft,
   AlertTriangle,
   ShieldX,
   Info,
   RefreshCw,
-} from "lucide-react";
-import { motion } from "framer-motion";
-import { useEffect, useState } from "react";
+} from "lucide-react"
+import { motion } from "framer-motion"
 
 export default function AuthError() {
-  const searchParams = useSearchParams();
-  const error = searchParams.get("error");
+  const searchParams = useSearchParams()
+  const error = searchParams.get("error")
 
   // Error information mapping
   const errorInfo = {
@@ -69,7 +68,7 @@ export default function AuthError() {
       color: "bg-blue-500",
       bgColor: "bg-blue-50",
     },
-  };
+  }
 
   // Get error details or use default
   const {
@@ -78,7 +77,7 @@ export default function AuthError() {
     icon: Icon,
     color,
     bgColor,
-  } = errorInfo[error as keyof typeof errorInfo] || errorInfo.default;
+  } = errorInfo[error as keyof typeof errorInfo] || errorInfo.default
 
   return (
     <div className="h-[70vh] bg-gray-50 flex flex-col items-center justify-center p-4">
@@ -117,8 +116,8 @@ export default function AuthError() {
                   {error === "verification"
                     ? "Please try signing in again to receive a new verification link."
                     : error === "sessionrequired"
-                      ? "Please sign in to continue to your destination page."
-                      : "You can try again or use a different sign-in method."}
+                    ? "Please sign in to continue to your destination page."
+                    : "You can try again or use a different sign-in method."}
                 </p>
               </div>
             </div>
@@ -166,5 +165,5 @@ export default function AuthError() {
         <p>© {new Date().getFullYear()} Homeo South</p>
       </div>
     </div>
-  );
+  )
 }

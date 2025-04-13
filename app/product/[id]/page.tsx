@@ -1,10 +1,9 @@
 import { executeRawQuery } from "@/db/db"
 import { Suspense } from "react"
 import { notFound } from "next/navigation"
-import { cn } from "@/lib/utils"
-import { Card, CardContent } from "@/components/ui/card"
 import FeaturedProducts from "@/components/featured-products"
 import ProductVariantSelector from "../_components/product-variant-selector"
+import { StockByLocation } from "@rahulsaamanth/mhp-schema"
 
 interface ProductDetailsProps {
   id: string
@@ -28,7 +27,7 @@ interface ProductDetailsProps {
     discount: number
     discountType: string
     variantImage: string[]
-    stockByLocation: Record<string, number>
+    stockByLocation: StockByLocation[]
     discontinued: boolean
   }>
 }
@@ -119,7 +118,7 @@ export default async function ProductPage({
 
   return (
     <div>
-      <main className="container mx-auto px-4 py-10">
+      <main className="container mx-auto px-4 py-20">
         {/* <div>
           <h1 className="text-xl md:text-3xl font-bold mb-2">{product.name}</h1>
           <div className="flex flex-wrap items-center gap-6 mb-6">
@@ -145,6 +144,8 @@ export default async function ProductPage({
               productName={product.name}
               variants={sortedVariants}
               unit={product.unit}
+              category={product.categoryName}
+              manufacturer={product.manufacturer}
             />
           )}
         </div>

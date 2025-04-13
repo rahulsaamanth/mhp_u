@@ -1,10 +1,8 @@
 import { discountType } from "@rahulsaamanth/mhp-schema"
 import { cn } from "@/lib/utils"
-import { Card, CardContent, CardTitle } from "./ui/card"
-import { ShoppingBag } from "lucide-react"
+import { Card, CardContent } from "./ui/card"
 import { Button } from "./ui/button"
 import Image from "next/image"
-import { AddToCartButton } from "./add-cart"
 import Link from "next/link"
 
 export interface ProductCardProps {
@@ -12,8 +10,6 @@ export interface ProductCardProps {
   name: string
   form: string
   unit: string
-  sales: string
-  variantId: string
   image: string[]
   mrp: number
   sellingPrice: number
@@ -35,8 +31,6 @@ export default function ProductCard({
     name,
     form,
     unit,
-    sales,
-    variantId,
     image,
     mrp,
     sellingPrice,
@@ -52,7 +46,7 @@ export default function ProductCard({
       : Math.round(((mrp - sellingPrice) / mrp) * 100)
 
   return (
-    <Link href={`/product/${id}`} className="w-full">
+    <Link href={`/product/${id}`} className="w-full p-0">
       <Card className="group border-0 shadow-none w-full h-full py-0 cursor-pointer rounded-none">
         <CardContent className="p-0">
           <div
@@ -141,7 +135,7 @@ export default function ProductCard({
                 </p>
               </div>
               <div className="grid grid-cols-2 gap-2 mt-auto">
-                <AddToCartButton
+                {/* <AddToCartButton
                   productId={id}
                   variantId={variantId || ""}
                   name={name}
@@ -149,10 +143,11 @@ export default function ProductCard({
                   price={sellingPrice}
                   potency={potencies?.[0]}
                   packSize={packSizes?.[0]}
-                />
+                /> */}
                 <Button
                   variant="default"
-                  className="rounded-none py-5 px-4 md:px-3 xl:px-4 bg-brand hover:bg-brand/90 text-white text-sm font-medium cursor-pointer"
+                  className="rounded-none py-5 px-4 md:px-3 xl:px-4 bg-brand hover:bg-brand/90 text-white text-sm font-medium cursor-pointer pointer-events-none
+                  "
                 >
                   Buy Now
                 </Button>

@@ -1,10 +1,19 @@
 "use client"
 
-import { useState, useEffect } from "react"
-import Image from "next/image"
-import { Card, CardContent } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
 import { AddToCartButton } from "@/components/add-cart"
+import { Button } from "@/components/ui/button"
+import { StockByLocation } from "@rahulsaamanth/mhp-schema"
+import Image from "next/image"
+import { useEffect, useState, useMemo } from "react"
+
+// Import shadcn carousel components
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+} from "@/components/ui/carousel"
 
 interface Variant {
   id: string
@@ -17,7 +26,7 @@ interface Variant {
   discount: number
   discountType: string
   variantImage: string[]
-  stockByLocation: Record<string, number>
+  stockByLocation: StockByLocation[]
   discontinued: boolean
 }
 
@@ -39,7 +48,10 @@ export default function ProductVariantSelector({
   manufacturer = "MHP Pharmaceuticals",
 }: ProductVariantSelectorProps) {
   // Ensure variants is an array before using it in useState initializers
-  const safeVariants = Array.isArray(variants) ? variants : []
+  const safeVariants = useMemo(
+    () => (Array.isArray(variants) ? variants : []),
+    [variants]
+  )
   const firstVariant = safeVariants.length > 0 ? safeVariants[0] : null
 
   const [selectedPotency, setSelectedPotency] = useState<string>(
@@ -51,7 +63,6 @@ export default function ProductVariantSelector({
   const [selectedVariant, setSelectedVariant] = useState<Variant | null>(
     firstVariant
   )
-  const [activeImageIndex, setActiveImageIndex] = useState(0)
 
   // Get ALL unique potencies and pack sizes
   const allUniquePotencies = Array.from(
@@ -80,7 +91,6 @@ export default function ProductVariantSelector({
 
     if (newVariant) {
       setSelectedVariant(newVariant)
-      setActiveImageIndex(0)
     } else if (availablePackSizesForPotency.length > 0) {
       // If current selection is invalid, select first available pack size for this potency
       setSelectedPackSize(availablePackSizesForPotency[0])
@@ -107,18 +117,16 @@ export default function ProductVariantSelector({
         )
     : 0
 
+  const stocks = selectedVariant?.stockByLocation.map((data) => {
+    return data.stock
+  })
+
+  const totalStock = stocks?.reduce((acc, stock) => {
+    return acc + stock
+  }, 0)
+
   // Check if any stock exists across locations
-  const hasStock = selectedVariant
-    ? Object.values(selectedVariant.stockByLocation || {}).some(
-        (stock) => stock > 0
-      )
-    : false
-
-  const totalStockQuantity = Object.values(
-    selectedVariant?.stockByLocation || {}
-  ).reduce((total, stock) => total + stock, 0)
-
-  console.log(totalStockQuantity)
+  const hasStock = totalStock && totalStock > 0
 
   if (!safeVariants.length) {
     return (
@@ -131,47 +139,42 @@ export default function ProductVariantSelector({
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
       <div className="flex flex-col">
-        <div className="aspect-square relative border rounded-lg overflow-hidden bg-white">
-          <Image
-            src={
-              selectedVariant?.variantImage?.[activeImageIndex] ||
-              "/assets/hero1.webp"
-            }
-            alt={productName}
-            width={500}
-            height={500}
-            className="object-contain p-8 size-full"
-            priority
-          />
-
-          {/* Thumbnail images */}
-          {selectedVariant?.variantImage &&
-            selectedVariant.variantImage.length > 1 && (
-              <div className="absolute bottom-2 left-0 right-0 flex justify-center gap-2">
+        {selectedVariant?.variantImage &&
+        selectedVariant.variantImage.length > 0 ? (
+          <div className="w-full max-w-md mx-auto">
+            <Carousel className="w-full">
+              <CarouselContent>
                 {selectedVariant.variantImage.map((img, idx) => (
-                  <button
-                    key={idx}
-                    onClick={() => setActiveImageIndex(idx)}
-                    className={`w-10 h-10 relative border rounded-lg overflow-hidden bg-white ${
-                      activeImageIndex === idx ? "ring-2 ring-brand" : ""
-                    }`}
-                  >
-                    <Image
-                      src={
-                        img ||
-                        firstVariant?.variantImage?.[0] ||
-                        "/assets/placeholder.png"
-                      }
-                      alt={`${productName} view ${idx + 1}`}
-                      width={500}
-                      height={500}
-                      className="object-contain size-full p-8"
-                    />
-                  </button>
+                  <CarouselItem key={idx}>
+                    <div className="aspect-square relative border rounded-lg overflow-hidden bg-white flex items-center justify-center p-4">
+                      <Image
+                        src={img || "/assets/hero1.webp"}
+                        alt={`${productName} - view ${idx + 1}`}
+                        width={320}
+                        height={320}
+                        className="object-contain max-h-full max-w-full"
+                        priority={idx === 0}
+                      />
+                    </div>
+                  </CarouselItem>
                 ))}
-              </div>
-            )}
-        </div>
+              </CarouselContent>
+              <CarouselPrevious className="left-2" />
+              <CarouselNext className="right-2" />
+            </Carousel>
+          </div>
+        ) : (
+          <div className="aspect-square relative border rounded-lg overflow-hidden bg-white max-w-md mx-auto">
+            <Image
+              src="/assets/hero1.webp"
+              alt={productName}
+              width={320}
+              height={320}
+              className="object-contain p-4 size-full"
+              priority
+            />
+          </div>
+        )}
       </div>
 
       <div className="flex flex-col space-y-6">
@@ -232,8 +235,10 @@ export default function ProductVariantSelector({
                         className="sr-only peer"
                       />
                       <div
-                        className={`peer-checked:bg-brand peer-checked:text-white border border-gray-300 rounded px-4 py-2 text-sm ${
-                          !isAvailable
+                        className={`border border-gray-300 rounded px-4 py-2 text-sm ${
+                          selectedPotency === potency
+                            ? "bg-brand text-white"
+                            : !isAvailable
                             ? "cursor-not-allowed bg-gray-100"
                             : "hover:bg-gray-100"
                         }`}
@@ -273,8 +278,10 @@ export default function ProductVariantSelector({
                       className="sr-only peer"
                     />
                     <div
-                      className={`peer-checked:bg-brand peer-checked:text-white border border-gray-300 rounded px-4 py-2 text-sm ${
-                        !isAvailable
+                      className={`border border-gray-300 rounded px-4 py-2 text-sm ${
+                        selectedPackSize === packSize
+                          ? "bg-brand text-white"
+                          : !isAvailable
                           ? "cursor-not-allowed bg-gray-100"
                           : "hover:bg-gray-100"
                       }`}
@@ -291,84 +298,71 @@ export default function ProductVariantSelector({
 
         {/* Price and Add to Cart */}
         {selectedVariant && (
-          <Card className="overflow-hidden">
-            <CardContent className="p-6">
-              <>
-                <div className="flex items-baseline gap-2 mb-4">
-                  <span className="text-3xl font-bold text-brand">
-                    ₹{selectedVariant.sellingPrice}
-                  </span>
-                  {selectedVariant.discount > 0 && (
-                    <span className="text-xl text-gray-500 line-through">
-                      ₹{selectedVariant.mrp}
-                    </span>
-                  )}
-                  {selectedVariant.discount > 0 && (
-                    <span className="text-sm px-2 py-1 bg-green-100 text-green-800 rounded-full">
-                      {discountPercentage}% OFF
-                    </span>
-                  )}
-                </div>
+          <>
+            <div className="flex items-baseline gap-2 mb-4">
+              <span className="text-3xl font-bold text-brand">
+                ₹{selectedVariant.sellingPrice}
+              </span>
+              {selectedVariant.discount > 0 && (
+                <span className="text-xl text-gray-500 line-through">
+                  ₹{selectedVariant.mrp}
+                </span>
+              )}
+              {selectedVariant.discount > 0 && (
+                <span className="text-sm px-2 py-1 bg-green-100 text-green-800 rounded-full">
+                  {discountPercentage}% OFF
+                </span>
+              )}
+            </div>
 
-                <div className="flex flex-col sm:flex-row gap-4">
-                  <AddToCartButton
-                    productId={productId}
-                    variantId={selectedVariant.id}
-                    name={productName}
-                    image={selectedVariant.variantImage[0]}
-                    price={selectedVariant.sellingPrice}
-                    potency={
-                      selectedVariant.potency !== "NONE"
-                        ? selectedVariant.potency
-                        : undefined
-                    }
-                    packSize={selectedVariant.packSize}
-                    disabled={!hasStock}
+            <div className="flex flex-col sm:flex-row gap-4">
+              <AddToCartButton
+                productId={productId}
+                variantId={selectedVariant.id}
+                name={productName}
+                image={selectedVariant.variantImage[0]}
+                price={selectedVariant.sellingPrice}
+                potency={
+                  selectedVariant.potency !== "NONE"
+                    ? selectedVariant.potency
+                    : undefined
+                }
+                packSize={selectedVariant.packSize}
+                disabled={!hasStock}
+              />
+
+              <Button
+                variant="default"
+                className="rounded-none py-5 px-4 md:px-3 xl:px-4 bg-brand hover:bg-brand/90 text-white text-sm font-medium cursor-pointer"
+              >
+                Buy Now
+              </Button>
+            </div>
+
+            <div className="mt-4 space-y-2">
+              {/* Stock availability indicator */}
+              {selectedVariant && (
+                <div className="flex items-start gap-2">
+                  <div
+                    className={`w-2 h-2 rounded-full mt-1.5 ${
+                      (totalStock || 0) > 10
+                        ? "bg-green-500"
+                        : (totalStock || 0) > 0
+                        ? "bg-amber-500"
+                        : "bg-red-500"
+                    }`}
                   />
-
-                  <Button
-                    variant="outline"
-                    className="py-5 px-4"
-                    disabled={!hasStock}
-                  >
-                    Buy Now
-                  </Button>
+                  <p className="text-sm">
+                    {(totalStock || 0) > 10
+                      ? "In stock"
+                      : (totalStock || 0) > 0
+                      ? `Low stock (${totalStock || 0} left)`
+                      : "Out of stock"}
+                  </p>
                 </div>
-
-                <div className="mt-4 space-y-2">
-                  {/* Stock availability indicator */}
-                  <div className="flex items-start gap-2">
-                    <div
-                      className={`w-2 h-2 rounded-full mt-1.5 ${
-                        totalStockQuantity > 10
-                          ? "bg-green-500"
-                          : totalStockQuantity > 0
-                          ? "bg-amber-500"
-                          : "bg-red-500"
-                      }`}
-                    />
-                    <p className="text-sm">
-                      {totalStockQuantity > 10
-                        ? "In stock"
-                        : totalStockQuantity > 0
-                        ? `Low stock (${totalStockQuantity} left)`
-                        : "Out of stock"}
-                    </p>
-                  </div>
-
-                  {/* Delivery information */}
-                  {totalStockQuantity > 0 && (
-                    <div className="flex items-start gap-2 mt-2">
-                      <div className="w-2 h-2 rounded-full bg-blue-500 mt-1.5"></div>
-                      <p className="text-sm">
-                        Delivery: Usually dispatched within 24 hours
-                      </p>
-                    </div>
-                  )}
-                </div>
-              </>
-            </CardContent>
-          </Card>
+              )}
+            </div>
+          </>
         )}
       </div>
     </div>

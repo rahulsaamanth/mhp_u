@@ -6,6 +6,10 @@ const nextConfig: NextConfig = {
   async redirects() {
     return []
   },
+  // remove in the production build
+  eslint: {
+    ignoreDuringBuilds: true,
+  },
   async rewrites() {
     return []
   },

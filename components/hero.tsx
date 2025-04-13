@@ -2,7 +2,6 @@
 
 import Image from "next/image"
 import Link from "next/link"
-import { useState } from "react"
 
 export default function Hero() {
   const copyToClipboard = () => {
@@ -16,7 +15,7 @@ export default function Hero() {
         {/* Fixed gradient definition */}
         <div className="absolute inset-0 bg-gradient-to-r from-brand via-brand/30 to-brand/5 z-10" />
         <Image
-          src="/assets/hero1.webp"
+          src="/assets/hero.jpg"
           alt="Background image"
           fill
           className="object-cover object-center"
@@ -30,37 +29,56 @@ export default function Hero() {
         <div className="h-[60vh] flex items-center justify-start">
           {/* Text content */}
           <div className="max-w-xl space-y-2 sm:space-y-6 z-10">
-            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold leading-tight animate-fade-in ">
+            <h1
+              className="text-4xl sm:text-5xl lg:text-6xl font-bold leading-tight animate-fade-in"
+              style={{ textShadow: "0 2px 4px rgba(0, 0, 0, 0.3)" }}
+            >
               Natural Healing For Modern Living
             </h1>
 
-            <p className="text-base sm:text-xl text-white/90 max-w-lg animate-fade-in animation-delay-200 italic">
+            <p
+              className="text-base sm:text-xl text-white/90 max-w-lg animate-fade-in animation-delay-200 italic"
+              style={{ textShadow: "0 1px 2px rgba(0, 0, 0, 0.2)" }}
+            >
               Discover premium homeopathic remedies that harness the power of
               nature for your wellbeing. <br />
             </p>
 
-            <div className="bg-white/20 backdrop-blur-sm px-4 py-3 rounded-lg inline-block animate-fade-in animation-delay-300 text-xs sm:text-base">
-              <span className="font-semibold">
+            <div className="bg-white/30 backdrop-blur-lg px-4 py-3 rounded-lg inline-block animate-fade-in animation-delay-300 text-xs sm:text-base border border-white/40 shadow-md">
+              <span
+                className="font-bold sm:font-semibold text-white"
+                style={{ textShadow: "0 1px 2px rgba(0, 0, 0, 0.6)" }}
+              >
                 🚚 Free delivery on all orders above ₹1000
               </span>
             </div>
 
-            <div className="bg-white/20 backdrop-blur-sm px-4 py-3 rounded-lg inline-block animate-fade-in animation-delay-300 text-xs sm:text-base ">
-              <span className="font-semibold">Use code: </span>
+            <div className="bg-white/30 backdrop-blur-lg px-4 py-3 rounded-lg inline-block animate-fade-in animation-delay-300 text-xs sm:text-base border border-white/40 shadow-md">
+              <span
+                className="font-bold sm:font-semibold text-white"
+                style={{ textShadow: "0 1px 2px rgba(0, 0, 0, 0.6)" }}
+              >
+                Use code:{" "}
+              </span>
               <span
                 onClick={copyToClipboard}
-                className="bg-white text-brand p-0.5 md:p-1 rounded font-bold cursor-copy hover:bg-gray-100 active:bg-gray-200"
+                className="bg-white text-brand p-1 sm:p-2 rounded font-bold cursor-copy hover:bg-gray-100 active:bg-gray-200 shadow-sm"
                 aria-label="Copy coupon code WELCOME20"
               >
                 WELCOME20
               </span>
-              <span className="ml-2">for 20% off on orders above ₹300</span>
+              <span
+                className="ml-2 text-white font-bold sm:font-semibold"
+                style={{ textShadow: "0 1px 2px rgba(0, 0, 0, 0.6)" }}
+              >
+                for 20% off on orders above ₹300
+              </span>
             </div>
 
             <div className="inline-block relative z-30 animate-fade-in animation-delay-400 sm:mt-4">
               <Link
                 href="/products"
-                className="inline-flex items-center justify-center cursor-pointer px-8 py-3 bg-white text-brand rounded-lg font-medium hover:shadow-lg transition-all hover:scale-105 duration-300 hover:rounded-none"
+                className="inline-flex items-center justify-center cursor-pointer px-8 py-3 bg-white text-brand  font-medium hover:shadow-lg transition-all duration-300 hover:rounded-none"
               >
                 Shop Now & Save
               </Link>
