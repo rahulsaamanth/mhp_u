@@ -1,0 +1,198 @@
+import { executeRawQuery } from "@/db/db"
+import { ProductCardProps } from "@/components/product-card"
+import ProductList from "./_components/product-list"
+import FilterSidebar from "./_components/filter-sidebar"
+
+async function getProductsByCategory(
+  category: string,
+  manufacturer?: string,
+  letter?: string
+): Promise<{
+  products: ProductCardProps[]
+  manufacturers: string[]
+  categories: string[]
+}> {
+  // Build the conditions
+  let conditions = `c.name ILIKE $1`
+  const params: any[] = [`%${category}%`]
+
+  // For "all" category, fetch all active products
+  if (category.toLowerCase() === "all") {
+    conditions = `p.status = 'ACTIVE'`
+    params.pop() // Remove the category parameter as we're not using it
+  }
+
+  // Add manufacturer filter if provided
+  if (manufacturer) {
+    conditions += ` AND m.name = $${params.length + 1}`
+    params.push(manufacturer)
+  }
+
+  // Add letter filter if provided
+  if (letter) {
+    conditions += ` AND p.name ILIKE $${params.length + 1}`
+    params.push(`${letter}%`)
+  }
+
+  // Simple sort by name
+  let orderBy = "p.name ASC"
+
+  // Fetch products based on the category and any filters
+  const products = await executeRawQuery<ProductCardProps>(
+    `
+    WITH CategoryProducts AS (
+      SELECT
+        p."id",
+        p."name",
+        p."form",
+        p."unit",
+        c."name" as "category",
+        m."name" as "manufacturer",
+        (SELECT pv."id" FROM "ProductVariant" pv WHERE pv."productId" = p."id" LIMIT 1) as "variantId",
+        (SELECT pv."variantImage" FROM "ProductVariant" pv WHERE pv."productId" = p."id" LIMIT 1) as "image",
+        (SELECT pv."mrp" FROM "ProductVariant" pv WHERE pv."productId" = p."id" LIMIT 1) as "mrp",
+        (SELECT pv."sellingPrice" FROM "ProductVariant" pv WHERE pv."productId" = p."id" LIMIT 1) as "sellingPrice",
+        (SELECT pv."discountType" FROM "ProductVariant" pv WHERE pv."productId" = p."id" LIMIT 1) as "discountType",
+        (SELECT pv."discount" FROM "ProductVariant" pv WHERE pv."productId" = p."id" LIMIT 1) as "discount",
+        (SELECT jsonb_agg(DISTINCT pv."packSize") FROM "ProductVariant" pv WHERE pv."productId" = p."id") as "packSizes",
+        (
+          CASE 
+            WHEN (
+              SELECT COUNT(DISTINCT pv."potency") = 1 AND MAX(pv."potency") = 'NONE'  
+              FROM "ProductVariant" pv
+              WHERE pv."productId" = p."id"
+            ) THEN NULL
+            ELSE (
+              SELECT jsonb_agg(DISTINCT pv."potency")
+              FROM "ProductVariant" pv
+              WHERE pv."productId" = p."id"
+            )
+          END
+        ) as "potencies"
+      FROM "Product" p
+      JOIN "Category" c ON p."categoryId" = c."id"
+      JOIN "Manufacturer" m ON p."manufacturerId" = m."id"
+      WHERE ${conditions}
+      GROUP BY p."id", c."name", m."name"
+      ORDER BY ${orderBy}
+    )
+    SELECT * FROM CategoryProducts
+  `,
+    params
+  )
+
+  // Get manufacturers based on filters
+  const manufacturersQuery = category.toLowerCase() === "all" 
+    ? `
+      SELECT DISTINCT m.name
+      FROM "Product" p
+      JOIN "Manufacturer" m ON p."manufacturerId" = m."id"
+      WHERE p.status = 'ACTIVE'
+      ORDER BY m.name ASC
+    `
+    : `
+      SELECT DISTINCT m.name
+      FROM "Product" p
+      JOIN "Category" c ON p."categoryId" = c."id"
+      JOIN "Manufacturer" m ON p."manufacturerId" = m."id"
+      WHERE c.name ILIKE $1
+      ORDER BY m.name ASC
+    `;
+
+  const manufacturerParams = category.toLowerCase() === "all" ? [] : [`%${category}%`];
+  
+  const manufacturers = await executeRawQuery<{ name: string }>(
+    manufacturersQuery,
+    manufacturerParams
+  )
+
+  // Get all categories and add "ALL" as the first option
+  const categories = await executeRawQuery<{ name: string }>(
+    `
+    SELECT DISTINCT cat.name
+    FROM "Category" cat
+    WHERE cat.id IN (
+      SELECT DISTINCT p."categoryId"
+      FROM "Product" p
+      WHERE p.status = 'ACTIVE'
+    )
+    ORDER BY cat.name ASC
+    `
+  )
+
+  // Add "ALL" category at the beginning of the categories array
+  return {
+    products,
+    manufacturers: manufacturers.map((m) => m.name),
+    categories: ["ALL", ...categories.map((c) => c.name)],
+  }
+}
+
+interface PageProps {
+  params: { category: string }
+  searchParams: {
+    manufacturer?: string
+    letter?: string
+    page?: string
+  }
+}
+
+export default async function ProductsOfCategoryPage({
+  params,
+  searchParams,
+}: {
+  params: Promise<{ category: string }>
+  searchParams: Promise<{
+    manufacturer?: string
+    letter?: string
+    page?: string
+  }>
+}) {
+  const { category } = await params
+  const { manufacturer, letter } = await searchParams
+
+  // Format category name for display
+  const formattedCategory = category
+    .split("-")
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(" ")
+
+  // Fetch products with any applied filters
+  const { products, manufacturers, categories } = await getProductsByCategory(
+    category,
+    manufacturer,
+    letter
+  )
+
+  // Generate alphabet array for letter filtering
+  const alphabet = Array.from({ length: 26 }, (_, i) =>
+    String.fromCharCode(65 + i)
+  )
+
+  return (
+    <div className="container mx-auto px-4 py-10">
+      <h1 className="text-2xl md:text-3xl font-bold mb-6">
+        {formattedCategory}
+      </h1>
+
+      <div className="flex flex-col md:flex-row gap-8">
+        {/* Sidebar with filters */}
+        <div className="w-full md:w-64 flex-shrink-0">
+          <FilterSidebar
+            manufacturers={manufacturers}
+            alphabet={alphabet}
+            categories={categories}
+            currentCategory={category}
+            currentManufacturer={manufacturer}
+            currentLetter={letter}
+          />
+        </div>
+
+        {/* Product grid */}
+        <div className="flex-1">
+          <ProductList products={products} />
+        </div>
+      </div>
+    </div>
+  )
+}

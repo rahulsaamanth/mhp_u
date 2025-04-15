@@ -10,9 +10,9 @@ import { useCallback, useEffect, useState } from "react"
 
 export default function Advert() {
   const adverts = [
-    "🎉  Get 20% off on all Ayurvedic products!",
+    "🎉  Get 20% off on your first order",
     "🚚  Free shipping on orders above ₹999",
-    "⚡  Flash Sale: Buy 2 Get 1 Free on all supplements",
+    "⚡  Buy 8 or more units of a product to get whole sale discount!",
   ]
   const [api, setApi] = useState<CarouselApi>()
   const [isTabActive, setIsTabActive] = useState(true)

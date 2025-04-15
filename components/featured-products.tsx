@@ -14,6 +14,7 @@ async function getProductsByCategory(
         p."form",
         p."unit",
         c."name" as "category",
+        m."name" as "manufacturer",
         (SELECT pv."id" FROM "ProductVariant" pv WHERE pv."productId" = p."id" LIMIT 1) as "variantId",
         (SELECT pv."variantImage" FROM "ProductVariant" pv WHERE pv."productId" = p."id" LIMIT 1) as "image",
         (SELECT pv."mrp" FROM "ProductVariant" pv WHERE pv."productId" = p."id" LIMIT 1) as "mrp",
@@ -37,6 +38,7 @@ async function getProductsByCategory(
         ) as "potencies"
       FROM "Product" p
       JOIN "Category" c ON p."categoryId" = c."id"
+      JOIN "Manufacturer" m ON p."manufacturerId" = m."id"
       WHERE p."isFeatured" = true
     )
     SELECT * 

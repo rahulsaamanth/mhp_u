@@ -141,35 +141,35 @@ const DesktopNavigation = () => {
         </PopoverTrigger>
         <PopoverContent className="flex w-fit flex-col rounded-none p-0">
           <SubmenuLink
-            href="/products/homeopathic/dilutions"
+            href="/products/dilutions"
             title="Dilutions (Potencies)"
             onClick={() => {
               homeopathicPopover.onOpenChange(false)
             }}
           />
           <SubmenuLink
-            href="/products/homeopathic/mother-tinctures"
+            href="/products/mothertinctures"
             title="Mother Tinctures"
             onClick={() => {
               homeopathicPopover.onOpenChange(false)
             }}
           />
           <SubmenuLink
-            href="/products/homeopathic/biochemic"
+            href="/products/biochemic"
             title="Biochemic & Biocombinations"
             onClick={() => {
               homeopathicPopover.onOpenChange(false)
             }}
           />
           <SubmenuLink
-            href="/products/homeopathic/trituration"
+            href="/products/trituration"
             title="Trituration Tablets"
             onClick={() => {
               homeopathicPopover.onOpenChange(false)
             }}
           />
           <SubmenuLink
-            href="/products/homeopathic/bach-flower"
+            href="/products/bach-flower"
             title="Bach Flower Remedies"
             onClick={() => {
               homeopathicPopover.onOpenChange(false)
@@ -198,7 +198,7 @@ const DesktopNavigation = () => {
         </PopoverTrigger>
         <PopoverContent className="flex w-fit flex-col rounded-none p-0">
           <SubmenuLink
-            href="/products/personal-care/skin"
+            href="/products/personalcare"
             title="Skin Care"
             onClick={() => {
               personalCarePopover.onOpenChange(false)

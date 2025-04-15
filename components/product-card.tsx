@@ -8,6 +8,7 @@ import Link from "next/link"
 export interface ProductCardProps {
   id: string
   name: string
+  manufacturer: string
   form: string
   unit: string
   image: string[]
@@ -29,6 +30,7 @@ export default function ProductCard({
   const {
     id,
     name,
+    manufacturer,
     form,
     unit,
     image,
@@ -65,7 +67,7 @@ export default function ProductCard({
               )}
             >
               <Image
-                src={image[0]}
+                src={image[0] || "/assets/hero1.jpg"}
                 alt={name}
                 width={500}
                 height={500}
@@ -83,7 +85,7 @@ export default function ProductCard({
                   className="underline-animate w-auto inline-block text-center"
                   title={name}
                 >
-                  {name}
+                  {`${manufacturer} ${name}`}
                 </span>
               </h3>
               <p className="text-sm mb-1">{form}</p>

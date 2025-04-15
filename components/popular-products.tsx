@@ -13,6 +13,7 @@ export default async function PopularProducts() {
       GROUP BY p."id"
       ORDER BY "sales" DESC
       LIMIT 5
+      OFFSET 1
     )
     SELECT 
       p."id",
@@ -20,6 +21,7 @@ export default async function PopularProducts() {
       p."form",
       p."unit",
       sr."sales",
+      m."name" as "manufacturer",
       (SELECT pv."id" FROM "ProductVariant" pv WHERE pv."productId" = p."id" LIMIT 1) as "variantId",
       (SELECT pv."variantImage" FROM "ProductVariant" pv WHERE pv."productId" = p."id" LIMIT 1) as "image",
       (SELECT pv."mrp" FROM "ProductVariant" pv WHERE pv."productId" = p."id" LIMIT 1) as "mrp",
@@ -43,6 +45,7 @@ export default async function PopularProducts() {
       ) as "potencies"
     FROM "Product" p
     JOIN SalesRanking sr ON p."id" = sr."id"
+    LEFT JOIN "Manufacturer" m ON p."manufacturerId" = m."id"
     ORDER BY sr."sales" DESC
   `)
 

@@ -1,13 +1,13 @@
 "use client"
 
-import { useSearchParams } from "next/navigation"
-import { useEffect, useState } from "react"
+import { parseAsInteger, useQueryState } from "nuqs"
+import { useQuery } from "@tanstack/react-query"
+import { useEffect } from "react"
 import ProductCard, { ProductCardProps } from "@/components/product-card"
 import { Button } from "@/components/ui/button"
 import { Loader2 } from "lucide-react"
 import { discountType } from "@rahulsaamanth/mhp-schema"
 
-// Updated to match ProductCardProps interface
 interface Product {
   id: string
   name: string
@@ -20,14 +20,12 @@ interface Product {
   discount: number
   potencies: string[]
   packSizes: string[]
-  // Optional fields for display purposes
   category?: string
   manufacturer?: string
   description?: string
   variants?: any[]
 }
 
-// Response from search API
 interface SearchResponse {
   products: Product[]
   total: number
@@ -37,49 +35,77 @@ interface SearchResponse {
 }
 
 export default function SearchPage() {
-  const searchParams = useSearchParams()
-  const query = searchParams.get("q") || ""
-  const pageParam = searchParams.get("page") || "1"
+  const [query, setQuery] = useQueryState("q")
+  const [category, setCategory] = useQueryState("category")
+  const [manufacturer, setManufacturer] = useQueryState("manufacturer")
+  const [potency, setPotency] = useQueryState("potency")
+  const [form, setForm] = useQueryState("form")
+  const [page, setPage] = useQueryState("page", parseAsInteger.withDefault(1))
+  const [limit, setLimit] = useQueryState(
+    "limit",
+    parseAsInteger.withDefault(12)
+  )
 
-  const [products, setProducts] = useState<Product[]>([])
-  const [loading, setLoading] = useState(true)
-  const [totalPages, setTotalPages] = useState(1)
-  const [currentPage, setCurrentPage] = useState(parseInt(pageParam))
+  const searchQuery = useQuery({
+    queryKey: [
+      "products",
+      "search",
+      { query, category, manufacturer, potency, form, page, limit },
+    ],
+    queryFn: async () => {
+      const searchParams = new URLSearchParams()
+      if (query) searchParams.set("q", query)
+      if (category) searchParams.set("category", category)
+      if (manufacturer) searchParams.set("manufacturer", manufacturer)
+      if (potency) searchParams.set("potency", potency)
+      if (form) searchParams.set("form", form)
+      searchParams.set("page", page.toString())
+      searchParams.set("limit", limit.toString())
 
-  useEffect(() => {
-    async function fetchSearchResults() {
-      setLoading(true)
+      const response = await fetch(`/api/search?${searchParams.toString()}`)
+      if (!response.ok) throw new Error("Search failed")
 
-      const queryParams = new URLSearchParams()
-      if (query) queryParams.append("q", query)
-      queryParams.append("page", currentPage.toString())
+      const data = await response.json()
 
-      try {
-        const response = await fetch(`/api/search?${queryParams.toString()}`)
-        if (!response.ok) {
-          throw new Error("Failed to fetch search results")
-        }
+      interface ApiVariant {
+        variantImage?: string[]
+        packSize?: string | number
+        potency?: string
+        mrp?: number
+        sellingPrice?: number
+        discountType?: (typeof discountType.enumValues)[number]
+        discount?: number
+      }
 
-        const data: SearchResponse = await response.json()
-        console.log(data)
+      interface ApiProduct {
+        id: string
+        name: string
+        form?: string
+        unit?: string
+        variants?: ApiVariant[]
+        categoryName?: string
+        manufacturerName?: string
+        description?: string
+      }
 
-        // Transform API response to match expected Product interface
-        const transformedProducts: Product[] = data.products.map((product) => {
-          // Find the first variant with a non-empty variantImage array, or use placeholder if none found
-          const image = product.variants?.find(
-            (v) => v.variantImage && v.variantImage.length > 0
+      const transformedProducts: ProductCardProps[] = data.products.map(
+        (product: ApiProduct) => {
+          const image: string[] = product.variants?.find(
+            (v: ApiVariant) => v.variantImage && v.variantImage.length > 0
           )?.variantImage || ["https://placehold.co/600x400?text=No+Image"]
 
-          const uniquePackSizes = [
+          const uniquePackSizes: string[] = [
             ...new Set(
               product.variants
-                ?.map((v) => v.packSize?.toString())
-                .filter(Boolean) || []
+                ?.map((v: ApiVariant) => v.packSize?.toString())
+                .filter((size): size is string => Boolean(size)) || []
             ),
           ]
-          const uniquePotencies = [
+          const uniquePotencies: string[] = [
             ...new Set(
-              product.variants?.map((v) => v.potency).filter(Boolean) || []
+              product.variants
+                ?.map((v: ApiVariant) => v.potency)
+                .filter((potency): potency is string => Boolean(potency)) || []
             ),
           ]
 
@@ -95,34 +121,30 @@ export default function SearchPage() {
             discount: product.variants?.[0]?.discount || 0,
             potencies: uniquePotencies,
             packSizes: uniquePackSizes,
-            category: product.category,
-            manufacturer: product.manufacturer,
+            category: product.categoryName,
+            manufacturer: product.manufacturerName,
             description: product.description,
             variants: product.variants,
           }
-        })
+        }
+      )
 
-        setProducts(transformedProducts)
-        setTotalPages(data.totalPages || 1)
-      } catch (error) {
-        console.error("Error fetching search results:", error)
-        setProducts([])
-      } finally {
-        setLoading(false)
+      return {
+        products: transformedProducts,
+        total: data.total || data.products.length,
+        page: data.page || page,
+        limit: data.limit || limit,
+        totalPages:
+          data.totalPages ||
+          Math.ceil((data.total || data.products.length) / limit),
       }
-    }
+    },
+    refetchOnWindowFocus: false,
+  })
 
-    fetchSearchResults()
-  }, [query, currentPage])
-
-  console.log(products)
-
-  const handlePaginationChange = (newPage: number) => {
-    if (newPage > 0 && newPage <= totalPages) {
-      setCurrentPage(newPage)
-      window.scrollTo({ top: 0, behavior: "smooth" })
-    }
-  }
+  useEffect(() => {
+    setPage(1)
+  }, [query, category, manufacturer, potency, form, setPage])
 
   return (
     <div className="container mx-auto py-8 px-4">
@@ -130,54 +152,140 @@ export default function SearchPage() {
         {query ? `Search results for "${query}"` : "All Products"}
       </h1>
 
-      {loading ? (
+      {searchQuery.isLoading ? (
         <div className="flex justify-center items-center h-64">
           <Loader2 className="h-8 w-8 animate-spin" />
         </div>
-      ) : products.length > 0 ? (
-        <>
+      ) : searchQuery.error ? (
+        <div>Error: {searchQuery.error.message}</div>
+      ) : (
+        <div>
           <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-6">
-            {products.map((product) => (
+            {(searchQuery.data?.products || []).map((product) => (
               <ProductCard key={product.id} product={product} />
             ))}
           </div>
 
-          {/* Pagination */}
-          {totalPages > 1 && (
-            <div className="mt-8 flex justify-center gap-2">
-              <Button
-                variant="outline"
-                onClick={() => handlePaginationChange(currentPage - 1)}
-                disabled={currentPage === 1}
-              >
-                Previous
-              </Button>
-
-              {Array.from({ length: totalPages }).map((_, idx) => (
+          {searchQuery.data?.totalPages > 1 && (
+            <div className="mt-12 mb-6">
+              <div className="flex flex-wrap items-center justify-center gap-1 md:gap-2">
                 <Button
-                  key={idx}
-                  variant={currentPage === idx + 1 ? "default" : "outline"}
-                  onClick={() => handlePaginationChange(idx + 1)}
+                  variant="ghost"
+                  size="icon"
+                  onClick={() => setPage(Math.max(1, Number(page) - 1))}
+                  disabled={page <= 1}
+                  className="h-10 w-10 rounded-full border border-gray-200 text-gray-500 hover:bg-brand/5 hover:text-brand disabled:opacity-50"
+                  aria-label="Previous page"
                 >
-                  {idx + 1}
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="18"
+                    height="18"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  >
+                    <path d="m15 18-6-6 6-6" />
+                  </svg>
                 </Button>
-              ))}
 
-              <Button
-                variant="outline"
-                onClick={() => handlePaginationChange(currentPage + 1)}
-                disabled={currentPage === totalPages}
-              >
-                Next
-              </Button>
+                {/* Always show first page */}
+                {page > 3 && (
+                  <>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => setPage(1)}
+                      className={`rounded-full min-w-10 h-10 text-sm font-medium hover:bg-brand/5 hover:text-brand`}
+                    >
+                      1
+                    </Button>
+                    {page > 4 && (
+                      <span className="px-1 text-gray-400">...</span>
+                    )}
+                  </>
+                )}
+
+                {/* Show pages around current page */}
+                {Array.from({ length: searchQuery.data?.totalPages }).map(
+                  (_, idx) => {
+                    const pageNumber = idx + 1
+                    // Show current page and 1 page before and after
+                    if (pageNumber >= page - 1 && pageNumber <= page + 1) {
+                      if (
+                        pageNumber >= 1 &&
+                        pageNumber <= searchQuery.data?.totalPages
+                      ) {
+                        return (
+                          <Button
+                            key={idx}
+                            variant={page === pageNumber ? "default" : "ghost"}
+                            size="sm"
+                            onClick={() => setPage(pageNumber)}
+                            className={`rounded-full min-w-10 h-10 text-sm font-medium ${
+                              page === pageNumber
+                                ? "bg-brand hover:bg-brand/90 text-white"
+                                : "hover:bg-brand/5 hover:text-brand"
+                            }`}
+                          >
+                            {pageNumber}
+                          </Button>
+                        )
+                      }
+                    }
+                    return null
+                  }
+                )}
+
+                {/* Always show last page */}
+                {page < searchQuery.data?.totalPages - 2 && (
+                  <>
+                    {page < searchQuery.data?.totalPages - 3 && (
+                      <span className="px-1 text-gray-400">...</span>
+                    )}
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => setPage(searchQuery.data?.totalPages)}
+                      className={`rounded-full min-w-10 h-10 text-sm font-medium hover:bg-brand/5 hover:text-brand`}
+                    >
+                      {searchQuery.data?.totalPages}
+                    </Button>
+                  </>
+                )}
+
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={() => setPage(Number(page) + 1)}
+                  disabled={page >= searchQuery.data?.totalPages}
+                  className="h-10 w-10 rounded-full border border-gray-200 text-gray-500 hover:bg-brand/5 hover:text-brand disabled:opacity-50"
+                  aria-label="Next page"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="18"
+                    height="18"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  >
+                    <path d="m9 18 6-6-6-6" />
+                  </svg>
+                </Button>
+              </div>
+
+              <p className="text-center text-sm text-gray-500 mt-3">
+                Showing page {page} of {searchQuery.data?.totalPages}
+              </p>
             </div>
           )}
-        </>
-      ) : (
-        <div className="text-center py-12">
-          <p className="text-lg text-gray-500">
-            No products found matching your search.
-          </p>
         </div>
       )}
     </div>

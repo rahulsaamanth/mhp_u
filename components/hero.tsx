@@ -77,7 +77,7 @@ export default function Hero() {
 
             <div className="inline-block relative z-30 animate-fade-in animation-delay-400 sm:mt-4">
               <Link
-                href="/products"
+                href="/products/all"
                 className="inline-flex items-center justify-center cursor-pointer px-8 py-3 bg-white text-brand  font-medium hover:shadow-lg transition-all duration-300 hover:rounded-none"
               >
                 Shop Now & Save

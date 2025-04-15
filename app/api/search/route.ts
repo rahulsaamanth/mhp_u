@@ -35,7 +35,7 @@ export async function GET(request: NextRequest) {
     const potencyFilter = url.searchParams.get("potency") || ""
     const formFilter = url.searchParams.get("form") || ""
     const page = parseInt(url.searchParams.get("page") || "1")
-    const limit = parseInt(url.searchParams.get("limit") || "12")
+    const limit = parseInt(url.searchParams.get("limit") || "4")
 
     // Calculate offset for pagination
     const offset = (page - 1) * limit

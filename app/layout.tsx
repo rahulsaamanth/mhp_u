@@ -8,11 +8,13 @@ import { Toaster } from "@/components/ui/sonner"
 import { auth as Auth } from "@/auth"
 import { SessionProvider } from "next-auth/react"
 import { CartProvider } from "./cart/_components/cart-provider"
+import { Providers } from "@/lib/providers"
+import { NuqsAdapter } from "nuqs/adapters/next/app"
 
 const dmSans = DM_Sans({ subsets: ["latin"] })
 
 export const metadata: Metadata = {
-  title: "Homeo South",
+  title: "Homeo South - Buy Homeopathic Medicines Online",
   description: "Homeo South - Premium quality homeopathic remedies from India",
 }
 
@@ -32,21 +34,25 @@ export default async function RootLayout({
           className={`${dmSans.className} antialiased`}
           // suppressHydrationWarning={true}
         >
-          <CartProvider>
-            <Advert />
-            <Header />
-            {children}
-            {auth}
-            <Footer />
-            <Toaster
-              richColors
-              theme="light"
-              toastOptions={{
-                duration: 3000,
-              }}
-              position="top-right"
-            />
-          </CartProvider>
+          <NuqsAdapter>
+            <Providers>
+              <CartProvider>
+                <Advert />
+                <Header />
+                {children}
+                {auth}
+                <Footer />
+              </CartProvider>
+            </Providers>
+          </NuqsAdapter>
+          <Toaster
+            richColors
+            theme="light"
+            toastOptions={{
+              duration: 3000,
+            }}
+            position="top-right"
+          />
         </body>
       </html>
     </SessionProvider>
