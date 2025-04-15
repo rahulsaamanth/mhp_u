@@ -7,7 +7,7 @@ import {
   getUserCart,
   addToCart,
 } from "./_lib/actions"
-import { useState, useEffect, useCallback, useMemo } from "react"
+import { useState, useEffect, useCallback, useMemo, memo } from "react"
 import { Trash, PlusCircle } from "lucide-react"
 import Image from "next/image"
 import { formatCurrency } from "@/lib/formatters"
@@ -17,6 +17,157 @@ import { cartEvents } from "@/lib/cart-events"
 import { toast } from "sonner"
 import { useCurrentUser } from "@/hooks/use-current-user"
 import { useCartContext } from "./_components/cart-provider"
+import { useTransition } from "react"
+
+// Add proper type for CartItemComponent props
+interface CartItemComponentProps {
+  item: CartItem
+  isServerItem: boolean
+  user: any // Replace with proper user type if available
+  onQuantityChange: (id: string, quantity: number) => void
+  onRemove: (id: string) => void
+  onAddToAccount: (item: CartItem) => void
+  isAtMaxStock: (item: CartItem) => boolean
+}
+
+const CartItemComponent = memo(
+  ({
+    item,
+    isServerItem,
+    user,
+    onQuantityChange,
+    onRemove,
+    onAddToAccount,
+    isAtMaxStock,
+  }: CartItemComponentProps) => {
+    // Use useTransition to avoid freezing the UI during state updates
+    const [isPending, startTransition] = useTransition()
+
+    // Handle quantity change with transition
+    const handleQuantityChange = (newQuantity: number) => {
+      startTransition(() => {
+        onQuantityChange(item.id, newQuantity)
+      })
+    }
+
+    return (
+      <div className="flex border-b py-4">
+        <div className="w-24 h-24 relative flex-shrink-0">
+          <Image
+            src={item.image || "/placeholder.png"}
+            alt={item.name}
+            fill
+            className="object-contain"
+            onError={(e: React.SyntheticEvent<HTMLImageElement>) => {
+              e.currentTarget.src = "/placeholder.png"
+            }}
+          />
+        </div>
+        <div className="ml-4 flex-grow">
+          <h3 className="font-medium">{item.name}</h3>
+          {item.potency && (
+            <p className="text-sm text-gray-500">Potency: {item.potency}</p>
+          )}
+          {item.packSize && (
+            <p className="text-sm text-gray-500">Pack Size: {item.packSize}</p>
+          )}
+
+          {/* Stock availability indicator */}
+          {item.totalStock !== undefined && (
+            <div className="flex items-center mt-1 mb-2">
+              <div
+                className={`w-2 h-2 rounded-full mr-1.5 ${
+                  item.totalStock > 10
+                    ? "bg-green-500"
+                    : item.totalStock > 0
+                    ? "bg-amber-500"
+                    : "bg-red-500"
+                }`}
+              />
+              <p className="text-xs">
+                {item.totalStock > 10
+                  ? "In stock"
+                  : item.totalStock > 0
+                  ? `Only ${item.totalStock} left`
+                  : "Out of stock"}
+              </p>
+            </div>
+          )}
+
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mt-2 gap-2">
+            <div className="flex items-center justify-between sm:justify-center gap-6">
+              <div className="flex items-center border rounded">
+                <button
+                  className="px-2 py-1 hover:bg-gray-100 transition-colors"
+                  onClick={() => handleQuantityChange(item.quantity - 1)}
+                  disabled={item.quantity <= 1 || isPending}
+                  aria-label="Decrease quantity"
+                >
+                  -
+                </button>
+                <span className="px-4">{item.quantity}</span>
+                <button
+                  className={`px-1 sm:px-2 py-1 hover:bg-gray-100 transition-colors ${
+                    isAtMaxStock(item) || isPending
+                      ? "opacity-50 cursor-not-allowed"
+                      : ""
+                  }`}
+                  onClick={() => handleQuantityChange(item.quantity + 1)}
+                  disabled={isAtMaxStock(item) || isPending}
+                  title={isAtMaxStock(item) ? "Maximum stock reached" : ""}
+                  aria-label="Increase quantity"
+                >
+                  +
+                </button>
+              </div>
+              <div className="font-medium">
+                {formatCurrency(item.price * item.quantity)}
+              </div>
+            </div>
+            {user && !isServerItem ? (
+              <div className="flex gap-2 ml-auto">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="flex items-center justify-evenly gap-1 text-nowrap px-2 flex-1 sm:flex-auto hover:bg-brand hover:text-brand-foreground"
+                  onClick={() => onAddToAccount(item)}
+                  disabled={isPending}
+                >
+                  <PlusCircle className="h-3 w-3" />
+                  <span className="text-xs">Add to Account</span>
+                </Button>
+                <Button
+                  variant="destructive"
+                  size="sm"
+                  onClick={() => onRemove(item.id)}
+                  className="flex items-center justify-evenly gap-1 px-2 flex-1 sm:flex-auto"
+                  disabled={isPending}
+                >
+                  <Trash className="h-3 w-3" />
+                  <span className="text-xs">Remove</span>
+                </Button>
+              </div>
+            ) : (
+              <Button
+                variant="destructive"
+                size="sm"
+                onClick={() => onRemove(item.id)}
+                className="flex items-center gap-1 self-end sm:self-auto cursor-pointer"
+                disabled={isPending}
+              >
+                <Trash className="h-4 w-4" />
+                <span className="text-xs">Remove</span>
+              </Button>
+            )}
+          </div>
+        </div>
+      </div>
+    )
+  }
+)
+
+// Add display name to help with debugging
+CartItemComponent.displayName = "CartItemComponent"
 
 export default function CartPage() {
   const [serverItems, setServerItems] = useState<CartItem[]>([])
@@ -343,121 +494,22 @@ export default function CartPage() {
     )
   }
 
-  // Helper function to render a cart item
+  // Helper function to render a cart item (replace with the memoized component)
   const renderCartItem = (item: CartItem, isServerItem: boolean) => (
-    <div key={item.id} className="flex border-b py-4">
-      <div className="w-24 h-24 relative flex-shrink-0">
-        <Image
-          src={item.image || "/placeholder.png"}
-          alt={item.name}
-          fill
-          className="object-contain"
-        />
-      </div>
-      <div className="ml-4 flex-grow">
-        <h3 className="font-medium">{item.name}</h3>
-        {item.potency && (
-          <p className="text-sm text-gray-500">Potency: {item.potency}</p>
-        )}
-        {item.packSize && (
-          <p className="text-sm text-gray-500">Pack Size: {item.packSize}</p>
-        )}
-
-        {/* Stock availability indicator */}
-        {item.totalStock !== undefined && (
-          <div className="flex items-center mt-1 mb-2">
-            <div
-              className={`w-2 h-2 rounded-full mr-1.5 ${
-                item.totalStock > 10
-                  ? "bg-green-500"
-                  : item.totalStock > 0
-                  ? "bg-amber-500"
-                  : "bg-red-500"
-              }`}
-            />
-            <p className="text-xs">
-              {item.totalStock > 10
-                ? "In stock"
-                : item.totalStock > 0
-                ? `Only ${item.totalStock} left`
-                : "Out of stock"}
-            </p>
-          </div>
-        )}
-
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mt-2 gap-2">
-          <div className="flex items-center justify-between sm:justify-center gap-6">
-            <div className="flex items-center border rounded">
-              <button
-                className="px-2 py-1"
-                onClick={() =>
-                  isServerItem
-                    ? handleQuantityChangeServerItem(item.id, item.quantity - 1)
-                    : handleQuantityChangeLocalItem(item.id, item.quantity - 1)
-                }
-                disabled={item.quantity <= 1}
-              >
-                -
-              </button>
-              <span className="px-4">{item.quantity}</span>
-              <button
-                className={`px-1 sm:px-2 py-1 ${
-                  isAtMaxStock(item) ? "opacity-50 cursor-not-allowed" : ""
-                }`}
-                onClick={() =>
-                  isServerItem
-                    ? handleQuantityChangeServerItem(item.id, item.quantity + 1)
-                    : handleQuantityChangeLocalItem(item.id, item.quantity + 1)
-                }
-                disabled={isAtMaxStock(item)}
-                title={isAtMaxStock(item) ? "Maximum stock reached" : ""}
-              >
-                +
-              </button>
-            </div>
-            <div className="font-medium">
-              {formatCurrency(item.price * item.quantity)}
-            </div>
-          </div>
-          {user && !isServerItem ? (
-            <div className="flex gap-2 ml-auto">
-              <Button
-                variant="outline"
-                size="sm"
-                className="flex items-center justify-evenly gap-1 text-nowrap px-2 flex-1 sm:flex-auto"
-                onClick={() => addLocalItemToServerCart(item)}
-              >
-                <PlusCircle className="h-3 w-3" />
-                <span className="text-xs">Add to Account</span>
-              </Button>
-              <Button
-                variant="destructive"
-                size="sm"
-                onClick={() => handleRemoveLocalItem(item.id)}
-                className="flex items-center justify-evenly gap-1 px-2 flex-1 sm:flex-auto"
-              >
-                <Trash className="h-3 w-3" />
-                <span className="text-xs">Remove</span>
-              </Button>
-            </div>
-          ) : (
-            <Button
-              variant="destructive"
-              size="sm"
-              onClick={() =>
-                isServerItem
-                  ? handleRemoveServerItem(item.id)
-                  : handleRemoveLocalItem(item.id)
-              }
-              className="flex items-center gap-1 self-end sm:self-auto cursor-pointer"
-            >
-              <Trash className="h-4 w-4" />
-              <span className="text-xs">Remove</span>
-            </Button>
-          )}
-        </div>
-      </div>
-    </div>
+    <CartItemComponent
+      key={item.id}
+      item={item}
+      isServerItem={isServerItem}
+      user={user}
+      onQuantityChange={
+        isServerItem
+          ? handleQuantityChangeServerItem
+          : handleQuantityChangeLocalItem
+      }
+      onRemove={isServerItem ? handleRemoveServerItem : handleRemoveLocalItem}
+      onAddToAccount={addLocalItemToServerCart}
+      isAtMaxStock={isAtMaxStock}
+    />
   )
 
   const noItemsMessage = (
@@ -506,10 +558,10 @@ export default function CartPage() {
             {localItems.length > 0 && (
               <div>
                 {user ? (
-                  <div className="py-4 border-b flex justify-between items-center">
+                  <div className="py-4 border-b flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 sm:gap-0">
                     <h2 className="text-xl font-semibold">
                       Guest Cart Items
-                      <span className="text-sm font-normal ml-2 text-gray-500">
+                      <span className="text-sm font-normal ml-2 text-gray-500 block sm:inline-block">
                         (Not yet added to your account)
                       </span>
                     </h2>
@@ -517,9 +569,9 @@ export default function CartPage() {
                       variant="outline"
                       size="sm"
                       onClick={addAllToAccountCart}
-                      className="cursor-pointer"
+                      className="cursor-pointer hover:bg-brand hover:text-brand-foreground transition-colors"
                     >
-                      <PlusCircle className="size-4" />
+                      <PlusCircle className="size-4 mr-2" />
                       Add All to Account
                     </Button>
                   </div>
@@ -531,7 +583,7 @@ export default function CartPage() {
           </div>
 
           <div className="lg:col-span-1">
-            <div className="border rounded-lg p-6 sticky top-4">
+            <div className="border rounded-lg p-6 sticky top-24">
               <h3 className="text-lg font-medium mb-4">Order Summary</h3>
               <div className="space-y-2">
                 {user && serverItems.length > 0 && (
@@ -562,7 +614,7 @@ export default function CartPage() {
                 </div>
               )}
               <Button
-                className="w-full mt-4"
+                className="w-full mt-4 bg-brand hover:bg-brand-hover text-brand-foreground"
                 asChild
                 disabled={user && localItems.length > 0}
                 title={

@@ -9,6 +9,7 @@ import React, {
   ReactNode,
   useState,
   useEffect,
+  useCallback,
 } from "react"
 
 // Create context types
@@ -29,7 +30,9 @@ export const useCartContext = () => {
 export function CartProvider({ children }: { children: ReactNode }) {
   const [isLocalCart, setIsLocalCart] = useState(true)
   const { user, isLoading } = useCurrentUser()
-  const { items } = useCartStore()
+
+  // Only get the item count instead of the full items array to prevent unnecessary re-renders
+  const itemCount = useCartStore((state) => state.items.length)
 
   // Use our cart authentication hook to handle sync/clear operations
   useCartAuth()
@@ -41,20 +44,21 @@ export function CartProvider({ children }: { children: ReactNode }) {
     }
   }, [user, isLoading])
 
-  // Log cart state for debugging
+  // Memoize the context value to prevent unnecessary re-renders
+  const contextValue = React.useMemo(() => ({ isLocalCart }), [isLocalCart])
+
+  // For debugging only - using itemCount instead of full items array
   useEffect(() => {
-    if (!isLoading) {
+    if (!isLoading && process.env.NODE_ENV !== "production") {
       console.log(
-        `Cart provider: ${user ? "User authenticated" : "Guest user"}, ${
-          items.length
-        } items in local store`
+        `Cart provider: ${
+          user ? "User authenticated" : "Guest user"
+        }, ${itemCount} items in local store`
       )
     }
-  }, [user, items.length, isLoading])
+  }, [user, itemCount, isLoading])
 
   return (
-    <CartContext.Provider value={{ isLocalCart }}>
-      {children}
-    </CartContext.Provider>
+    <CartContext.Provider value={contextValue}>{children}</CartContext.Provider>
   )
 }
