@@ -7,6 +7,7 @@ import Footer from "@/components/footer"
 import { Toaster } from "@/components/ui/sonner"
 import { auth as Auth } from "@/auth"
 import { SessionProvider } from "next-auth/react"
+import { CartProvider } from "./cart/_components/cart-provider"
 
 const dmSans = DM_Sans({ subsets: ["latin"] })
 
@@ -31,12 +32,21 @@ export default async function RootLayout({
           className={`${dmSans.className} antialiased`}
           // suppressHydrationWarning={true}
         >
-          <Advert />
-          <Header />
-          {children}
-          {auth}
-          <Footer />
-          <Toaster richColors theme="light" toastOptions={{}} />
+          <CartProvider>
+            <Advert />
+            <Header />
+            {children}
+            {auth}
+            <Footer />
+            <Toaster
+              richColors
+              theme="light"
+              toastOptions={{
+                duration: 3000,
+              }}
+              position="top-right"
+            />
+          </CartProvider>
         </body>
       </html>
     </SessionProvider>

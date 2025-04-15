@@ -8,7 +8,7 @@ import { Check } from "lucide-react"
 import { toast } from "sonner"
 import { useRouter } from "next/navigation"
 import { cartEvents } from "@/lib/cart-events"
-import { AddToCartInput } from "@/store/cart"
+import { AddToCartInput, useCartStore } from "@/store/cart"
 
 interface AddToCartButtonProps {
   productId: string
@@ -35,18 +35,12 @@ export function AddToCartButton({
   const [added, setAdded] = useState(false)
   const { user } = useCurrentUser()
   const router = useRouter()
+  const { addToCart: addToLocalCart } = useCartStore()
 
   const handleAddToCart = async () => {
-    // If user is not logged in, redirect to login page
-    if (!user) {
-      const currentPath = window.location.pathname
-      router.push(`/login?callbackUrl=${encodeURIComponent(currentPath)}`)
-      return
-    }
-
     setAdding(true)
     try {
-      // Create an object that matches the AddToCartInput interface
+      // Create item object
       const item: AddToCartInput = {
         productId,
         variantId,
@@ -58,24 +52,31 @@ export function AddToCartButton({
         packSize,
       }
 
-      // Add to database cart
-      const result = await addToCart(item)
+      if (user) {
+        // If logged in, add to server cart
+        const result = await addToCart(item)
 
-      if (result.success) {
+        if (result.success) {
+          setAdded(true)
+          toast.success("Added to cart!")
+          cartEvents.notifyCartChanged()
+        } else {
+          toast.error(
+            result.error || "Failed to add to cart. Please try again."
+          )
+        }
+      } else {
+        // If not logged in, add to local cart
+        addToLocalCart(item)
         setAdded(true)
         toast.success("Added to cart!")
-
-        // Notify cart components that an item was added
         cartEvents.notifyCartChanged()
-
-        // Reset added state after 1.5 seconds
-        setTimeout(() => {
-          setAdded(false)
-        }, 1500)
-      } else {
-        // Display the specific error message from the server
-        toast.error(result.error || "Failed to add to cart. Please try again.")
       }
+
+      // Reset added state after 1.5 seconds
+      setTimeout(() => {
+        setAdded(false)
+      }, 1500)
     } catch (error) {
       console.error("Failed to add to cart:", error)
       toast.error("Failed to add to cart. Please try again.")

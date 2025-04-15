@@ -98,17 +98,14 @@ export default async function ProductPage({
     notFound()
   }
 
-  // Sort variants by potency and pack size for easier selection
   const sortedVariants = [...product.variants].sort((a, b) => {
-    // First sort by potency
     if (a.potency !== b.potency) {
       return a.potency.localeCompare(b.potency)
     }
-    // If potencies are the same, sort by pack size (assuming they're numbers)
+
     return parseInt(a.packSize) - parseInt(b.packSize)
   })
 
-  // Get unique potencies and pack sizes for display in the specs table
   const uniquePotencies = Array.from(
     new Set(sortedVariants.map((v) => v.potency))
   ).filter((p) => p !== "NONE")
@@ -119,24 +116,6 @@ export default async function ProductPage({
   return (
     <div>
       <main className="container mx-auto px-4 py-20">
-        {/* <div>
-          <h1 className="text-xl md:text-3xl font-bold mb-2">{product.name}</h1>
-          <div className="flex flex-wrap items-center gap-6 mb-6">
-            <div className="flex items-center gap-2">
-              <span className="text-sm text-gray-600">Manufacturer:</span>
-              <span className="text-sm font-medium">
-                {product.manufacturer}
-              </span>
-            </div>
-            <div className="flex items-center gap-2">
-              <span className="text-sm text-gray-600">Category:</span>
-              <span className="text-sm font-medium">
-                {product.categoryName}
-              </span>
-            </div>
-          </div>
-        </div> */}
-        {/* Product Images and Selection Area */}
         <div className="mb-10">
           {sortedVariants.length > 0 && (
             <ProductVariantSelector
@@ -149,11 +128,8 @@ export default async function ProductPage({
             />
           )}
         </div>
-        {/* Product Description and Information Tabs */}
         <div className="grid grid-cols-1 md:grid-cols-5 gap-8 mb-10">
-          {/* Left Column - Description and Benefits */}
           <div className="md:col-span-3 space-y-8">
-            {/* Product Description */}
             <div className="space-y-4">
               <h2 className="text-lg font-semibold">Description</h2>
               <div className="text-gray-700 text-sm space-y-2">
@@ -164,7 +140,6 @@ export default async function ProductPage({
                 )}
               </div>
             </div>
-            {/* Product Benefits/Key Features */}
             <div className="space-y-4">
               <h2 className="text-lg font-semibold">Key Benefits</h2>
               <ul className="list-disc pl-5 text-sm space-y-1">
@@ -180,7 +155,6 @@ export default async function ProductPage({
               </ul>
             </div>
           </div>
-          {/* Right Column - Dosage Recommendations */}
           <div className="md:col-span-2 space-y-4">
             <h2 className="text-lg font-semibold">Recommended Dosage</h2>
             <div className="text-gray-700 text-sm">
@@ -205,7 +179,6 @@ export default async function ProductPage({
             </div>
           </div>
         </div>
-        {/* Product Specifications */}
         <div className="mb-12">
           <h2 className="text-xl font-semibold mb-4">Product Information</h2>
           <div className="border rounded overflow-hidden">
@@ -282,7 +255,6 @@ export default async function ProductPage({
           </div>
         </div>
       </main>
-      {/* Related Products */}
       <div className="py-8">
         <h2 className="text-xl font-semibold mb-6 text-center">
           You May Also Like

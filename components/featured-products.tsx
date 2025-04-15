@@ -59,11 +59,16 @@ export default async function FeaturedProducts() {
   )
 
   return (
-    <section className="py-10 border-b">
-      <div className=" mx-auto px-4 space-y-8">
-        <h2 className="text-base md:text-4xl font-bold text-center">
-          Featured Products
-        </h2>
+    <section className="py-10">
+      <div className="mx-auto px-4 space-y-8">
+        <div className="flex items-center justify-center mb-12">
+          <div className="h-0.5 flex-1 bg-gradient-to-r from-transparent to-primary"></div>
+          <h2 className="text-xl md:text-4xl text-center px-4 font-semibold">
+            Featured Products
+          </h2>
+          <div className="h-0.5 flex-1 bg-gradient-to-l from-transparent to-primary"></div>
+        </div>
+
         <Tabs
           defaultValue="biocombinations"
           className="mx-auto h-full space-y-8"

@@ -22,7 +22,8 @@ export default function FeaturedProductsCarousel({
       opts={{
         align: "start",
         slidesToScroll: 1,
-        containScroll: "trimSnaps",
+
+        // containScroll: "trimSnaps",
       }}
       plugins={[
         Autoplay({
@@ -31,13 +32,13 @@ export default function FeaturedProductsCarousel({
           jump: false,
         }),
       ]}
-      className="w-3/4 sm:w-2/3 mx-auto"
+      className="w-3/4 2xl:w-2/3 mx-auto"
     >
-      <CarouselContent>
+      <CarouselContent className="mx-auto">
         {products.map((product, idx) => (
           <CarouselItem
             key={idx}
-            className="basis-full sm:basis-1/2 xl:basis-1/3 2xl:basis-1/4 py-2"
+            className="basis-full sm:basis-1/2 xl:basis-1/3 2xl:basis-1/4 py-2 pr-1"
           >
             <ProductCard product={product} />
           </CarouselItem>

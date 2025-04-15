@@ -72,8 +72,12 @@ export async function getUserCart() {
 
 export async function addToCart(item: AddToCartInput) {
   const user = await currentUser()
-  if (!user?.id)
-    return { success: false, error: "Please login to add items to cart" }
+
+  // If user is not logged in, just return success
+  // The frontend will handle adding to local cart
+  if (!user?.id) {
+    return { success: true }
+  }
 
   try {
     // First, check available stock

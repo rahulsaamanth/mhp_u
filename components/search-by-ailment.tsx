@@ -39,8 +39,8 @@ export default function SearchByAilment() {
   // const autoPlayRef = React.useRef<ReturnType<typeof Autoplay> | null>(null)
 
   return (
-    <section className="border-b overflow-x-hidden">
-      <h1 className="text-center text-xl md:text-4xl font-bold py-2">
+    <section className="overflow-x-hidden">
+      <h1 className="text-center text-xl md:text-4xl font-semibold py-2">
         Search By Ailment
       </h1>
       <Carousel
@@ -82,7 +82,7 @@ export default function SearchByAilment() {
                         className="size-48 object-cover rounded-xl"
                         loading="lazy"
                       />
-                      <h3 className="text-center font-semibold py-2">
+                      <h3 className="text-center font-semibold py-2 uppercase text-sm">
                         {ailment}
                       </h3>
                     </div>

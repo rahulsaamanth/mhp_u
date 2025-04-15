@@ -47,13 +47,17 @@ export default async function PopularProducts() {
   `)
 
   return (
-    <section className="py-10 border-b">
-      <div className="space-y-8 w-full lg:max-w-3/5 mx-auto px-8 lg:px-4 pb-8">
-        <h2 className="text-xl md:text-4xl font-bold text-center">
+    <section className="pb-10">
+      <div className="flex items-center justify-center mb-8">
+        <div className="h-0.5 flex-1 bg-gradient-to-r from-transparent to-primary"></div>
+        <h2 className="text-xl md:text-4xl text-center px-4 font-semibold">
           Popular Products
         </h2>
+        <div className="h-0.5 flex-1 bg-gradient-to-l from-transparent to-primary"></div>
+      </div>
+      <div className="space-y-8 w-full md:max-w-4/5 2xl:max-w-3/5 mx-auto px-4 sm:px-8 lg:px-4 py-8">
         {popularProducts.length > 0 && (
-          <div className="grid grid-cols-1 2xl:grid-cols-2 gap-8">
+          <div className="grid grid-cols-1 2xl:grid-cols-2 gap-8 px-4">
             {/* Left side - featured product (full height) */}
             <div className="h-full flex">
               <ProductCard

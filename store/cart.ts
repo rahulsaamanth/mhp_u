@@ -35,6 +35,18 @@ export interface AddToCartInput {
   packSize?: string
 }
 
+// Define response type for merge cart
+export interface MergeCartResponse {
+  success: boolean
+  message: string
+  stats?: {
+    created: number
+    updated: number
+    total: number
+  }
+  error?: string
+}
+
 interface CartState {
   items: CartItem[]
   addToCart: (item: AddToCartInput) => void
@@ -43,6 +55,9 @@ interface CartState {
   updateQuantity: (id: string, quantity: number) => void // Add function to update quantity
   getItemCount: () => number
   getTotalPrice: () => number
+  syncCartToServer: () => Promise<void> // New function to sync local cart to server after login
+  mergeCartWithServer: () => Promise<MergeCartResponse> // Add local cart items to server cart
+  clearCartOnLogout: () => void // New function to clear cart on logout
 }
 
 export const useCartStore = create<CartState>()(
@@ -52,10 +67,12 @@ export const useCartStore = create<CartState>()(
 
       addToCart: (item: AddToCartInput) => {
         set((state) => {
-          // Check if item already exists
+          // Check if item already exists with same variantId, potency and packSize
           const existingItemIndex = state.items.findIndex(
             (i) =>
-              i.productId === item.productId && i.variantId === item.variantId
+              i.variantId === item.variantId &&
+              i.potency === (item.potency || null) &&
+              i.packSize === (item.packSize || null)
           )
 
           // If item exists, update quantity
@@ -66,9 +83,12 @@ export const useCartStore = create<CartState>()(
           }
 
           // Otherwise add new item
+          // Generate ID based on all unique fields in the schema
+          const potencyPart = item.potency || "default"
+          const packSizePart = item.packSize || "default"
           const newItem: CartItem = {
             ...item,
-            id: `${item.productId}-${item.variantId}`,
+            id: `${item.productId}-${item.variantId}-${potencyPart}-${packSizePart}`,
           }
           return { items: [...state.items, newItem] }
         })
@@ -103,6 +123,88 @@ export const useCartStore = create<CartState>()(
           (total, item) => total + item.price * item.quantity,
           0
         )
+      },
+
+      // New function to sync local cart to server after login
+      syncCartToServer: async () => {
+        try {
+          const localCart = get().items
+
+          // Make a server request to replace the user's cart with the local cart
+          const response = await fetch("/api/cart/sync", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ items: localCart }),
+          })
+
+          if (!response.ok) {
+            throw new Error("Failed to sync cart with server")
+          }
+
+          return await response.json()
+        } catch (error) {
+          console.error("Error syncing cart to server:", error)
+          throw error
+        }
+      },
+
+      // New function to merge local cart with server cart
+      mergeCartWithServer: async () => {
+        try {
+          const localCart = get().items
+
+          // If there are no items in local cart, no need to call the API
+          if (localCart.length === 0) {
+            return {
+              success: true,
+              message: "No items to merge",
+              stats: { created: 0, updated: 0, total: 0 },
+            }
+          }
+
+          console.log(
+            `Sending ${localCart.length} items to server for merge...`
+          )
+
+          // Make a server request to merge the local cart with the server cart
+          const response = await fetch("/api/cart/merge", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ items: localCart }),
+          })
+
+          // Parse the response
+          const result: MergeCartResponse = await response.json()
+
+          if (!response.ok) {
+            throw new Error(result.error || "Failed to merge cart with server")
+          }
+
+          // Only clear the local cart if the merge was successful
+          if (result.success) {
+            console.log("Cart merge successful, clearing local cart")
+            // Clear local cart after successful merge
+            set({ items: [] })
+          }
+
+          return result
+        } catch (error) {
+          console.error("Error merging cart with server:", error)
+          // Re-throw the error so it can be handled by the caller
+          throw error instanceof Error
+            ? error
+            : new Error("Unknown error merging cart")
+        }
+      },
+
+      // Function to clear cart when user logs out
+      clearCartOnLogout: () => {
+        // Clear cart items
+        set({ items: [] })
       },
     }),
     {

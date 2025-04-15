@@ -75,12 +75,12 @@ export default function ProductCard({
             <div className="flex flex-col p-4 flex-grow">
               <h3
                 className={cn(
-                  "font-bold text-center min-h-[4rem] max-h-24  overflow-hidden text-xs sm:text-sm md:text-base transition-colors uppercase text-balance",
+                  "font-bold text-center text-balance min-h-[4rem] max-h-[6rem] w-full overflow-hidden text-xs sm:text-sm md:text-base transition-colors uppercase",
                   featured && "md:text-lg lg:text-xl xl:text-2xl"
                 )}
               >
                 <span
-                  className="underline-animate w-auto inline-block text-balance"
+                  className="underline-animate w-auto inline-block text-center"
                   title={name}
                 >
                   {name}

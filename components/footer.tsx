@@ -16,11 +16,10 @@ export default function Footer() {
             <div className="flex items-start space-x-2 mb-3">
               <MapPin className="w-5 h-5 mt-1" />
               <p className="text-sm">
-                123 Health Street
+                1st floor, serrao bhavan,
                 <br />
-                Chennai, Tamil Nadu 600001
-                <br />
-                India
+                old road,mangalore,
+                <br /> 575002
               </p>
             </div>
           </div>
@@ -32,7 +31,7 @@ export default function Footer() {
               <div className="flex items-center space-x-2">
                 <Phone className="w-5 h-5" />
                 <a href="tel:+919876543210" className="text-sm hover:underline">
-                  +91 98765 43210
+                  +91 99805 55914
                 </a>
               </div>
               <div className="flex items-center space-x-2">

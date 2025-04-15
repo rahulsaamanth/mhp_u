@@ -14,7 +14,7 @@ export default async function Home() {
       <PopularProducts />
       <FeaturedProducts />
       <OurProducts />
-      <Blog />
+      {/* <Blog /> */}
       <Testimonials />
     </main>
   )
