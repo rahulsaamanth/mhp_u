@@ -180,7 +180,7 @@ export default function ProductVariantSelector({
       <div className="flex flex-col space-y-6">
         {/* Product Information Section */}
         <div className="space-y-3">
-          <h1 className="text-4xl font-bold text-gray-900">{productName}</h1>
+          <h1 className="text-4xl font-bold text-gray-900">{`${manufacturer} ${productName}`}</h1>
 
           <div className="flex flex-col gap-1 text-base text-gray-600">
             {category && (

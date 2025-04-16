@@ -46,17 +46,79 @@ export async function GET(request: NextRequest) {
 
     // Use raw SQL for more complex query with proper joins
     const productsQuery = sql`
+      WITH product_matches AS (
+        SELECT 
+          p.id, 
+          p.name, 
+          p.description,
+          p.form,
+          p.unit,
+          p.tags,
+          p."createdAt",
+          c.name AS "categoryName",
+          m.name AS "manufacturerName",
+          COUNT(*) OVER() AS "totalCount"
+        FROM "Product" p
+        LEFT JOIN "Category" c ON p."categoryId" = c.id
+        LEFT JOIN "Manufacturer" m ON p."manufacturerId" = m.id
+        LEFT JOIN "ProductVariant" v ON v."productId" = p.id
+        WHERE 1=1
+          ${
+            searchPattern
+              ? sql`AND (
+            p.name ILIKE ${searchPattern}
+            OR p.description ILIKE ${searchPattern}
+            OR c.name ILIKE ${searchPattern}
+            OR m.name ILIKE ${searchPattern}
+            OR CAST(v.potency AS TEXT) ILIKE ${searchPattern}
+            OR v."variantName" ILIKE ${searchPattern}
+            OR ${searchPattern} = ANY(p.tags)
+          )`
+              : sql``
+          }
+          ${
+            categoryFilter
+              ? sql`AND c.name ILIKE ${`%${categoryFilter}%`}`
+              : sql``
+          }
+          ${
+            manufacturerFilter
+              ? sql`AND m.name ILIKE ${`%${manufacturerFilter}%`}`
+              : sql``
+          }
+          ${
+            potencyFilter
+              ? sql`AND CAST(v.potency AS TEXT) ILIKE ${`%${potencyFilter}%`}`
+              : sql``
+          }
+          ${
+            formFilter
+              ? sql`AND CAST(p.form AS TEXT) ILIKE ${`%${formFilter}%`}`
+              : sql``
+          }
+          AND p.status = 'ACTIVE'
+          AND (v.discontinued = FALSE OR v.discontinued IS NULL)
+        GROUP BY p.id, c.name, m.name
+        ORDER BY 
+          CASE 
+            WHEN ${
+              searchPattern ? sql`p.name ILIKE ${searchPattern}` : sql`FALSE`
+            } THEN 1
+            WHEN ${
+              searchPattern ? sql`c.name ILIKE ${searchPattern}` : sql`FALSE`
+            } THEN 2
+            WHEN ${
+              searchPattern ? sql`m.name ILIKE ${searchPattern}` : sql`FALSE`
+            } THEN 3
+            ELSE 4
+          END,
+          p."createdAt" DESC
+        LIMIT ${limit}
+        OFFSET ${offset}
+      )
       SELECT 
-        p.id, 
-        p.name, 
-        p.description,
-        p.form,
-        p.unit,
-        p.tags,
-        c.name AS "categoryName",
-        m.name AS "manufacturerName",
+        pm.*,
         MIN(v."sellingPrice") AS "minPrice",
-        COUNT(*) OVER() AS "totalCount",
         JSON_AGG(DISTINCT jsonb_build_object(
           'id', v.id,
           'variantName', v."variantName",
@@ -69,50 +131,9 @@ export async function GET(request: NextRequest) {
           'variantImage', v."variantImage",
           'stockByLocation', v."stockByLocation"
         )) AS "variants"
-      FROM "Product" p
-      LEFT JOIN "Category" c ON p."categoryId" = c.id
-      LEFT JOIN "Manufacturer" m ON p."manufacturerId" = m.id
-      LEFT JOIN "ProductVariant" v ON v."productId" = p.id
-      WHERE 1=1
-        ${
-          searchPattern
-            ? sql`AND (
-          p.name ILIKE ${searchPattern}
-          OR p.description ILIKE ${searchPattern}
-          OR c.name ILIKE ${searchPattern}
-          OR m.name ILIKE ${searchPattern}
-          OR ${searchPattern} = ANY(p.tags)
-        )`
-            : sql``
-        }
-        ${
-          categoryFilter
-            ? sql`AND c.name ILIKE ${`%${categoryFilter}%`}`
-            : sql``
-        }
-        ${
-          manufacturerFilter
-            ? sql`AND m.name ILIKE ${`%${manufacturerFilter}%`}`
-            : sql``
-        }
-        ${potencyFilter ? sql`AND v.potency = ${potencyFilter}` : sql``}
-        ${formFilter ? sql`AND p.form = ${formFilter}` : sql``}
-        AND p.status = 'ACTIVE'
-        AND (v.discontinued = FALSE OR v.discontinued IS NULL)
-      GROUP BY p.id, c.name, m.name
-      ORDER BY 
-        CASE 
-          WHEN ${
-            searchPattern ? sql`p.name ILIKE ${searchPattern}` : sql`FALSE`
-          } THEN 1
-          WHEN ${
-            searchPattern ? sql`c.name ILIKE ${searchPattern}` : sql`FALSE`
-          } THEN 2
-          ELSE 3
-        END,
-        p."createdAt" DESC
-      LIMIT ${limit}
-      OFFSET ${offset}
+      FROM product_matches pm
+      LEFT JOIN "ProductVariant" v ON v."productId" = pm.id
+      GROUP BY pm.id, pm.name, pm.description, pm.form, pm.unit, pm.tags, pm."createdAt", pm."categoryName", pm."manufacturerName", pm."totalCount"
     `
 
     const products = (await db.execute(productsQuery)).rows

@@ -40,17 +40,44 @@ export async function GET(request: NextRequest) {
     const searchPattern = `%${sanitizedQuery}%`
 
     // Improved SQL query with proper joins for related tables
-    // and more accurate grouping/selection logic
+    // using Common Table Expression (CTE) to avoid GROUP BY issues
     const products = await db.execute(sql`
+      WITH product_matches AS (
+        SELECT 
+          p.id, 
+          p.name, 
+          p.description,
+          p.form,
+          p.unit,
+          p.tags,
+          c.name AS "categoryName",
+          m.name AS "manufacturerName"
+        FROM "Product" p
+        LEFT JOIN "Category" c ON p."categoryId" = c.id
+        LEFT JOIN "Manufacturer" m ON p."manufacturerId" = m.id
+        LEFT JOIN "ProductVariant" v ON v."productId" = p.id
+        WHERE 
+          (p.name ILIKE ${searchPattern} OR
+          p.description ILIKE ${searchPattern} OR
+          c.name ILIKE ${searchPattern} OR
+          m.name ILIKE ${searchPattern} OR
+          CAST(v.potency AS TEXT) ILIKE ${searchPattern} OR
+          v."variantName" ILIKE ${searchPattern} OR
+          ${searchPattern} = ANY(p.tags))
+          AND p.status = 'ACTIVE'
+          AND (v.discontinued = FALSE OR v.discontinued IS NULL)
+        GROUP BY p.id, c.name, m.name
+        ORDER BY 
+          CASE 
+            WHEN p.name ILIKE ${searchPattern} THEN 1
+            WHEN c.name ILIKE ${searchPattern} THEN 2
+            WHEN m.name ILIKE ${searchPattern} THEN 3
+            ELSE 4
+          END
+        LIMIT 5
+      )
       SELECT 
-        p.id, 
-        p.name, 
-        p.description,
-        p.form,
-        p.unit,
-        p.tags,
-        c.name AS "categoryName",
-        m.name AS "manufacturerName",
+        pm.*,
         MIN(v."sellingPrice") AS "minPrice",
         JSON_AGG(DISTINCT jsonb_build_object(
           'id', v.id,
@@ -63,24 +90,9 @@ export async function GET(request: NextRequest) {
           'discountType', v."discountType",
           'variantImage', v."variantImage"
         )) AS "variants"
-      FROM "Product" p
-      LEFT JOIN "Category" c ON p."categoryId" = c.id
-      LEFT JOIN "Manufacturer" m ON p."manufacturerId" = m.id
-      LEFT JOIN "ProductVariant" v ON v."productId" = p.id
-      WHERE 
-        (p.name ILIKE ${searchPattern} OR
-        c.name ILIKE ${searchPattern} OR
-        m.name ILIKE ${searchPattern})
-        AND p.status = 'ACTIVE'
-        AND (v.discontinued = FALSE OR v.discontinued IS NULL)
-      GROUP BY p.id, c.name, m.name
-      ORDER BY 
-        CASE 
-          WHEN p.name ILIKE ${searchPattern} THEN 1
-          WHEN c.name ILIKE ${searchPattern} THEN 2
-          ELSE 3
-        END
-      LIMIT 5
+      FROM product_matches pm
+      LEFT JOIN "ProductVariant" v ON v."productId" = pm.id
+      GROUP BY pm.id, pm.name, pm.description, pm.form, pm.unit, pm.tags, pm."categoryName", pm."manufacturerName"
     `)
 
     // Transform the response to match the expected format

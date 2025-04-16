@@ -141,22 +141,29 @@ const DesktopNavigation = () => {
         </PopoverTrigger>
         <PopoverContent className="flex w-fit flex-col rounded-none p-0">
           <SubmenuLink
-            href="/products/dilutions"
+            href="/products/homeopathy/dilutions"
             title="Dilutions (Potencies)"
             onClick={() => {
               homeopathicPopover.onOpenChange(false)
             }}
           />
           <SubmenuLink
-            href="/products/mothertinctures"
+            href="/products/homeopathy/mothertinctures"
             title="Mother Tinctures"
             onClick={() => {
               homeopathicPopover.onOpenChange(false)
             }}
           />
           <SubmenuLink
-            href="/products/biochemic"
-            title="Biochemic & Biocombinations"
+            href="/products/homeopathy/biochemics"
+            title="Biochemics"
+            onClick={() => {
+              homeopathicPopover.onOpenChange(false)
+            }}
+          />
+          <SubmenuLink
+            href="/products/homeopathy/biocombinations"
+            title="Biocombinations"
             onClick={() => {
               homeopathicPopover.onOpenChange(false)
             }}
@@ -243,7 +250,7 @@ const DesktopNavigation = () => {
           pathname.includes("/products/ointments") ? "text-brand underline" : ""
         )}
       >
-        <Link href="/products/ointments" className="font-medium">
+        <Link href="/ailments" className="font-medium">
           AILMENT
         </Link>
       </Button>
