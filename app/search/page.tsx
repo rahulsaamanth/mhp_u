@@ -84,7 +84,7 @@ export default function SearchPage() {
         unit?: string
         variants?: ApiVariant[]
         categoryName?: string
-        manufacturerName?: string
+        manufacturer?: string
         description?: string
       }
 
@@ -122,7 +122,7 @@ export default function SearchPage() {
             potencies: uniquePotencies,
             packSizes: uniquePackSizes,
             category: product.categoryName,
-            manufacturer: product.manufacturerName,
+            manufacturer: product.manufacturer,
             description: product.description,
             variants: product.variants,
           }
@@ -147,7 +147,7 @@ export default function SearchPage() {
   }, [query, category, manufacturer, potency, form, setPage])
 
   return (
-    <div className="container mx-auto py-8 px-4">
+    <div className="container mx-auto py-8 px-4 min-h-[50vh]">
       <h1 className="text-2xl font-bold mb-6">
         {query ? `Search results for "${query}"` : "All Products"}
       </h1>
@@ -160,131 +160,148 @@ export default function SearchPage() {
         <div>Error: {searchQuery.error.message}</div>
       ) : (
         <div>
-          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-6">
-            {(searchQuery.data?.products || []).map((product) => (
-              <ProductCard key={product.id} product={product} />
-            ))}
-          </div>
-
-          {searchQuery.data?.totalPages > 1 && (
-            <div className="mt-12 mb-6">
-              <div className="flex flex-wrap items-center justify-center gap-1 md:gap-2">
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  onClick={() => setPage(Math.max(1, Number(page) - 1))}
-                  disabled={page <= 1}
-                  className="h-10 w-10 rounded-full border border-gray-200 text-gray-500 hover:bg-brand/5 hover:text-brand disabled:opacity-50"
-                  aria-label="Previous page"
-                >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="18"
-                    height="18"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  >
-                    <path d="m15 18-6-6 6-6" />
-                  </svg>
-                </Button>
-
-                {/* Always show first page */}
-                {page > 3 && (
-                  <>
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={() => setPage(1)}
-                      className={`rounded-full min-w-10 h-10 text-sm font-medium hover:bg-brand/5 hover:text-brand`}
-                    >
-                      1
-                    </Button>
-                    {page > 4 && (
-                      <span className="px-1 text-gray-400">...</span>
-                    )}
-                  </>
-                )}
-
-                {/* Show pages around current page */}
-                {Array.from({ length: searchQuery.data?.totalPages }).map(
-                  (_, idx) => {
-                    const pageNumber = idx + 1
-                    // Show current page and 1 page before and after
-                    if (pageNumber >= page - 1 && pageNumber <= page + 1) {
-                      if (
-                        pageNumber >= 1 &&
-                        pageNumber <= searchQuery.data?.totalPages
-                      ) {
-                        return (
-                          <Button
-                            key={idx}
-                            variant={page === pageNumber ? "default" : "ghost"}
-                            size="sm"
-                            onClick={() => setPage(pageNumber)}
-                            className={`rounded-full min-w-10 h-10 text-sm font-medium ${
-                              page === pageNumber
-                                ? "bg-brand hover:bg-brand/90 text-white"
-                                : "hover:bg-brand/5 hover:text-brand"
-                            }`}
-                          >
-                            {pageNumber}
-                          </Button>
-                        )
-                      }
-                    }
-                    return null
-                  }
-                )}
-
-                {/* Always show last page */}
-                {page < searchQuery.data?.totalPages - 2 && (
-                  <>
-                    {page < searchQuery.data?.totalPages - 3 && (
-                      <span className="px-1 text-gray-400">...</span>
-                    )}
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={() => setPage(searchQuery.data?.totalPages)}
-                      className={`rounded-full min-w-10 h-10 text-sm font-medium hover:bg-brand/5 hover:text-brand`}
-                    >
-                      {searchQuery.data?.totalPages}
-                    </Button>
-                  </>
-                )}
-
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  onClick={() => setPage(Number(page) + 1)}
-                  disabled={page >= searchQuery.data?.totalPages}
-                  className="h-10 w-10 rounded-full border border-gray-200 text-gray-500 hover:bg-brand/5 hover:text-brand disabled:opacity-50"
-                  aria-label="Next page"
-                >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="18"
-                    height="18"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  >
-                    <path d="m9 18 6-6-6-6" />
-                  </svg>
-                </Button>
-              </div>
-
-              <p className="text-center text-sm text-gray-500 mt-3">
-                Showing page {page} of {searchQuery.data?.totalPages}
+          {searchQuery.data?.products.length === 0 ? (
+            <div className="flex flex-col items-center justify-center h-64">
+              <p className="text-lg text-gray-500">
+                No products found
+                {query ? ` for "${query}"` : ""}
+                {category ? ` in category "${category}"` : ""}
+                {manufacturer ? ` from manufacturer "${manufacturer}"` : ""}
+                {potency ? ` with potency "${potency}"` : ""}
+                {form ? ` in form "${form}"` : ""}
               </p>
             </div>
+          ) : (
+            <>
+              <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-6">
+                {(searchQuery.data?.products || []).map((product) => (
+                  <ProductCard key={product.id} product={product} />
+                ))}
+              </div>
+
+              {searchQuery.data?.totalPages > 1 && (
+                <div className="mt-12 mb-6">
+                  <div className="flex flex-wrap items-center justify-center gap-1 md:gap-2">
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      onClick={() => setPage(Math.max(1, Number(page) - 1))}
+                      disabled={page <= 1}
+                      className="h-10 w-10 rounded-full border border-gray-200 text-gray-500 hover:bg-brand/5 hover:text-brand disabled:opacity-50"
+                      aria-label="Previous page"
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="18"
+                        height="18"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      >
+                        <path d="m15 18-6-6 6-6" />
+                      </svg>
+                    </Button>
+
+                    {/* Always show first page */}
+                    {page > 3 && (
+                      <>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => setPage(1)}
+                          className={`rounded-full min-w-10 h-10 text-sm font-medium hover:bg-brand/5 hover:text-brand`}
+                        >
+                          1
+                        </Button>
+                        {page > 4 && (
+                          <span className="px-1 text-gray-400">...</span>
+                        )}
+                      </>
+                    )}
+
+                    {/* Show pages around current page */}
+                    {Array.from({ length: searchQuery.data?.totalPages }).map(
+                      (_, idx) => {
+                        const pageNumber = idx + 1
+                        // Show current page and 1 page before and after
+                        if (pageNumber >= page - 1 && pageNumber <= page + 1) {
+                          if (
+                            pageNumber >= 1 &&
+                            pageNumber <= searchQuery.data?.totalPages
+                          ) {
+                            return (
+                              <Button
+                                key={idx}
+                                variant={
+                                  page === pageNumber ? "default" : "ghost"
+                                }
+                                size="sm"
+                                onClick={() => setPage(pageNumber)}
+                                className={`rounded-full min-w-10 h-10 text-sm font-medium ${
+                                  page === pageNumber
+                                    ? "bg-brand hover:bg-brand/90 text-white"
+                                    : "hover:bg-brand/5 hover:text-brand"
+                                }`}
+                              >
+                                {pageNumber}
+                              </Button>
+                            )
+                          }
+                        }
+                        return null
+                      }
+                    )}
+
+                    {/* Always show last page */}
+                    {page < searchQuery.data?.totalPages - 2 && (
+                      <>
+                        {page < searchQuery.data?.totalPages - 3 && (
+                          <span className="px-1 text-gray-400">...</span>
+                        )}
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => setPage(searchQuery.data?.totalPages)}
+                          className={`rounded-full min-w-10 h-10 text-sm font-medium hover:bg-brand/5 hover:text-brand`}
+                        >
+                          {searchQuery.data?.totalPages}
+                        </Button>
+                      </>
+                    )}
+
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      onClick={() => setPage(Number(page) + 1)}
+                      disabled={page >= searchQuery.data?.totalPages}
+                      className="h-10 w-10 rounded-full border border-gray-200 text-gray-500 hover:bg-brand/5 hover:text-brand disabled:opacity-50"
+                      aria-label="Next page"
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="18"
+                        height="18"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      >
+                        <path d="m9 18 6-6-6-6" />
+                      </svg>
+                    </Button>
+                  </div>
+
+                  <p className="text-center text-sm text-gray-500 mt-3">
+                    Showing page {page} of {searchQuery.data?.totalPages}
+                  </p>
+                </div>
+              )}
+            </>
           )}
         </div>
       )}
