@@ -129,7 +129,7 @@ const CartItemComponent = memo(
                 <Button
                   variant="outline"
                   size="sm"
-                  className="flex items-center justify-evenly gap-1 text-nowrap px-2 flex-1 sm:flex-auto hover:bg-brand hover:text-brand-foreground"
+                  className="flex items-center justify-evenly gap-1 text-nowrap px-2 flex-1 sm:flex-auto cursor-pointer"
                   onClick={() => onAddToAccount(item)}
                   disabled={isPending}
                 >
@@ -140,7 +140,7 @@ const CartItemComponent = memo(
                   variant="destructive"
                   size="sm"
                   onClick={() => onRemove(item.id)}
-                  className="flex items-center justify-evenly gap-1 px-2 flex-1 sm:flex-auto"
+                  className="flex items-center justify-evenly gap-1 px-2 flex-1 sm:flex-auto cursor-pointer"
                   disabled={isPending}
                 >
                   <Trash className="h-3 w-3" />
@@ -569,7 +569,7 @@ export default function CartPage() {
                       variant="outline"
                       size="sm"
                       onClick={addAllToAccountCart}
-                      className="cursor-pointer hover:bg-brand hover:text-brand-foreground transition-colors"
+                      className="cursor-pointer"
                     >
                       <PlusCircle className="size-4 mr-2" />
                       Add All to Account

@@ -18,6 +18,7 @@ interface FilterSidebarProps {
   currentCategory: string
   currentManufacturer?: string
   currentLetter?: string
+  currentAilment?: string
 }
 
 export default function FilterSidebar({
@@ -27,15 +28,21 @@ export default function FilterSidebar({
   currentCategory,
   currentManufacturer,
   currentLetter,
+  currentAilment,
 }: FilterSidebarProps) {
   // Helper function to build URLs with the correct parameters
-  const getFilterUrl = (params: { manufacturer?: string; letter?: string }) => {
+  const getFilterUrl = (params: {
+    manufacturer?: string
+    letter?: string
+    ailment?: string
+  }) => {
     const searchParams = new URLSearchParams()
 
     // Only add parameters that have values
     if (params.manufacturer)
       searchParams.set("manufacturer", params.manufacturer)
     if (params.letter) searchParams.set("letter", params.letter)
+    if (params.ailment) searchParams.set("ailment", params.ailment)
 
     const queryString = searchParams.toString()
     return `/products/${currentCategory}${queryString ? `?${queryString}` : ""}`
@@ -177,7 +184,7 @@ export default function FilterSidebar({
       </Accordion>
 
       {/* Show Applied Filters */}
-      {(currentManufacturer || currentLetter) && (
+      {(currentManufacturer || currentLetter || currentAilment) && (
         <div className="mt-4">
           <h3 className="text-sm font-medium mb-2">Applied Filters:</h3>
           <div className="flex flex-wrap gap-2">
@@ -187,6 +194,7 @@ export default function FilterSidebar({
                 <Link
                   href={getFilterUrl({
                     letter: currentLetter,
+                    ailment: currentAilment,
                   })}
                 >
                   <span className="ml-1 cursor-pointer">×</span>
@@ -199,6 +207,24 @@ export default function FilterSidebar({
                 <Link
                   href={getFilterUrl({
                     manufacturer: currentManufacturer,
+                    ailment: currentAilment,
+                  })}
+                >
+                  <span className="ml-1 cursor-pointer">×</span>
+                </Link>
+              </Badge>
+            )}
+            {currentAilment && (
+              <Badge variant="secondary" className="flex gap-1 items-center">
+                Ailment:{" "}
+                {currentAilment
+                  .split("-")
+                  .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+                  .join(" ")}
+                <Link
+                  href={getFilterUrl({
+                    manufacturer: currentManufacturer,
+                    letter: currentLetter,
                   })}
                 >
                   <span className="ml-1 cursor-pointer">×</span>
@@ -206,7 +232,7 @@ export default function FilterSidebar({
               </Badge>
             )}
           </div>
-          {(currentManufacturer || currentLetter) && (
+          {(currentManufacturer || currentLetter || currentAilment) && (
             <Link
               href={`/products/${currentCategory}`}
               className="text-sm text-brand mt-2 inline-block hover:underline"

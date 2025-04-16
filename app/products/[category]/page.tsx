@@ -6,7 +6,8 @@ import FilterSidebar from "./_components/filter-sidebar"
 async function getProductsByCategory(
   category: string,
   manufacturer?: string,
-  letter?: string
+  letter?: string,
+  ailment?: string
 ): Promise<{
   products: ProductCardProps[]
   manufacturers: string[]
@@ -32,6 +33,20 @@ async function getProductsByCategory(
   if (letter) {
     conditions += ` AND p.name ILIKE $${params.length + 1}`
     params.push(`${letter}%`)
+  }
+
+  // Add ailment filter if provided
+  if (ailment) {
+    // Normalize the ailment string by removing hyphens and other symbols
+    // and use ILIKE for case-insensitive matching
+    const normalizedAilment = ailment.replace(/[^a-zA-Z0-9]/g, "")
+
+    // Use ILIKE with ANY operator for case-insensitive array search
+    conditions += ` AND EXISTS (
+      SELECT 1 FROM unnest(p.tags) tag 
+      WHERE tag ILIKE $${params.length + 1}
+    )`
+    params.push(`%${normalizedAilment}%`)
   }
 
   // Simple sort by name
@@ -82,25 +97,27 @@ async function getProductsByCategory(
   )
 
   // Get manufacturers based on filters
-  const manufacturersQuery = category.toLowerCase() === "all" 
-    ? `
+  const manufacturersQuery =
+    category.toLowerCase() === "all"
+      ? `
       SELECT DISTINCT m.name
       FROM "Product" p
       JOIN "Manufacturer" m ON p."manufacturerId" = m."id"
       WHERE p.status = 'ACTIVE'
       ORDER BY m.name ASC
     `
-    : `
+      : `
       SELECT DISTINCT m.name
       FROM "Product" p
       JOIN "Category" c ON p."categoryId" = c."id"
       JOIN "Manufacturer" m ON p."manufacturerId" = m."id"
       WHERE c.name ILIKE $1
       ORDER BY m.name ASC
-    `;
+    `
 
-  const manufacturerParams = category.toLowerCase() === "all" ? [] : [`%${category}%`];
-  
+  const manufacturerParams =
+    category.toLowerCase() === "all" ? [] : [`%${category}%`]
+
   const manufacturers = await executeRawQuery<{ name: string }>(
     manufacturersQuery,
     manufacturerParams
@@ -134,6 +151,7 @@ interface PageProps {
     manufacturer?: string
     letter?: string
     page?: string
+    ailment?: string
   }
 }
 
@@ -141,15 +159,11 @@ export default async function ProductsOfCategoryPage({
   params,
   searchParams,
 }: {
-  params: Promise<{ category: string }>
-  searchParams: Promise<{
-    manufacturer?: string
-    letter?: string
-    page?: string
-  }>
+  params: Promise<PageProps["params"]>
+  searchParams: Promise<PageProps["searchParams"]>
 }) {
   const { category } = await params
-  const { manufacturer, letter } = await searchParams
+  const { manufacturer, letter, ailment } = await searchParams
 
   // Format category name for display
   const formattedCategory = category
@@ -161,7 +175,8 @@ export default async function ProductsOfCategoryPage({
   const { products, manufacturers, categories } = await getProductsByCategory(
     category,
     manufacturer,
-    letter
+    letter,
+    ailment
   )
 
   // Generate alphabet array for letter filtering
@@ -185,6 +200,7 @@ export default async function ProductsOfCategoryPage({
             currentCategory={category}
             currentManufacturer={manufacturer}
             currentLetter={letter}
+            currentAilment={ailment}
           />
         </div>
 

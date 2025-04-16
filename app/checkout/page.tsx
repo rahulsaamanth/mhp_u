@@ -60,7 +60,7 @@ export default function CheckoutPage() {
 
   if (isLoading) {
     return (
-      <div className="container mx-auto py-10 text-center">
+      <div className="container mx-auto py-10 text-center min-h-[50vh]">
         <p>Loading checkout...</p>
       </div>
     )
@@ -68,7 +68,7 @@ export default function CheckoutPage() {
 
   if (cartItems.length === 0) {
     return (
-      <div className="container mx-auto py-10 text-center">
+      <div className="container mx-auto py-10 text-center min-h-[50vh]">
         <h1 className="text-2xl font-bold mb-4">Your cart is empty</h1>
         <p className="mb-6">
           Add items to your cart before proceeding to checkout.
@@ -81,7 +81,7 @@ export default function CheckoutPage() {
   }
 
   return (
-    <div className="container mx-auto py-10 px-4">
+    <div className="container mx-auto py-10 px-4 min-h-[50vh]">
       <h1 className="text-2xl font-bold mb-8">Checkout</h1>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
