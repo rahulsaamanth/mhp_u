@@ -74,7 +74,7 @@ const DesktopNavigation = () => {
   const pathname = usePathname()
 
   return (
-    <div className="flex justify-center items-center w-full gap-4 lg:gap-8">
+    <div className="flex justify-center items-center w-full xl:gap-6 px-2">
       {/* HOME */}
       <Button
         variant="link"
