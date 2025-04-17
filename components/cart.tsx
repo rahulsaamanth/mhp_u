@@ -66,7 +66,12 @@ export default function Cart() {
 
   return (
     <Link href="/cart" className="cursor-pointer relative">
-      <Button variant="link" className="cursor-pointer text-brand">
+      <Button
+        variant="link"
+        className={`cursor-pointer text-brand transition-all duration-150 active:scale-95 ${
+          user ? "text-brand" : "text-black"
+        }`}
+      >
         <ShoppingCart className="size-5 md:size-6" />
         {totalItemCount > 0 && (
           <Badge

@@ -7,6 +7,7 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover"
 import { cn } from "@/lib/utils"
+import { ChevronDown } from "lucide-react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { useState } from "react"
@@ -51,7 +52,7 @@ function SubmenuLink({
     <Link
       href={href}
       className={cn(
-        "hover:bg-accent px-4 py-2 hover:border-b",
+        "hover:bg-accent px-4 py-2 hover:border-b transition-all duration-150 active:scale-95",
         isActive
           ? "text-brand border-b border-brand"
           : "hover:text-brand hover:border-brand"
@@ -82,7 +83,10 @@ const DesktopNavigation = () => {
           pathname === "/" ? "text-brand underline" : ""
         )}
       >
-        <Link href="/" className="font-medium">
+        <Link
+          href="/"
+          className="font-medium transition-all duration-150 active:scale-95"
+        >
           HOME
         </Link>
       </Button>
@@ -100,7 +104,8 @@ const DesktopNavigation = () => {
               pathname.includes("/about/") ? "text-brand underline" : ""
             )}
           >
-            ABOUT US ⏷
+            ABOUT US
+            <ChevronDown className="size-4" />
           </Button>
         </PopoverTrigger>
         <PopoverContent className="flex w-fit flex-col rounded-none p-0">
@@ -136,7 +141,8 @@ const DesktopNavigation = () => {
                 : ""
             )}
           >
-            HOMEOPATHIC ⏷
+            HOMEOPATHIC
+            <ChevronDown className="size-4" />
           </Button>
         </PopoverTrigger>
         <PopoverContent className="flex w-fit flex-col rounded-none p-0">
@@ -200,7 +206,8 @@ const DesktopNavigation = () => {
                 : ""
             )}
           >
-            PERSONAL CARE ⏷
+            PERSONAL CARE
+            <ChevronDown className="size-4" />
           </Button>
         </PopoverTrigger>
         <PopoverContent className="flex w-fit flex-col rounded-none p-0">
@@ -250,7 +257,10 @@ const DesktopNavigation = () => {
           pathname.includes("/products/ointments") ? "text-brand underline" : ""
         )}
       >
-        <Link href="/ailments" className="font-medium">
+        <Link
+          href="/ailments"
+          className="font-medium transition-all duration-150 active:scale-95"
+        >
           AILMENT
         </Link>
       </Button>
@@ -263,7 +273,10 @@ const DesktopNavigation = () => {
           pathname.includes("/brands") ? "text-brand underline" : ""
         )}
       >
-        <Link href="/brands" className="font-medium">
+        <Link
+          href="/brands"
+          className="font-medium transition-all duration-150 active:scale-95"
+        >
           BRANDS
         </Link>
       </Button>
@@ -286,7 +299,8 @@ const DesktopNavigation = () => {
                 : ""
             )}
           >
-            OTHER PRODUCTS ⏷
+            OTHER PRODUCTS
+            <ChevronDown className="size-4" />
           </Button>
         </PopoverTrigger>
         <PopoverContent className="flex w-fit flex-col rounded-none p-0">
@@ -322,7 +336,10 @@ const DesktopNavigation = () => {
           pathname.includes("/about-homeopathy") ? "text-brand underline" : ""
         )}
       >
-        <Link href="/about-homeopathy" className="font-medium">
+        <Link
+          href="/about-homeopathy"
+          className="font-medium transition-all duration-150 active:scale-95"
+        >
           ABOUT HOMEOPATHY
         </Link>
       </Button>

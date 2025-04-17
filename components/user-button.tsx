@@ -25,7 +25,7 @@ export default function UserButton() {
         <Button
           variant="default"
           size="sm"
-          className="cursor-pointer text-xs bg-brand rounded-none hover:bg-brand/80"
+          className="cursor-pointer text-xs bg-brand rounded-none hover:bg-brand/80 transition-all duration-150 active:scale-95 active:bg-brand/70"
         >
           Login/Register
         </Button>

@@ -90,7 +90,12 @@ export function AddToCartButton({
       variant="default"
       onClick={handleAddToCart}
       disabled={adding || disabled}
-      className={`rounded-none py-5 px-4 md:px-3 xl:px-4 cursor-pointer bg-zinc-200 hover:bg-zinc-300 text-black flex items-center justify-center ${
+      className={`rounded-none py-5 px-4 md:px-3 xl:px-4 cursor-pointer 
+      bg-zinc-200 hover:bg-zinc-300 
+      active:bg-zinc-400 active:scale-95 
+      focus:outline-none focus:ring-2 focus:ring-zinc-400 focus:ring-offset-1
+      transition-all duration-150
+      text-black flex items-center justify-center ${
         disabled
           ? "bg-zinc-100 text-gray-400"
           : "bg-zinc-200 hover:bg-zinc-300 text-black"

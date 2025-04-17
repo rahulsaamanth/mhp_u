@@ -3,6 +3,7 @@
 import { Input } from "./ui/input"
 import { Button } from "./ui/button"
 import { Mail, Phone, Clock, MapPin } from "lucide-react"
+import Link from "next/link"
 
 export default function Footer() {
   return (
@@ -30,18 +31,21 @@ export default function Footer() {
             <div className="space-y-3">
               <div className="flex items-center space-x-2">
                 <Phone className="w-5 h-5" />
-                <a href="tel:+919876543210" className="text-sm hover:underline">
+                <Link
+                  href="tel:+919980555914"
+                  className="text-sm relative after:content-[''] after:absolute after:bottom-0 after:left-0 after:h-[1px] after:bg-current after:w-0 hover:after:w-full after:transition-all after:duration-300 active:text-white/70 active:scale-95"
+                >
                   +91 99805 55914
-                </a>
+                </Link>
               </div>
               <div className="flex items-center space-x-2">
                 <Mail className="w-5 h-5" />
-                <a
+                <Link
                   href="mailto:info@homeosouth.com"
-                  className="text-sm hover:underline"
+                  className="text-sm relative after:content-[''] after:absolute after:bottom-0 after:left-0 after:h-[1px] after:bg-current after:w-0 hover:after:w-full after:transition-all after:duration-300 active:text-white/70 active:scale-95"
                 >
                   info@homeosouth.com
-                </a>
+                </Link>
               </div>
             </div>
           </div>
@@ -72,7 +76,7 @@ export default function Footer() {
                 placeholder="Enter your email"
                 className="bg-white/10 border-white/20 placeholder:text-white/60 focus-visible:outline-0 focus-visible:border-0 focus-visible:ring-0"
               />
-              <Button className="w-full bg-white text-brand hover:bg-white/90">
+              <Button className="w-full bg-white text-brand hover:bg-white/90 transition-all duration-150 active:scale-95">
                 Subscribe
               </Button>
             </form>
@@ -83,52 +87,76 @@ export default function Footer() {
         <div className="border-t border-white/20 pt-8 mb-8">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             <div>
-              <h4 className="font-semibold mb-3">Products</h4>
+              <h4 className="font-semibold mb-3">Homeoapthy</h4>
               <ul className="space-y-2 text-sm">
                 <li>
-                  <a href="#" className="hover:underline">
-                    Homeopathic Medicines
-                  </a>
+                  <Link
+                    href="/products/homeopathy/dilutions"
+                    className="transition-all duration-200 active:scale-95 active:text-gray-400 relative after:content-[''] after:absolute after:bottom-0 after:left-0 after:h-[1px] after:bg-current after:w-0 hover:after:w-full after:transition-all after:duration-300"
+                  >
+                    dilutions
+                  </Link>
                 </li>
                 <li>
-                  <a href="#" className="hover:underline">
-                    Health Supplements
-                  </a>
-                </li>
-                <li>
-                  <a href="#" className="hover:underline">
+                  <Link
+                    href="/products/homeopathy/mother-tinctures"
+                    className="transition-all duration-200 active:scale-95 active:text-gray-400 relative after:content-[''] after:absolute after:bottom-0 after:left-0 after:h-[1px] after:bg-current after:w-0 hover:after:w-full after:transition-all after:duration-300"
+                  >
                     Mother Tinctures
-                  </a>
+                  </Link>
                 </li>
                 <li>
-                  <a href="#" className="hover:underline">
+                  <Link
+                    href="/products/homeopathy/biochemics"
+                    className="transition-all duration-200 active:scale-95 active:text-gray-400 relative after:content-[''] after:absolute after:bottom-0 after:left-0 after:h-[1px] after:bg-current after:w-0 hover:after:w-full after:transition-all after:duration-300"
+                  >
+                    Biochemics
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    href="/products/homeopathy/bio-combinations"
+                    className="transition-all duration-200 active:scale-95 active:text-gray-400 relative after:content-[''] after:absolute after:bottom-0 after:left-0 after:h-[1px] after:bg-current after:w-0 hover:after:w-full after:transition-all after:duration-300"
+                  >
                     Bio Combinations
-                  </a>
+                  </Link>
                 </li>
               </ul>
             </div>
             <div>
-              <h4 className="font-semibold mb-3">Services</h4>
+              <h4 className="font-semibold mb-3">Other Products</h4>
               <ul className="space-y-2 text-sm">
                 <li>
-                  <a href="#" className="hover:underline">
-                    Online Consultation
-                  </a>
+                  <Link
+                    href="/products/personal-care"
+                    className="transition-all duration-200 active:scale-95 active:text-gray-400 relative after:content-[''] after:absolute after:bottom-0 after:left-0 after:h-[1px] after:bg-current after:w-0 hover:after:w-full after:transition-all after:duration-300"
+                  >
+                    Personal Care
+                  </Link>
                 </li>
                 <li>
-                  <a href="#" className="hover:underline">
-                    Medicine Delivery
-                  </a>
+                  <Link
+                    href="/products/herbals"
+                    className="transition-all duration-200 active:scale-95 active:text-gray-400 relative after:content-[''] after:absolute after:bottom-0 after:left-0 after:h-[1px] after:bg-current after:w-0 hover:after:w-full after:transition-all after:duration-300"
+                  >
+                    Herbals
+                  </Link>
                 </li>
                 <li>
-                  <a href="#" className="hover:underline">
-                    Health Packages
-                  </a>
+                  <Link
+                    href="/products/ointments"
+                    className="transition-all duration-200 active:scale-95 active:text-gray-400 relative after:content-[''] after:absolute after:bottom-0 after:left-0 after:h-[1px] after:bg-current after:w-0 hover:after:w-full after:transition-all after:duration-300"
+                  >
+                    Ointments
+                  </Link>
                 </li>
                 <li>
-                  <a href="#" className="hover:underline">
-                    Lab Tests
-                  </a>
+                  <Link
+                    href="/products/eye-ear-drops"
+                    className="transition-all duration-200 active:scale-95 active:text-gray-400 relative after:content-[''] after:absolute after:bottom-0 after:left-0 after:h-[1px] after:bg-current after:w-0 hover:after:w-full after:transition-all after:duration-300"
+                  >
+                    Eye & Ear Drops
+                  </Link>
                 </li>
               </ul>
             </div>
@@ -136,24 +164,36 @@ export default function Footer() {
               <h4 className="font-semibold mb-3">Support</h4>
               <ul className="space-y-2 text-sm">
                 <li>
-                  <a href="#" className="hover:underline">
+                  <Link
+                    href="/faqs"
+                    className="transition-all duration-200 active:scale-95 active:text-gray-400 relative after:content-[''] after:absolute after:bottom-0 after:left-0 after:h-[1px] after:bg-current after:w-0 hover:after:w-full after:transition-all after:duration-300"
+                  >
                     FAQs
-                  </a>
+                  </Link>
                 </li>
                 <li>
-                  <a href="#" className="hover:underline">
+                  <Link
+                    href="/shipping-policy"
+                    className="transition-all duration-200 active:scale-95 active:text-gray-400 relative after:content-[''] after:absolute after:bottom-0 after:left-0 after:h-[1px] after:bg-current after:w-0 hover:after:w-full after:transition-all after:duration-300"
+                  >
                     Shipping Policy
-                  </a>
+                  </Link>
                 </li>
                 <li>
-                  <a href="#" className="hover:underline">
+                  <Link
+                    href="/return-policy"
+                    className="transition-all duration-200 active:scale-95 active:text-gray-400 relative after:content-[''] after:absolute after:bottom-0 after:left-0 after:h-[1px] after:bg-current after:w-0 hover:after:w-full after:transition-all after:duration-300"
+                  >
                     Return Policy
-                  </a>
+                  </Link>
                 </li>
                 <li>
-                  <a href="#" className="hover:underline">
+                  <Link
+                    href="/privacy-policy"
+                    className="transition-all duration-200 active:scale-95 active:text-gray-400 relative after:content-[''] after:absolute after:bottom-0 after:left-0 after:h-[1px] after:bg-current after:w-0 hover:after:w-full after:transition-all after:duration-300"
+                  >
                     Privacy Policy
-                  </a>
+                  </Link>
                 </li>
               </ul>
             </div>
@@ -161,24 +201,36 @@ export default function Footer() {
               <h4 className="font-semibold mb-3">Company</h4>
               <ul className="space-y-2 text-sm">
                 <li>
-                  <a href="#" className="hover:underline">
+                  <Link
+                    href="/about-homeopathy"
+                    className="transition-all duration-200 active:scale-95 active:text-gray-400 relative after:content-[''] after:absolute after:bottom-0 after:left-0 after:h-[1px] after:bg-current after:w-0 hover:after:w-full after:transition-all after:duration-300"
+                  >
                     About Us
-                  </a>
+                  </Link>
                 </li>
                 <li>
-                  <a href="#" className="hover:underline">
+                  <Link
+                    href="/team"
+                    className="transition-all duration-200 active:scale-95 active:text-gray-400 relative after:content-[''] after:absolute after:bottom-0 after:left-0 after:h-[1px] after:bg-current after:w-0 hover:after:w-full after:transition-all after:duration-300"
+                  >
                     Our Team
-                  </a>
+                  </Link>
                 </li>
                 <li>
-                  <a href="#" className="hover:underline">
+                  <Link
+                    href="/careers"
+                    className="transition-all duration-200 active:scale-95 active:text-gray-400 relative after:content-[''] after:absolute after:bottom-0 after:left-0 after:h-[1px] after:bg-current after:w-0 hover:after:w-full after:transition-all after:duration-300"
+                  >
                     Careers
-                  </a>
+                  </Link>
                 </li>
                 <li>
-                  <a href="#" className="hover:underline">
+                  <Link
+                    href="/contact"
+                    className="transition-all duration-200 active:scale-95 active:text-gray-400 relative after:content-[''] after:absolute after:bottom-0 after:left-0 after:h-[1px] after:bg-current after:w-0 hover:after:w-full after:transition-all after:duration-300"
+                  >
                     Contact
-                  </a>
+                  </Link>
                 </li>
               </ul>
             </div>

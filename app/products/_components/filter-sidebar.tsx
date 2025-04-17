@@ -53,6 +53,30 @@ export default function FilterSidebar({
     "alphabet",
   ])
 
+  // Store the full list of manufacturers to ensure it's always available
+  const [allManufacturers, setAllManufacturers] =
+    useState<string[]>(manufacturers)
+
+  // Update allManufacturers if the manufacturers prop changes
+  useEffect(() => {
+    // If new manufacturers are provided and they're not empty, update our local state
+    if (manufacturers.length > 0) {
+      setAllManufacturers((prev) => {
+        // Merge the new manufacturers with existing ones and remove duplicates
+        const combined = [...prev, ...manufacturers]
+        return [...new Set(combined)].sort() // Remove duplicates and sort
+      })
+    }
+
+    // If currentManufacturer exists but isn't in our list, add it
+    if (
+      currentManufacturer &&
+      !allManufacturers.includes(currentManufacturer)
+    ) {
+      setAllManufacturers((prev) => [...prev, currentManufacturer].sort())
+    }
+  }, [manufacturers, currentManufacturer])
+
   // Process categories into hierarchical structure
   const organizeCategories = () => {
     // If categories is just an array of strings, convert to a flat structure first
@@ -210,7 +234,7 @@ export default function FilterSidebar({
                 <Link
                   href="/products/all"
                   className={cn(
-                    "text-sm hover:text-brand",
+                    "text-sm hover:text-brand rounded px-2 py-1 transition-colors active:scale-95 active:bg-brand/5",
                     pathname === "/products/all" && "font-semibold text-brand"
                   )}
                 >
@@ -234,7 +258,7 @@ export default function FilterSidebar({
                       <Link
                         href={getCategoryUrl(category)}
                         className={cn(
-                          "text-sm hover:text-brand font-medium",
+                          "text-sm hover:text-brand rounded px-2 py-1 transition-colors active:scale-95 active:bg-brand/5",
                           isActive && "font-semibold text-brand"
                         )}
                       >
@@ -251,7 +275,7 @@ export default function FilterSidebar({
                                 key={subcat.id}
                                 href={getCategoryUrl(subcat)}
                                 className={cn(
-                                  "text-sm hover:text-brand flex items-center",
+                                  "text-sm hover:text-brand flex items-center rounded px-2 py-1 transition-colors active:scale-95 active:bg-brand/5",
                                   isSubActive && "font-semibold text-brand"
                                 )}
                               >
@@ -283,13 +307,13 @@ export default function FilterSidebar({
                   ailment: currentAilment,
                 })}
                 className={cn(
-                  "text-sm hover:text-brand",
+                  "text-sm hover:text-brand rounded px-2 py-1 transition-colors active:scale-95 active:bg-brand/5",
                   !currentManufacturer && "font-semibold text-brand"
                 )}
               >
                 All
               </Link>
-              {manufacturers.map((name) => (
+              {allManufacturers.map((name) => (
                 <Link
                   key={name}
                   href={getFilterUrl({
@@ -298,7 +322,7 @@ export default function FilterSidebar({
                     ailment: currentAilment,
                   })}
                   className={cn(
-                    "text-sm hover:text-brand",
+                    "text-sm hover:text-brand rounded px-2 py-1 transition-colors active:scale-95 active:bg-brand/5",
                     currentManufacturer === name && "font-semibold text-brand"
                   )}
                 >
@@ -324,17 +348,13 @@ export default function FilterSidebar({
                   manufacturer: currentManufacturer,
                   ailment: currentAilment,
                 })}
-                className={
-                  !currentLetter
-                    ? "bg-brand text-white"
-                    : "bg-gray-100 hover:bg-gray-200"
-                }
+                className="text-sm hover:text-brand transition-colors"
               >
                 <Badge
                   variant="outline"
                   className={cn(
-                    "cursor-pointer rounded-sm",
-                    !currentLetter && "bg-brand text-white border-brand"
+                    "cursor-pointer rounded-sm transition-colors active:scale-95 active:bg-brand/5",
+                    !currentLetter && "bg-brand text-white"
                   )}
                 >
                   All
@@ -349,13 +369,13 @@ export default function FilterSidebar({
                     letter,
                     ailment: currentAilment,
                   })}
+                  className="text-sm hover:text-brand transition-colors"
                 >
                   <Badge
                     variant="outline"
                     className={cn(
-                      "cursor-pointer rounded-sm",
-                      currentLetter === letter &&
-                        "bg-brand text-white border-brand"
+                      "cursor-pointer rounded-sm transition-colors active:scale-95 active:bg-brand/5",
+                      currentLetter === letter && "bg-brand text-white"
                     )}
                   >
                     {letter}
@@ -380,8 +400,11 @@ export default function FilterSidebar({
                     letter: currentLetter,
                     ailment: currentAilment,
                   })}
+                  className="rounded-full"
                 >
-                  <span className="ml-1 cursor-pointer">×</span>
+                  <span className="ml-1 cursor-pointer hover:bg-gray-200 rounded-full w-4 h-4 inline-flex items-center justify-center active:bg-gray-300">
+                    ×
+                  </span>
                 </Link>
               </Badge>
             )}
@@ -393,8 +416,11 @@ export default function FilterSidebar({
                     manufacturer: currentManufacturer,
                     ailment: currentAilment,
                   })}
+                  className="rounded-full"
                 >
-                  <span className="ml-1 cursor-pointer">×</span>
+                  <span className="ml-1 cursor-pointer hover:bg-gray-200 rounded-full w-4 h-4 inline-flex items-center justify-center active:bg-gray-300">
+                    ×
+                  </span>
                 </Link>
               </Badge>
             )}
@@ -410,8 +436,11 @@ export default function FilterSidebar({
                     manufacturer: currentManufacturer,
                     letter: currentLetter,
                   })}
+                  className="rounded-full"
                 >
-                  <span className="ml-1 cursor-pointer">×</span>
+                  <span className="ml-1 cursor-pointer hover:bg-gray-200 rounded-full w-4 h-4 inline-flex items-center justify-center active:bg-gray-300">
+                    ×
+                  </span>
                 </Link>
               </Badge>
             )}
@@ -423,7 +452,7 @@ export default function FilterSidebar({
                   ? `/products/${currentCategory}/${currentSubcategory}`
                   : `/products/${currentCategory}`
               }
-              className="text-sm text-brand mt-2 inline-block hover:underline"
+              className="text-sm text-brand mt-2 inline-block hover:underline rounded px-2 py-1"
             >
               Clear All Filters
             </Link>

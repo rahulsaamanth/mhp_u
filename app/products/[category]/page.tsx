@@ -3,6 +3,7 @@ import { ProductCardProps } from "@/components/product-card"
 import ProductList from "../_components/product-list"
 import FilterSidebar from "../_components/filter-sidebar"
 import { redirect } from "next/navigation"
+import Link from "next/link"
 
 // Define category structure to match database
 interface CategoryItem {
@@ -397,9 +398,9 @@ export default async function ProductsOfCategoryPage({
     <div className="container mx-auto px-4 py-10">
       {/* Breadcrumbs navigation */}
       <div className="mb-4 flex items-center text-sm text-gray-500">
-        <a href="/products/all" className="hover:text-brand">
+        <Link href="/products/all" className="hover:text-brand">
           All Products
-        </a>
+        </Link>
         <span className="mx-2">/</span>
         <span className="font-medium text-brand">{formattedCategory}</span>
       </div>
@@ -416,13 +417,13 @@ export default async function ProductsOfCategoryPage({
             {subcategories.map((subcat) => {
               const subcatSlug = subcat.name.toLowerCase().replace(/\s+/g, "-")
               return (
-                <a
+                <Link
                   key={subcat.id}
                   href={`/products/${category}/${subcatSlug}`}
                   className="inline-block px-4 py-2 bg-gray-100 hover:bg-brand hover:text-white rounded-md transition-colors"
                 >
                   {subcat.name}
-                </a>
+                </Link>
               )
             })}
           </div>

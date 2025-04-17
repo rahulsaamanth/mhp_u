@@ -2,6 +2,7 @@ import { executeRawQuery } from "@/db/db"
 import { ProductCardProps } from "@/components/product-card"
 import ProductList from "../../_components/product-list"
 import FilterSidebar from "../../_components/filter-sidebar"
+import Link from "next/link"
 
 // Define category structure to match database
 interface CategoryItem {
@@ -227,15 +228,15 @@ export default async function ProductsOfSubcategoryPage({
     <div className="container mx-auto px-4 py-10">
       {/* Breadcrumbs navigation */}
       <div className="mb-4 flex items-center text-sm text-gray-500">
-        <a href="/products/all" className="hover:text-brand">
+        <Link href="/products/all" className="hover:text-brand">
           All Products
-        </a>
+        </Link>
         <span className="mx-2">/</span>
         {parentCategory && (
           <>
-            <a href={`/products/${category}`} className="hover:text-brand">
+            <Link href={`/products/${category}`} className="hover:text-brand">
               {parentCategory.name}
-            </a>
+            </Link>
             <span className="mx-2">/</span>
           </>
         )}

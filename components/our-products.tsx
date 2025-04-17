@@ -4,7 +4,7 @@ import { Card, CardContent } from "@/components/ui/card"
 import Image from "next/image"
 import Link from "next/link"
 
-export default function SearchByAilment() {
+export default function OurProducts() {
   const OurProducts = [
     {
       id: 1,
@@ -40,12 +40,16 @@ export default function SearchByAilment() {
       </h1>
       <div className="w-full flex items-center justify-center gap-4 sm:gap-8 xl:gap-12 flex-wrap">
         {OurProducts.map((cat) => (
-          <Link href={`/products/${cat.name}`} key={cat.id}>
-            <Card className="w-full border-0 outline-0 shadow-none px-1">
+          <Link
+            href={`/products/${cat.name}`}
+            key={cat.id}
+            className="block focus:outline-none focus-visible:ring-2 focus-visible:ring-brand/40 rounded-md"
+          >
+            <Card className="w-full border-0 outline-0 shadow-none px-1 active:scale-95 transition-transform">
               <CardContent className="flex items-center justify-center p-2">
                 <div
-                  className="relative outline  outline-zinc-200 p-2 rounded-xl hover:outline-none
-                      transition-all duration-200 before:content-[''] before:absolute before:inset-0 before:outline-brand before:outline-dashed before:outline-2 before:opacity-0 before:rounded-xl before:-outline-offset-1 hover:before:opacity-100 before:transition-opacity before:duration-500"
+                  className="relative outline outline-zinc-200 p-2 rounded-xl hover:outline-none
+                      transition-all duration-200 before:content-[''] before:absolute before:inset-0 before:outline-brand before:outline-dashed before:outline-2 before:opacity-0 before:rounded-xl before:-outline-offset-1 hover:before:opacity-100 before:transition-opacity before:duration-500 before:pointer-events-none"
                 >
                   <Image
                     src={cat.image}
