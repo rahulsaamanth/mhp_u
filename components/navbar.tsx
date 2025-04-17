@@ -74,7 +74,7 @@ const DesktopNavigation = () => {
   const pathname = usePathname()
 
   return (
-    <div className="flex justify-center items-center w-full xl:gap-6 px-2">
+    <div className="flex justify-center items-center w-full gap-3 xl:gap-6 ">
       {/* HOME */}
       <Button
         variant="link"
@@ -100,12 +100,12 @@ const DesktopNavigation = () => {
           <Button
             variant="link"
             className={cn(
-              "h-auto cursor-pointer p-0 font-medium hover:text-brand hover:underline hover:underline-offset-8 text-xs lg:text-base",
+              "h-auto cursor-pointer p-0 font-medium hover:text-brand hover:underline hover:underline-offset-8 text-xs lg:text-base !px-0",
               pathname.includes("/about/") ? "text-brand underline" : ""
             )}
           >
             ABOUT US
-            <ChevronDown className="size-4" />
+            <ChevronDown className="size-4 -ml-2" />
           </Button>
         </PopoverTrigger>
         <PopoverContent className="flex w-fit flex-col rounded-none p-0">
@@ -135,17 +135,17 @@ const DesktopNavigation = () => {
           <Button
             variant="link"
             className={cn(
-              "h-auto cursor-pointer p-0 font-medium hover:text-brand hover:underline hover:underline-offset-8 text-xs lg:text-base",
+              "h-auto cursor-pointer p-0 font-medium hover:text-brand hover:underline hover:underline-offset-8 text-xs lg:text-base !px-0",
               pathname.includes("/products/homeopathic")
                 ? "text-brand underline"
                 : ""
             )}
           >
-            HOMEOPATHIC
-            <ChevronDown className="size-4" />
+            HOMEOPATHY
+            <ChevronDown className="size-4 -ml-2" />
           </Button>
         </PopoverTrigger>
-        <PopoverContent className="flex w-fit flex-col rounded-none p-0">
+        <PopoverContent className="flex w-fit flex-col rounded-none p-0 border-0">
           <SubmenuLink
             href="/products/homeopathy/dilutions"
             title="Dilutions (Potencies)"
@@ -200,17 +200,17 @@ const DesktopNavigation = () => {
           <Button
             variant="link"
             className={cn(
-              "h-auto cursor-pointer p-0 font-medium hover:text-brand hover:underline hover:underline-offset-8 text-xs lg:text-base",
+              "h-auto cursor-pointer font-medium hover:text-brand hover:underline hover:underline-offset-8 text-xs lg:text-base !p-0",
               pathname.includes("/products/personal-care")
                 ? "text-brand underline"
                 : ""
             )}
           >
             PERSONAL CARE
-            <ChevronDown className="size-4" />
+            <ChevronDown className="size-4 -ml-2" />
           </Button>
         </PopoverTrigger>
-        <PopoverContent className="flex w-fit flex-col rounded-none p-0">
+        <PopoverContent className="flex w-fit flex-col rounded-none p-0 border-0">
           <SubmenuLink
             href="/products/personalcare"
             title="Skin Care"
@@ -269,7 +269,7 @@ const DesktopNavigation = () => {
       <Button
         variant="link"
         className={cn(
-          "h-auto cursor-pointer p-0 font-medium hover:text-brand hover:underline hover:underline-offset-8 text-xs lg:text-base",
+          "h-auto cursor-pointer p-0 font-medium hover:text-brand hover:underline hover:underline-offset-8 text-xs lg:text-base ml-3",
           pathname.includes("/brands") ? "text-brand underline" : ""
         )}
       >
@@ -290,7 +290,7 @@ const DesktopNavigation = () => {
           <Button
             variant="link"
             className={cn(
-              "h-auto cursor-pointer p-0 font-medium hover:text-brand hover:underline hover:underline-offset-8 text-xs lg:text-base",
+              "h-auto cursor-pointer p-0 font-medium hover:text-brand hover:underline hover:underline-offset-8 text-xs lg:text-base !px-0",
               pathname.includes("/products/") &&
                 (pathname.includes("/ointments") ||
                   pathname.includes("/herbals") ||
@@ -300,7 +300,7 @@ const DesktopNavigation = () => {
             )}
           >
             OTHER PRODUCTS
-            <ChevronDown className="size-4" />
+            <ChevronDown className="size-4 -ml-2" />
           </Button>
         </PopoverTrigger>
         <PopoverContent className="flex w-fit flex-col rounded-none p-0">

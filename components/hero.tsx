@@ -29,7 +29,7 @@ export default function Hero() {
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-20">
         <div className="h-[60vh] flex items-center justify-start">
-          <div className="max-w-xl space-y-20 md:space-y-16 xl:space-y-20 z-10">
+          <div className="max-w-xl space-y-8 xl:space-y-20 z-10">
             {/* Title and intro group */}
             <div className="space-y-3 sm:space-y-4">
               <h1
@@ -42,7 +42,7 @@ export default function Hero() {
                 Natural Healing For Modern Living
               </h1>
 
-              <p className="text-base sm:text-xl text-white/90 max-w-lg italic hidden lg:inline">
+              <p className="text-base sm:text-xl text-white/90 max-w-lg italic inline opacity-0 sm:opacity-100">
                 Discover premium homeopathic remedies that harness the power of
                 nature for your wellbeing.
               </p>
