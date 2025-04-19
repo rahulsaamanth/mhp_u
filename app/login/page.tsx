@@ -7,23 +7,25 @@ import Image from "next/image"
 
 export default function LoginPage() {
   const searchParams = useSearchParams()
-  const callbackUrl = searchParams.get("callbackUrl") || "/"
+  const urlCallbackUrl = searchParams.get("callbackUrl")
+
+  // Prevent login page from redirecting back to itself after login
+  const callbackUrl =
+    urlCallbackUrl && !urlCallbackUrl.includes("/login") ? urlCallbackUrl : "/"
 
   return (
     <div className="bg-white p-4 sm:p-8 rounded-lg shadow-md w-full max-w-md mx-auto sm:my-8 sm:border-t">
       <div className="text-center space-y-2 mb-6">
-        <div className="mx-auto w-16 h-16 relative mb-2">
+        <div className="mx-auto w-32 h-20 relative mb-2">
           <Image
-            src="/logo.png"
+            src="/logo_main.png"
             alt="Homeo South Logo"
             fill
             className="object-contain"
             priority
           />
         </div>
-        <h1 className="text-3xl font-bold tracking-tight text-brand uppercase">
-          Homeo South
-        </h1>
+
         <p className="text-sm text-muted-foreground italic">
           Healing, as nature intended
         </p>

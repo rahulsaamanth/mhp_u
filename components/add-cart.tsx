@@ -20,6 +20,7 @@ interface AddToCartButtonProps {
   packSize?: string
   quantity?: number
   disabled?: boolean
+  buyNow?: boolean
 }
 
 export function AddToCartButton({
@@ -32,6 +33,7 @@ export function AddToCartButton({
   packSize,
   quantity = 1,
   disabled = false,
+  buyNow = false,
 }: AddToCartButtonProps) {
   const [adding, setAdding] = useState(false)
   const [added, setAdded] = useState(false)
@@ -62,6 +64,11 @@ export function AddToCartButton({
           setAdded(true)
           toast.success("Added to cart!")
           cartEvents.notifyCartChanged()
+
+          // Redirect to cart if buyNow is true
+          if (buyNow) {
+            router.push("/cart")
+          }
         } else {
           toast.error(
             result.error || "Failed to add to cart. Please try again."
@@ -73,12 +80,19 @@ export function AddToCartButton({
         setAdded(true)
         toast.success("Added to cart!")
         cartEvents.notifyCartChanged()
+
+        // Redirect to cart if buyNow is true
+        if (buyNow) {
+          router.push("/cart")
+        }
       }
 
-      // Reset added state after 1.5 seconds
-      setTimeout(() => {
-        setAdded(false)
-      }, 1500)
+      // Reset added state after 1.5 seconds (only if not redirecting)
+      if (!buyNow) {
+        setTimeout(() => {
+          setAdded(false)
+        }, 1500)
+      }
     } catch (error) {
       console.error("Failed to add to cart:", error)
       toast.error("Failed to add to cart. Please try again.")
@@ -93,25 +107,31 @@ export function AddToCartButton({
       onClick={handleAddToCart}
       disabled={adding || disabled}
       className={`rounded-none py-5 px-4 md:px-3 xl:px-4 cursor-pointer 
-      bg-zinc-200 hover:bg-zinc-300 
+      ${
+        buyNow
+          ? "bg-brand hover:bg-brand/90 text-white"
+          : disabled
+          ? "bg-zinc-100 text-gray-400"
+          : "bg-zinc-200 hover:bg-zinc-300 text-black"
+      }
       active:bg-zinc-400 active:scale-95 
       focus:outline-none focus:ring-2 focus:ring-zinc-400 focus:ring-offset-1
       transition-all duration-150
-      text-black flex items-center justify-center ${
-        disabled
-          ? "bg-zinc-100 text-gray-400"
-          : "bg-zinc-200 hover:bg-zinc-300 text-black"
-      }`}
+      flex items-center justify-center`}
     >
       {adding ? (
-        "Adding..."
+        buyNow ? (
+          "Processing..."
+        ) : (
+          "Adding..."
+        )
       ) : added ? (
         <>
           <Check className="size-4" />
-          Added
+          {buyNow ? "Proceeding..." : "Added"}
         </>
       ) : (
-        <span>Add to Cart</span>
+        <span>{buyNow ? "Buy Now" : "Add to Cart"}</span>
       )}
     </Button>
   )

@@ -8,6 +8,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog"
+import Image from "next/image"
 import Link from "next/link"
 import { useRouter, useSearchParams } from "next/navigation"
 
@@ -22,9 +23,15 @@ export default function LoginModal() {
     <Dialog open onOpenChange={() => router.back()}>
       <DialogContent className="sm:max-w-[500px] p-8 rounded-lg">
         <div className="text-center space-y-2 mb-4">
-          <h1 className="text-3xl font-bold tracking-tight text-brand uppercase">
-            Homeo South
-          </h1>
+          <div className="mx-auto w-32 h-20 relative mb-2">
+            <Image
+              src="/logo_main.png"
+              alt="Homeo South Logo"
+              fill
+              className="object-contain"
+              priority
+            />
+          </div>
           <p className="text-sm text-muted-foreground italic">
             Healing, as nature intended
           </p>

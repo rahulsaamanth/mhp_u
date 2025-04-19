@@ -18,7 +18,7 @@ export default function SearchByAilment() {
     {
       id: "skin-care",
       imagePath: "/assets/ailments/skin-care.webp",
-      displayName: "Skin Health",
+      displayName: "Skin Care",
     },
     {
       id: "mind-care",
@@ -113,7 +113,7 @@ export default function SearchByAilment() {
     {
       id: "baby-care",
       imagePath: "/assets/ailments/baby-care.webp",
-      displayName: "Baby Health",
+      displayName: "Baby Care",
     },
   ]
 

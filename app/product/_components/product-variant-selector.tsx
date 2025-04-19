@@ -345,12 +345,22 @@ export default function ProductVariantSelector({
                 disabled={!hasStock}
               />
 
-              <Button
-                variant="default"
-                className="rounded-none py-5 px-4 md:px-3 xl:px-4 bg-brand hover:bg-brand/90 text-white text-sm font-medium cursor-pointer"
-              >
-                Buy Now
-              </Button>
+              <AddToCartButton
+                productId={productId}
+                variantId={selectedVariant.id}
+                name={productName}
+                image={selectedVariant.variantImage[0]}
+                price={selectedVariant.sellingPrice}
+                potency={
+                  selectedVariant.potency !== "NONE"
+                    ? selectedVariant.potency
+                    : undefined
+                }
+                packSize={selectedVariant.packSize}
+                quantity={quantity}
+                disabled={!hasStock}
+                buyNow={true}
+              />
             </div>
 
             <div className="mt-4 space-y-2">

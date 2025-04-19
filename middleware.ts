@@ -22,6 +22,11 @@ export default async function middleware(request: NextRequest) {
     nextUrl.pathname.includes(".") || // Files with extensions
     nextUrl.pathname.startsWith("/login") // Login page itself
   ) {
+    // If user is already logged in and tries to access login page, redirect to home
+    if (session?.user && nextUrl.pathname.startsWith("/login")) {
+      return NextResponse.redirect(new URL("/", nextUrl))
+    }
+
     return NextResponse.next()
   }
 
