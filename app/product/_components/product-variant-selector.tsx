@@ -2,6 +2,7 @@
 
 import { AddToCartButton } from "@/components/add-cart"
 import { Button } from "@/components/ui/button"
+import { QuantitySelector } from "@/components/ui/quantity-selector"
 import { StockByLocation } from "@rahulsaamanth/mhp-schema"
 import Image from "next/image"
 import { useEffect, useState, useMemo } from "react"
@@ -63,6 +64,7 @@ export default function ProductVariantSelector({
   const [selectedVariant, setSelectedVariant] = useState<Variant | null>(
     firstVariant
   )
+  const [quantity, setQuantity] = useState<number>(1)
 
   // Get ALL unique potencies and pack sizes
   const allUniquePotencies = Array.from(
@@ -294,6 +296,17 @@ export default function ProductVariantSelector({
               })}
             </div>
           </div>
+
+          {/* Quantity Selector */}
+          <div className="space-y-2">
+            <label className="text-sm font-medium">Quantity:</label>
+            <QuantitySelector
+              initialQuantity={quantity}
+              min={1}
+              max={totalStock ? Math.min(10, totalStock) : 10}
+              onChange={setQuantity}
+            />
+          </div>
         </div>
 
         {/* Price and Add to Cart */}
@@ -328,6 +341,7 @@ export default function ProductVariantSelector({
                     : undefined
                 }
                 packSize={selectedVariant.packSize}
+                quantity={quantity}
                 disabled={!hasStock}
               />
 

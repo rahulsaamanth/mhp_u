@@ -71,8 +71,8 @@ export const useCartStore = create<CartState>()(
           const existingItemIndex = state.items.findIndex(
             (i) =>
               i.variantId === item.variantId &&
-              i.potency === (item.potency || null) &&
-              i.packSize === (item.packSize || null)
+              i.potency === item.potency &&
+              i.packSize === item.packSize
           )
 
           // If item exists, update quantity
@@ -113,8 +113,8 @@ export const useCartStore = create<CartState>()(
       },
 
       getItemCount: () => {
-        // Return total number of items (sum of quantities)
-        return get().items.reduce((total, item) => total + item.quantity, 0)
+        // Return number of unique items (not sum of quantities)
+        return get().items.length
       },
 
       getTotalPrice: () => {

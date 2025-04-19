@@ -92,31 +92,45 @@ export async function addToCart(item: AddToCartInput) {
     const stocks = variantData?.stockByLocation?.map((data) => data.stock) || []
     const totalStock = stocks.reduce((acc, stock) => acc + stock, 0)
 
-    // Build the where conditions properly to handle null/undefined values
-    const conditions = [
-      eq(cart.userId, user.id),
-      eq(cart.productId, item.productId),
-      eq(cart.variantId, item.variantId),
-    ]
-
-    // For potency and packSize, we need to handle both the case where they match
-    // and the case where they are both null in the database
-    if (item.potency) {
-      conditions.push(eq(cart.potency, item.potency))
-    } else {
-      conditions.push(isNull(cart.potency))
+    // Check if adding requested quantity would exceed stock
+    if (item.quantity > totalStock) {
+      return {
+        success: false,
+        error: `Cannot add ${item.quantity} items. Only ${totalStock} available in stock.`,
+      }
     }
 
-    if (item.packSize) {
-      conditions.push(eq(cart.packSize, item.packSize))
-    } else {
-      conditions.push(isNull(cart.packSize))
-    }
+    // Check for existing item in cart with the same product variant, potency, and pack size
+    let existingItem = null
 
-    // Use the properly built conditions for the query
-    const existingItem = await db.query.cart.findFirst({
-      where: (fields, { and }) => and(...conditions),
+    // Build the query to find the existing item
+    const existingItemQuery = db.query.cart.findFirst({
+      where: (fields, { and, eq, isNull }) => {
+        const conditions = [
+          eq(fields.userId, user.id as string), // Type assertion to handle potential undefined
+          eq(fields.productId, item.productId),
+          eq(fields.variantId, item.variantId),
+        ]
+
+        // Handle potency matching
+        if (item.potency) {
+          conditions.push(eq(fields.potency, item.potency))
+        } else {
+          conditions.push(isNull(fields.potency))
+        }
+
+        // Handle packSize matching
+        if (item.packSize) {
+          conditions.push(eq(fields.packSize, item.packSize))
+        } else {
+          conditions.push(isNull(fields.packSize))
+        }
+
+        return and(...conditions)
+      },
     })
+
+    existingItem = await existingItemQuery
 
     console.log(
       "Existing item check:",
@@ -136,6 +150,7 @@ export async function addToCart(item: AddToCartInput) {
 
     if (existingItem) {
       console.log("Updating quantity for existing item:", existingItem.id)
+      // Update the quantity of the existing item
       await db
         .update(cart)
         .set({

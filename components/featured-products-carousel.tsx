@@ -1,6 +1,6 @@
 "use client"
 
-import Autoplay from "embla-carousel-autoplay"
+import Autoplay, { AutoplayType } from "embla-carousel-autoplay"
 import ProductCard, { ProductCardProps } from "./product-card"
 import {
   Carousel,
@@ -9,6 +9,7 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from "./ui/carousel"
+import React from "react"
 
 interface FeaturedProductsCarouselProps {
   products: ProductCardProps[]
@@ -17,6 +18,23 @@ interface FeaturedProductsCarouselProps {
 export default function FeaturedProductsCarousel({
   products,
 }: FeaturedProductsCarouselProps) {
+  const autoPlayref = React.useRef<AutoplayType>(
+    Autoplay({
+      delay: 4000,
+      stopOnInteraction: false,
+      stopOnMouseEnter: true,
+      jump: false,
+    })
+  )
+
+  const handleNavigation = () => {
+    autoPlayref.current.stop()
+
+    setTimeout(() => {
+      autoPlayref.current.play()
+    }, 6000)
+  }
+
   return (
     <Carousel
       opts={{
@@ -25,13 +43,7 @@ export default function FeaturedProductsCarousel({
 
         // containScroll: "trimSnaps",
       }}
-      plugins={[
-        Autoplay({
-          delay: 5000,
-          stopOnFocusIn: true,
-          jump: false,
-        }),
-      ]}
+      plugins={[autoPlayref.current]}
       className="w-3/4 2xl:w-2/3 mx-auto"
     >
       <CarouselContent className="mx-auto">
@@ -48,10 +60,12 @@ export default function FeaturedProductsCarousel({
       <CarouselPrevious
         variant="default"
         className="absolute -left-12 sm:-left-16 md:-left-24 top-1/2 transform -translate-y-1/2 h-8 w-8 sm:h-10 sm:w-10 bg-brand"
+        onMouseDown={handleNavigation}
       />
       <CarouselNext
         variant="default"
         className="absolute -right-12 sm:-right-16 md:-right-24 top-1/2 transform -translate-y-1/2 h-8 w-8 sm:h-10 sm:w-10 bg-brand"
+        onMouseDown={handleNavigation}
       />
     </Carousel>
   )

@@ -87,7 +87,7 @@ export default function Testimonials() {
         </h2>
         <div className="h-0.5 flex-1 bg-gradient-to-l from-transparent to-primary"></div>
       </div>
-      <div className="container mx-auto max-w-2/3 px-4">
+      <div className="container mx-auto max-w-2/3 sm:px-4">
         {/* Carousel with minimal styling */}
         <Carousel
           className="w-full"

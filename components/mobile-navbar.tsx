@@ -18,11 +18,14 @@ import { cn } from "@/lib/utils"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 import Image from "next/image"
+import { useState } from "react"
 
 export default function MobileNavigation() {
+  const [open, setOpen] = useState(false)
+
   return (
     <div className="flex items-center justify-between">
-      <Sheet>
+      <Sheet open={open} onOpenChange={setOpen}>
         <SheetTrigger asChild>
           <Button variant="outline" size="icon" className="border-none">
             <Menu className="h-6 w-6" />
@@ -36,24 +39,27 @@ export default function MobileNavigation() {
             <SheetTitle className="text-brand">
               <div className="flex items-center justify-center">
                 <Image
-                  src="/logo.png"
+                  src="/main_logo.png"
                   alt="Logo"
-                  width={40}
-                  height={40}
+                  width={100}
+                  height={100}
                   className="mr-2"
                 />
-                HOMEO SOUTH
               </div>
             </SheetTitle>
           </SheetHeader>
-          <MobileNavigationHelper />
+          <MobileNavigationHelper setOpen={setOpen} />
         </SheetContent>
       </Sheet>
     </div>
   )
 }
 
-const MobileNavigationHelper = () => {
+const MobileNavigationHelper = ({
+  setOpen,
+}: {
+  setOpen: React.Dispatch<React.SetStateAction<boolean>>
+}) => {
   const pathname = usePathname()
 
   const isActive = (path: string) => {
@@ -71,9 +77,10 @@ const MobileNavigationHelper = () => {
             <Link
               href="/"
               className={cn(
-                "flex w-full py-3 px-6 font-medium hover:bg-brand/5 transition-all duration-150 active:scale-95",
+                "flex w-full py-3 px-6 font-medium hover:bg-brand/5 transition-all duration-150 active:scale-95 active:text-gray-800",
                 isActive("/") && "text-brand font-semibold bg-brand/5"
               )}
+              onClick={() => setOpen(false)}
             >
               HOME
             </Link>
@@ -100,6 +107,7 @@ const MobileNavigationHelper = () => {
                     isActive("/about/who-we-are") &&
                       "text-brand font-semibold bg-brand/5"
                   )}
+                  onClick={() => setOpen(false)}
                 >
                   Company Profile
                 </Link>
@@ -112,6 +120,7 @@ const MobileNavigationHelper = () => {
                     isActive("/about/message") &&
                       "text-brand font-semibold bg-brand/5"
                   )}
+                  onClick={() => setOpen(false)}
                 >
                   Founder's Message
                 </Link>
@@ -141,6 +150,7 @@ const MobileNavigationHelper = () => {
                     isActive("/products/homeopathy/dilutions") &&
                       "text-brand font-semibold bg-brand/5"
                   )}
+                  onClick={() => setOpen(false)}
                 >
                   Dilutions (Potencies)
                 </Link>
@@ -153,6 +163,7 @@ const MobileNavigationHelper = () => {
                     isActive("/products/homeopathy/mothertinctures") &&
                       "text-brand font-semibold bg-brand/5"
                   )}
+                  onClick={() => setOpen(false)}
                 >
                   Mother Tinctures
                 </Link>
@@ -165,6 +176,7 @@ const MobileNavigationHelper = () => {
                     isActive("/products/homeopathy/biochemics") &&
                       "text-brand font-semibold bg-brand/5"
                   )}
+                  onClick={() => setOpen(false)}
                 >
                   Biochemic & Biocombinations
                 </Link>
@@ -177,6 +189,7 @@ const MobileNavigationHelper = () => {
                     isActive("/products/trituration") &&
                       "text-brand font-semibold bg-brand/5"
                   )}
+                  onClick={() => setOpen(false)}
                 >
                   Trituration Tablets
                 </Link>
@@ -189,6 +202,7 @@ const MobileNavigationHelper = () => {
                     isActive("/products/bach-flower") &&
                       "text-brand font-semibold bg-brand/5"
                   )}
+                  onClick={() => setOpen(false)}
                 >
                   Bach Flower Remedies
                 </Link>
@@ -218,6 +232,7 @@ const MobileNavigationHelper = () => {
                     isActive("/products/personalcare") &&
                       "text-brand font-semibold bg-brand/5"
                   )}
+                  onClick={() => setOpen(false)}
                 >
                   Skin Care
                 </Link>
@@ -230,6 +245,7 @@ const MobileNavigationHelper = () => {
                     isActive("/products/personal-care/hair") &&
                       "text-brand font-semibold bg-brand/5"
                   )}
+                  onClick={() => setOpen(false)}
                 >
                   Hair Care
                 </Link>
@@ -242,6 +258,7 @@ const MobileNavigationHelper = () => {
                     isActive("/products/personal-care/hygiene") &&
                       "text-brand font-semibold bg-brand/5"
                   )}
+                  onClick={() => setOpen(false)}
                 >
                   Hygiene
                 </Link>
@@ -254,6 +271,7 @@ const MobileNavigationHelper = () => {
                     isActive("/products/personal-care/baby") &&
                       "text-brand font-semibold bg-brand/5"
                   )}
+                  onClick={() => setOpen(false)}
                 >
                   Baby Care
                 </Link>
@@ -266,6 +284,7 @@ const MobileNavigationHelper = () => {
                     isActive("/products/personal-care/oral") &&
                       "text-brand font-semibold bg-brand/5"
                   )}
+                  onClick={() => setOpen(false)}
                 >
                   Oral Care
                 </Link>
@@ -280,9 +299,10 @@ const MobileNavigationHelper = () => {
             <Link
               href="/ailments"
               className={cn(
-                "flex w-full py-3 px-6 font-medium hover:bg-brand/5 transition-all duration-150 active:scale-95",
+                "flex w-full py-3 px-6 font-medium text-sm hover:bg-brand/5 transition-all duration-150 active:scale-95 active:text-gray-800",
                 isActive("/ailments") && "text-brand font-semibold bg-brand/5"
               )}
+              onClick={() => setOpen(false)}
             >
               AILMENTS
             </Link>
@@ -295,9 +315,10 @@ const MobileNavigationHelper = () => {
             <Link
               href="/brands"
               className={cn(
-                "flex w-full py-3 px-6 font-medium hover:bg-brand/5 transition-all duration-150 active:scale-95",
+                "flex w-full py-3 px-6 font-medium text-sm hover:bg-brand/5 transition-all duration-150 active:scale-95 active:text-gray-800",
                 isActive("/brands") && "text-brand font-semibold bg-brand/5"
               )}
+              onClick={() => setOpen(false)}
             >
               BRANDS
             </Link>
@@ -308,7 +329,7 @@ const MobileNavigationHelper = () => {
         <AccordionItem value="other-products" className="border-b-0">
           <AccordionTrigger
             className={cn(
-              "py-3 px-6 font-medium hover:bg-brand/5 transition-all duration-150 active:scale-95 hover:no-underline",
+              "py-3 px-6 font-medium hover:bg-brand/5 transition-all duration-150 hover:no-underline",
               (isActive("/products/ointments") ||
                 isActive("/products/herbals") ||
                 isActive("/products/eye-ear-drops")) &&
@@ -327,6 +348,7 @@ const MobileNavigationHelper = () => {
                     isActive("/products/ointments") &&
                       "text-brand font-semibold bg-brand/5"
                   )}
+                  onClick={() => setOpen(false)}
                 >
                   OINTMENTS
                 </Link>
@@ -339,6 +361,7 @@ const MobileNavigationHelper = () => {
                     isActive("/products/herbals") &&
                       "text-brand font-semibold bg-brand/5"
                   )}
+                  onClick={() => setOpen(false)}
                 >
                   HERBALS
                 </Link>
@@ -351,6 +374,7 @@ const MobileNavigationHelper = () => {
                     isActive("/products/eye-ear-drops") &&
                       "text-brand font-semibold bg-brand/5"
                   )}
+                  onClick={() => setOpen(false)}
                 >
                   EYE/EAR DROP
                 </Link>
@@ -365,10 +389,11 @@ const MobileNavigationHelper = () => {
             <Link
               href="/about-homeopathy"
               className={cn(
-                "flex w-full py-3 px-6 font-medium hover:bg-brand/5 transition-all duration-150 active:scale-95",
+                "flex w-full py-3 px-6 font-medium text-sm hover:bg-brand/5 transition-all duration-150 active:scale-95 active:text-gray-800",
                 isActive("/about-homeopathy") &&
                   "text-brand font-semibold bg-brand/5"
               )}
+              onClick={() => setOpen(false)}
             >
               ABOUT HOMEOPATHY
             </Link>

@@ -235,7 +235,7 @@ export default function Header() {
 
   return (
     <header className="sticky top-0 z-50 bg-white shadow-md">
-      <section className="flex w-full flex-col items-center justify-center px-4 py-2 md:flex-row md:gap-x-12 lg:gap-x-32">
+      <section className="flex w-full flex-col items-center justify-center px-4 py-2 md:py-1 md:flex-row md:gap-x-12 lg:gap-x-32">
         {/* Logo */}
         <div className="flex justify-between items-center w-full md:w-auto shrink-0">
           <Link
@@ -243,11 +243,11 @@ export default function Header() {
             className="relative transition-transform duration-150 active:scale-98"
           >
             <Image
-              src="/text_logo.png"
+              src="/main_logo.png"
               alt="LOGO"
-              width={160}
-              height={100}
-              className="object-contain w-[100px] h-[80px] md:w-[120px] md:h-[100px] lg:w-[180px] lg:h-[100px]"
+              width={500}
+              height={500}
+              className="object-contain w-[120px] h-[80px] md:w-[160px] md:h-[100px] lg:w-[200px] lg:h-[100px] mb-4 md:mb-6"
               priority
             />
           </Link>

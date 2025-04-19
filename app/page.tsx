@@ -1,4 +1,4 @@
-import Blog from "@/components/blog"
+// import Blog from "@/components/blog"
 import FeaturedProducts from "@/components/featured-products"
 import Hero from "@/components/hero"
 import OurProducts from "@/components/our-products"

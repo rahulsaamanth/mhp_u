@@ -18,6 +18,7 @@ import { toast } from "sonner"
 import { useCurrentUser } from "@/hooks/use-current-user"
 import { useCartContext } from "./_components/cart-provider"
 import { useTransition } from "react"
+import { QuantitySelector } from "@/components/ui/quantity-selector"
 
 // Add proper type for CartItemComponent props
 interface CartItemComponentProps {
@@ -54,7 +55,7 @@ const CartItemComponent = memo(
       <div className="flex border-b py-4">
         <div className="w-24 h-24 relative flex-shrink-0">
           <Image
-            src={item.image || "/placeholder.png"}
+            src={item.image || "/assets/hero1.webp"}
             alt={item.name}
             fill
             className="object-contain"
@@ -96,30 +97,12 @@ const CartItemComponent = memo(
 
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mt-2 gap-2">
             <div className="flex items-center justify-between sm:justify-center gap-6">
-              <div className="flex items-center border rounded">
-                <button
-                  className="px-2 py-1 hover:bg-gray-100 transition-colors"
-                  onClick={() => handleQuantityChange(item.quantity - 1)}
-                  disabled={item.quantity <= 1 || isPending}
-                  aria-label="Decrease quantity"
-                >
-                  -
-                </button>
-                <span className="px-4">{item.quantity}</span>
-                <button
-                  className={`px-1 sm:px-2 py-1 hover:bg-gray-100 transition-colors ${
-                    isAtMaxStock(item) || isPending
-                      ? "opacity-50 cursor-not-allowed"
-                      : ""
-                  }`}
-                  onClick={() => handleQuantityChange(item.quantity + 1)}
-                  disabled={isAtMaxStock(item) || isPending}
-                  title={isAtMaxStock(item) ? "Maximum stock reached" : ""}
-                  aria-label="Increase quantity"
-                >
-                  +
-                </button>
-              </div>
+              <QuantitySelector
+                initialQuantity={item.quantity}
+                min={1}
+                max={item.totalStock ? Math.min(10, item.totalStock) : 10}
+                onChange={handleQuantityChange}
+              />
               <div className="font-medium">
                 {formatCurrency(item.price * item.quantity)}
               </div>
@@ -256,6 +239,22 @@ export default function CartPage() {
   const totalAmount = useMemo(
     () => serverSubtotal + (user ? 0 : localSubtotal),
     [serverSubtotal, localSubtotal, user]
+  )
+
+  // Calculate total unique items for display
+  const serverUniqueItemCount = serverItems.length
+  const localUniqueItemCount = localItems.length
+  const totalUniqueItemCount =
+    (user ? serverUniqueItemCount : 0) + localUniqueItemCount
+
+  // Calculate total quantities (for reference - we won't display this)
+  const serverTotalQuantity = serverItems.reduce(
+    (total, item) => total + item.quantity,
+    0
+  )
+  const localTotalQuantity = localItems.reduce(
+    (total, item) => total + item.quantity,
+    0
   )
 
   // Memoize handlers to prevent recreation on every render
@@ -588,20 +587,29 @@ export default function CartPage() {
               <div className="space-y-2">
                 {user && serverItems.length > 0 && (
                   <div className="flex justify-between">
-                    <span>Account Items Subtotal</span>
+                    <span>
+                      Account Items Subtotal ({serverUniqueItemCount}{" "}
+                      {serverUniqueItemCount === 1 ? "item" : "items"})
+                    </span>
                     <span>{formatCurrency(serverSubtotal)}</span>
                   </div>
                 )}
 
                 {localItems.length > 0 && (
                   <div className="flex justify-between">
-                    <span>Guest Items Subtotal</span>
+                    <span>
+                      Guest Items Subtotal ({localUniqueItemCount}{" "}
+                      {localUniqueItemCount === 1 ? "item" : "items"})
+                    </span>
                     <span>{formatCurrency(localSubtotal)}</span>
                   </div>
                 )}
 
                 <div className="flex justify-between font-medium text-lg pt-2 border-t">
-                  <span>Total</span>
+                  <span>
+                    Total ({totalUniqueItemCount}{" "}
+                    {totalUniqueItemCount === 1 ? "item" : "items"})
+                  </span>
                   <span>{formatCurrency(totalAmount)}</span>
                 </div>
               </div>

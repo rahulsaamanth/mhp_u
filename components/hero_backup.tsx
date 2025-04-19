@@ -1,3 +1,5 @@
+"use client"
+
 import {
   Carousel,
   CarouselContent,
@@ -69,24 +71,6 @@ export default function Hero() {
                   </div>
                 </div>
               </div>
-
-              {/* Bottom wave shape */}
-              <div className="absolute bottom-0 w-full z-20 overflow-hidden">
-                {/* Added extra height to prevent gap */}
-                <div className="bg-white h-2 w-full absolute bottom-0 left-0 right-0 z-10"></div>
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  viewBox="0 0 1440 320"
-                  className="w-[103%] h-auto translate-x-[-1.5%]"
-                  preserveAspectRatio="none"
-                >
-                  <path
-                    fill="#ffffff"
-                    fillOpacity="1"
-                    d="M0,96L48,112C96,128,192,160,288,181.3C384,203,480,213,576,202.7C672,192,768,160,864,165.3C960,171,1056,213,1152,208C1248,203,1344,149,1392,122.7L1440,96L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"
-                  ></path>
-                </svg>
-              </div>
             </section>
           </CarouselItem>
 
@@ -131,24 +115,6 @@ export default function Hero() {
                     </div>
                   </div>
                 </div>
-              </div>
-
-              {/* Bottom wave shape - identical to first section */}
-              <div className="absolute bottom-0 w-full z-20 overflow-hidden">
-                {/* Added extra height to prevent gap */}
-                <div className="bg-white h-2 w-full absolute bottom-0 left-0 right-0 z-10"></div>
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  viewBox="0 0 1440 320"
-                  className="w-[103%] h-auto translate-x-[-1.5%]"
-                  preserveAspectRatio="none"
-                >
-                  <path
-                    fill="#ffffff"
-                    fillOpacity="1"
-                    d="M0,96L48,112C96,128,192,160,288,181.3C384,203,480,213,576,202.7C672,192,768,160,864,165.3C960,171,1056,213,1152,208C1248,203,1344,149,1392,122.7L1440,96L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"
-                  ></path>
-                </svg>
               </div>
             </section>
           </CarouselItem>

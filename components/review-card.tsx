@@ -41,7 +41,7 @@ export function ReviewCard({
         {/* Content */}
         <div className="flex-grow relative mb-4">
           <Quote className="size-8 absolute -top-2 -left-2 text-brand/60 rotate-180" />
-          <div className="py-6 px-4 max-h-[160px] overflow-y-auto text-black text-sm leading-relaxed">
+          <div className="mt-5 px-4 max-h-[160px] overflow-y-auto text-black text-sm leading-relaxed">
             {content}
           </div>
           {/* <div className="absolute bottom-0 left-0 right-0 h-8 bg-gradient-to-t from-white to-transparent"></div> */}

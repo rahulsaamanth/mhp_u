@@ -20,20 +20,14 @@ export default function Cart() {
 
   // Function to fetch cart count
   const fetchCartItemsCount = useCallback(async () => {
-    // Get local cart count
-    const localCount = localCart.items.reduce(
-      (total, item) => total + item.quantity,
-      0
-    )
+    // Get local cart count - counting unique items instead of quantities
+    const localCount = localCart.items.length
 
     if (user) {
       // Logged-in user - get count from server and combine with local
       try {
         const { items } = await getUserCart()
-        const serverCount = items.reduce(
-          (total, item) => total + item.quantity,
-          0
-        )
+        const serverCount = items.length // Count unique items instead of quantities
         setServerItemCount(serverCount)
 
         // Set total count (server + local)

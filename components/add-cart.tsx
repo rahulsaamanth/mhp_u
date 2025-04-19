@@ -18,6 +18,7 @@ interface AddToCartButtonProps {
   price: number
   potency?: string
   packSize?: string
+  quantity?: number
   disabled?: boolean
 }
 
@@ -29,6 +30,7 @@ export function AddToCartButton({
   price,
   potency,
   packSize,
+  quantity = 1,
   disabled = false,
 }: AddToCartButtonProps) {
   const [adding, setAdding] = useState(false)
@@ -47,7 +49,7 @@ export function AddToCartButton({
         name,
         image,
         price,
-        quantity: 1,
+        quantity,
         potency,
         packSize,
       }

@@ -8,7 +8,7 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from "@/components/ui/carousel"
-import Autoplay from "embla-carousel-autoplay"
+import Autoplay, { AutoplayType } from "embla-carousel-autoplay"
 import Image from "next/image"
 import Link from "next/link"
 import React from "react"
@@ -18,62 +18,62 @@ export default function SearchByAilment() {
     {
       id: "skin-care",
       imagePath: "/assets/ailments/skin-care.webp",
-      displayName: "Skin Care",
+      displayName: "Skin Health",
     },
     {
       id: "mind-care",
       imagePath: "/assets/ailments/mind-care.webp",
-      displayName: "Mind Care",
+      displayName: "Mental Wellness",
     },
     {
       id: "stomach-care",
       imagePath: "/assets/ailments/stomach-care.webp",
-      displayName: "Stomach Care",
+      displayName: "Digestive Health",
     },
     {
       id: "women-care",
       imagePath: "/assets/ailments/women-care.webp",
-      displayName: "Women Care",
+      displayName: "Women's Health",
     },
     {
       id: "respiratory-care",
       imagePath: "/assets/ailments/respiratory-care.webp",
-      displayName: "Respiratory Care",
+      displayName: "Respiratory Health",
     },
     {
       id: "constipation",
       imagePath: "/assets/ailments/constipation.webp",
-      displayName: "Constipation",
+      displayName: "Constipation Relief",
     },
     {
       id: "diabetes",
       imagePath: "/assets/ailments/diabetes.webp",
-      displayName: "Diabetes",
+      displayName: "Diabetes Management",
     },
     {
       id: "kidney-liver-care",
       imagePath: "/assets/ailments/kidney-liver-care.webp",
-      displayName: "Kidney Liver Care",
+      displayName: "Kidney & Liver Health",
     },
     {
       id: "cough-cold-care",
       imagePath: "/assets/ailments/cough-cold-care.webp",
-      displayName: "Cough Cold Care",
+      displayName: "Cough & Cold Relief",
     },
     {
       id: "infections",
       imagePath: "/assets/ailments/infections.webp",
-      displayName: "Infections",
+      displayName: "Infection Treatment",
     },
     {
       id: "eye-ear-care",
       imagePath: "/assets/ailments/eye-ear-care.webp",
-      displayName: "Eye Ear Care",
+      displayName: "Eye & Ear Health",
     },
     {
       id: "weakness",
       imagePath: "/assets/ailments/weakness.webp",
-      displayName: "Weakness",
+      displayName: "Energy & Vitality",
     },
     {
       id: "sexualwellness",
@@ -83,40 +83,56 @@ export default function SearchByAilment() {
     {
       id: "cardiac-care",
       imagePath: "/assets/ailments/cardiac-care.webp",
-      displayName: "Cardiac Care",
+      displayName: "Cardiac Health",
     },
     {
       id: "weight-care",
       imagePath: "/assets/ailments/weight-care.webp",
-      displayName: "Weight Care",
+      displayName: "Weight Management",
     },
     {
       id: "bone-muscle-care",
       imagePath: "/assets/ailments/bone-muscle-care.webp",
-      displayName: "Bone Muscle Care",
+      displayName: "Bone & Joint Health",
     },
     {
       id: "hair-care",
       imagePath: "/assets/ailments/hair-care.webp",
-      displayName: "Hair Care",
+      displayName: "Hair Health",
     },
     {
       id: "hygeine-care",
       imagePath: "/assets/ailments/hygeine-care.webp",
-      displayName: "Hygeine Care",
+      displayName: "Personal Hygiene",
     },
     {
       id: "oral-care",
       imagePath: "/assets/ailments/oral-care.webp",
-      displayName: "Oral Care",
+      displayName: "Dental Health",
     },
     {
       id: "baby-care",
       imagePath: "/assets/ailments/baby-care.webp",
-      displayName: "Baby Care",
+      displayName: "Baby Health",
     },
   ]
-  // const autoPlayRef = React.useRef<ReturnType<typeof Autoplay> | null>(null)
+
+  const autoPlayref = React.useRef<AutoplayType>(
+    Autoplay({
+      delay: 4000,
+      stopOnInteraction: false,
+      stopOnMouseEnter: true,
+      jump: false,
+    })
+  )
+
+  const handleNavigation = () => {
+    autoPlayref.current.stop()
+
+    setTimeout(() => {
+      autoPlayref.current.play()
+    }, 6000)
+  }
 
   return (
     <section className="overflow-x-hidden">
@@ -127,17 +143,9 @@ export default function SearchByAilment() {
         opts={{
           align: "start",
           slidesToScroll: 1,
-          containScroll: "trimSnaps",
+          // containScroll: "trimSnaps",
         }}
-        plugins={[
-          Autoplay({
-            delay: 4000,
-            stopOnFocusIn: true,
-            jump: false,
-            stopOnMouseEnter: true,
-            stopOnInteraction: true,
-          }),
-        ]}
+        plugins={[autoPlayref.current]}
         className="max-w-3/4 mx-auto"
       >
         <CarouselContent>
@@ -178,11 +186,13 @@ export default function SearchByAilment() {
         <CarouselPrevious
           className="absolute -left-6 sm:-left-16 md:-left-24 top-1/2 transform -translate-y-1/2 h-8 w-8 sm:h-10 sm:w-10 bg-brand"
           variant="default"
+          onMouseDown={handleNavigation}
         />
 
         <CarouselNext
           className="absolute -right-6 sm:-right-16 md:-right-24 top-1/2 transform -translate-y-1/2 h-8 w-8 sm:h-10 sm:w-10 bg-brand"
           variant="default"
+          onMouseDown={handleNavigation}
         />
       </Carousel>
     </section>

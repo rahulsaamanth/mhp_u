@@ -33,33 +33,35 @@ export default function UserButton() {
     )
 
   return (
-    <DropdownMenu>
-      <DropdownMenuTrigger className="rounded-full border-2 focus-visible:outline-none cursor-pointer">
-        <Avatar>
-          <AvatarImage
-            src={user.image || ""}
-            alt={user.name || "Profile"}
-            className="object-cover"
-          />
-          <AvatarFallback>
-            {user.name?.[0]?.toUpperCase() || (
-              <User className="text-black size-4" />
-            )}
-          </AvatarFallback>
-        </Avatar>
-      </DropdownMenuTrigger>
-      <DropdownMenuContent className="w-fit" align="end">
-        <DropdownMenuItem className="cursor-default pb-2 hover:bg-none">
-          <span className="text-xs">{user?.name || "User"}</span>
-        </DropdownMenuItem>
-        <hr />
-        <LogoutButton>
-          <DropdownMenuItem className="cursor-pointer space-x-2">
-            <LogOut className="size-4" />
-            <span>Logout</span>
+    <span className="w-16">
+      <DropdownMenu>
+        <DropdownMenuTrigger className="rounded-full border-2 focus-visible:outline-none cursor-pointer">
+          <Avatar>
+            <AvatarImage
+              src={user.image || ""}
+              alt={user.name || "Profile"}
+              className="object-cover"
+            />
+            <AvatarFallback>
+              {user.name?.[0]?.toUpperCase() || (
+                <User className="text-black size-4" />
+              )}
+            </AvatarFallback>
+          </Avatar>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent className="w-fit" align="end">
+          <DropdownMenuItem className="cursor-default pb-2 hover:bg-none">
+            <span className="text-xs">{user?.name || "User"}</span>
           </DropdownMenuItem>
-        </LogoutButton>
-      </DropdownMenuContent>
-    </DropdownMenu>
+          <hr />
+          <LogoutButton>
+            <DropdownMenuItem className="cursor-pointer space-x-2">
+              <LogOut className="size-4" />
+              <span>Logout</span>
+            </DropdownMenuItem>
+          </LogoutButton>
+        </DropdownMenuContent>
+      </DropdownMenu>
+    </span>
   )
 }
