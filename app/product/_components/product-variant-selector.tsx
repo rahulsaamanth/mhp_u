@@ -370,7 +370,7 @@ export default function ProductVariantSelector({
                   <div
                     className={`w-2 h-2 rounded-full mt-1.5 ${
                       (totalStock || 0) > 10
-                        ? "bg-green-500"
+                        ? "bg-brand"
                         : (totalStock || 0) > 0
                         ? "bg-amber-500"
                         : "bg-red-500"

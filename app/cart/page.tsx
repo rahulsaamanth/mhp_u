@@ -79,7 +79,7 @@ const CartItemComponent = memo(
               <div
                 className={`w-2 h-2 rounded-full mr-1.5 ${
                   item.totalStock > 10
-                    ? "bg-green-500"
+                    ? "bg-brand"
                     : item.totalStock > 0
                     ? "bg-amber-500"
                     : "bg-red-500"
@@ -622,7 +622,7 @@ export default function CartPage() {
                 </div>
               )}
               <Button
-                className="w-full mt-4 bg-brand hover:bg-brand-hover text-brand-foreground"
+                className="w-full mt-4 bg-brand hover:bg-brand/80 text-brand-foreground"
                 asChild
                 disabled={user && localItems.length > 0}
                 title={

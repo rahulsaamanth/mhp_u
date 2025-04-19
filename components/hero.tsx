@@ -254,11 +254,11 @@ export default function Hero() {
                   {/* Responsive brand grid - shows different number of brands based on screen size */}
                   <div className="grid grid-cols-2 xs:grid-cols-3 sm:grid-cols-3  lg:grid-cols-6 gap-2 sm:gap-3">
                     {[
+                      "sbl.png",
                       "Reckeweg.png",
                       "adel.png",
-                      "allen.png",
                       "bakson.png",
-                      "sbl.png",
+                      "allen.png",
                       "schwabe.png",
                       "medisynth.png",
                       "st-georges.png",

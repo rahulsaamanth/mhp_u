@@ -214,7 +214,11 @@ export default function CheckoutForm({
       </div>
 
       <div className="pt-4">
-        <Button type="submit" className="w-full" disabled={isProcessing}>
+        <Button
+          type="submit"
+          className="w-full cursor-pointer"
+          disabled={isProcessing}
+        >
           {isProcessing
             ? "Processing..."
             : paymentMethod === "cod"

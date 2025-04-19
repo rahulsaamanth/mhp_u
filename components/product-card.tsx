@@ -94,7 +94,7 @@ export default function ProductCard({
               <p className="text-sm mb-1">{form}</p>
               <div className="py-2">
                 {packSizes && packSizes.length > 0 && (
-                  <p className="text-xs line-clamp-1 flex 2xl:gap-1 flex-wrap items-center">
+                  <p className="text-xs line-clamp-1 flex gap-1 xl:gap-2 flex-wrap items-center">
                     PackSize:{"   "}
                     {packSizes.map((size, index) => (
                       <span
@@ -111,7 +111,7 @@ export default function ProductCard({
               </div>
               <div className="min-h-[1.5rem]">
                 {potencies && potencies.length > 0 && (
-                  <p className="text-xs line-clamp-1 flex 2xl:gap-1 flex-wrap items-center">
+                  <p className="text-xs line-clamp-1 flex gap-1 xl:gap-2 flex-wrap items-center">
                     Potencies:{"   "}
                     {potencies.map((potency, index) => (
                       <span
