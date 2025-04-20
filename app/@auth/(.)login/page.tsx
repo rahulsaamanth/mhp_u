@@ -49,7 +49,6 @@ export default function LoginModal() {
 
         <LoginForm callbackUrl={callbackUrl} />
 
-        {/* Terms and conditions note */}
         <p className="text-xs text-muted-foreground text-center mt-6">
           By logging in, you agree to our{" "}
           <Link href="/terms" className="text-brand hover:underline">

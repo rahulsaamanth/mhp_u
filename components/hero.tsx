@@ -83,11 +83,11 @@ export default function Hero() {
   return (
     <div className="relative">
       <Carousel
-        plugins={[
-          Autoplay({
-            delay: 8000,
-          }),
-        ]}
+        // plugins={[
+        //   Autoplay({
+        //     delay: 8000,
+        //   }),
+        // ]}
         setApi={setApi}
       >
         <CarouselContent>
@@ -125,9 +125,9 @@ export default function Hero() {
               </div>
 
               <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-20 h-full">
-                <div className="max-w-xl space-y-8 xs:space-y-16 xl:space-y-20 z-10 h-full grid place-content-center">
+                <div className="max-w-xl space-y-8 @min-xs:space-y-16 sm:space-y-12 xl:space-y-20 z-10 h-full grid place-content-center">
                   {/* Title and intro group */}
-                  <div className="space-y-3 sm:space-y-4">
+                  <div className="space-y-3 sm:space-y-4 xl:space-y-10">
                     <h1
                       className="text-4xl sm:text-5xl lg:text-6xl font-bold leading-tight tracking-tight text-white"
                       style={{
@@ -138,7 +138,7 @@ export default function Hero() {
                     </h1>
 
                     <span
-                      className="text-base sm:text-xl text-gray-200 max-w-lg italic inline-block opacity-0 sm:opacity-100"
+                      className="text-base sm:text-xl text-gray-200 max-w-lg italic hidden xl:inline-block"
                       style={{
                         textShadow: "0 1px 2px rgba(0, 0, 0, 0.5)",
                       }}
@@ -149,7 +149,7 @@ export default function Hero() {
                   </div>
 
                   {/* Offers group */}
-                  <div className="space-y-4 sm:space-y-6">
+                  <div className="space-y-4 xl:space-y-6">
                     <div className="bg-white/30 backdrop-blur-lg p-3 inline-block text-sm sm:text-base border border-white/40 shadow-md transition-all duration-300 hover:bg-white/40 leading-relaxed rounded-lg">
                       <span
                         className="font-bold sm:font-semibold text-white"
@@ -211,7 +211,7 @@ export default function Hero() {
               {/* Half color, half image for large screens */}
               <div className="hidden lg:block absolute inset-0 z-0">
                 {/* Dark slate color block on left half */}
-                <div className="absolute top-0 left-0 bottom-0 w-1/2 bg-black">
+                <div className="absolute top-0 left-0 bottom-0 w-1/2 bg-stone-900">
                   <div className="absolute inset-0 bg-pattern opacity-10"></div>
                 </div>
                 {/* Image on right half with gradient overlay */}
@@ -223,14 +223,14 @@ export default function Hero() {
                     className="object-cover object-center"
                     priority
                   />
-                  <div className="absolute inset-0 bg-gradient-to-l from-transparent via-transparent to-black opacity-100" />
+                  <div className="absolute inset-0 bg-gradient-to-l from-transparent via-transparent to-stone-900 opacity-100" />
                 </div>
               </div>
 
               <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-20 h-full">
-                <div className="max-w-xl space-y-2 xs:space-y-8 xl:space-y-12 z-10 h-full grid place-content-center">
+                <div className="max-w-xl @max-xs:space-y-4 space-y-6 sm:space-y-8 xl:space-y-10 z-10 h-full grid place-content-center">
                   {/* Title and intro group */}
-                  <div className="space-y-3 sm:space-y-4">
+                  <div className="space-y-3">
                     <h2
                       className="text-3xl sm:text-4xl lg:text-5xl font-bold leading-tight tracking-tight text-white"
                       style={{
@@ -241,7 +241,7 @@ export default function Hero() {
                     </h2>
 
                     <span
-                      className="text-base sm:text-xl text-gray-200 max-w-lg inline-block opacity-0 sm:opacity-100 italic"
+                      className="text-base sm:text-xl text-gray-200 max-w-lg hidden xl:inline-block italic"
                       style={{
                         textShadow: "0 1px 2px rgba(0, 0, 0, 0.5)",
                       }}
@@ -252,7 +252,7 @@ export default function Hero() {
                   </div>
 
                   {/* Responsive brand grid - shows different number of brands based on screen size */}
-                  <div className="grid grid-cols-2 xs:grid-cols-3 sm:grid-cols-3  lg:grid-cols-6 gap-2 sm:gap-3">
+                  <div className="grid grid-cols-2 xs:grid-cols-3 sm:grid-cols-3 lg:grid-cols-6 gap-2 sm:gap-3">
                     {[
                       "sbl.png",
                       "Reckeweg.png",
@@ -289,7 +289,7 @@ export default function Hero() {
                   <div>
                     <Link
                       href="/brands"
-                      className="inline-flex items-center justify-center cursor-pointer px-4 py-3 bg-transparent text-white hover:text-black border-2 hover:bg-white hover:shadow-lg font-bold transition-all duration-300 tracking-wide focus:bg-white focus:text-black"
+                      className="inline-flex items-center justify-center cursor-pointer px-4 py-3 bg-transparent text-white hover:text-stone-900 border-2 hover:bg-white hover:shadow-lg font-bold transition-all duration-300 tracking-wide focus:bg-white focus:text-stone-900"
                     >
                       Explore All Brands
                     </Link>
@@ -317,11 +317,11 @@ export default function Hero() {
         </div>
 
         <CarouselPrevious
-          className="hidden md:block absolute left-0 top-1/2 -translate-y-1/2 h-28 w-14 rounded-r-full rounded-l-none border-2 border-white/70 bg-brand/70 backdrop-blur-sm hover:bg-brand/90 transition-all shadow-lg z-30 text-white"
+          className="hidden xl:block absolute left-0 top-1/2 -translate-y-1/2 h-28 w-14 rounded-r-full rounded-l-none border-2 border-white/70 bg-brand/70 backdrop-blur-sm hover:bg-brand/90 transition-all shadow-lg z-30 text-white"
           size="lg"
         />
         <CarouselNext
-          className="hidden md:block absolute right-0 top-1/2 -translate-y-1/2 h-28 w-14 rounded-l-full rounded-r-none border-2 border-white/70 bg-brand/70 backdrop-blur-sm hover:bg-brand/90 transition-all shadow-lg z-30 text-white"
+          className="hidden xl:block absolute right-0 top-1/2 -translate-y-1/2 h-28 w-14 rounded-l-full rounded-r-none border-2 border-white/70 bg-brand/70 backdrop-blur-sm hover:bg-brand/90 transition-all shadow-lg z-30 text-white"
           size="lg"
         />
       </Carousel>

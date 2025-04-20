@@ -55,8 +55,13 @@ export default function ProductCard({
       <Card className="group border-0 shadow-none w-full h-full py-0 cursor-pointer rounded-none active:scale-[0.98] transition-transform">
         <CardContent className="p-0">
           <div
-            className="relative flex flex-col h-full outline outline-zinc-200  -outline-offset-1 p-2 hover:outline-0
-            transition-all duration-200 before:content-[''] before:absolute before:inset-0  before:outline-brand before:outline-dashed before:outline-2 before:opacity-0 before:-outline-offset-1 hover:before:opacity-100 before:transition-opacity before:duration-500 before:pointer-events-none"
+            className="relative flex flex-col h-full outline outline-zinc-200 -outline-offset-1 p-2 
+            hover:outline-0 focus:outline-0 active:outline-0
+            transition-all duration-200 before:content-[''] before:absolute before:inset-0  
+            before:outline-brand before:outline-dashed before:outline-2 before:opacity-0 
+            before:-outline-offset-1 hover:before:opacity-100 focus-within:before:opacity-100 
+            active:before:opacity-100 before:transition-opacity before:duration-300 
+            before:pointer-events-none md:before:opacity-0 touch-action-manipulation"
           >
             {discount > 0 && (
               <div className="absolute top-2 right-2 z-10 bg-brand/20 text-brand text-xs p-2 rounded-full font-semibold">
@@ -85,7 +90,8 @@ export default function ProductCard({
                 )}
               >
                 <span
-                  className="underline-animate w-auto inline-block text-center"
+                  className="underline-animate w-auto inline-block text-center group-active:after:w-full 
+                  group-focus:after:w-full md:group-hover:after:w-full"
                   title={name}
                 >
                   {`${manufacturer} ${name}`}
@@ -151,7 +157,7 @@ export default function ProductCard({
                 /> */}
                 <Button
                   variant="default"
-                  className="rounded-none py-5 px-4 md:px-3 xl:px-4 bg-brand hover:bg-brand/90 text-white text-sm font-medium cursor-pointer
+                  className="rounded-none py-5 px-4 md:px-3 xl:px-4 bg-brand hover:bg-brand/90 focus:bg-brand/90 active:bg-brand/80 text-white text-sm font-medium cursor-pointer
                   focus:outline-none focus:ring-2 focus:ring-brand/20 focus:ring-offset-2 active:scale-95 transition-transform"
                 >
                   Buy Now
