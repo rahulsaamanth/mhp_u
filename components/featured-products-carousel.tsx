@@ -32,7 +32,7 @@ export default function FeaturedProductsCarousel({
 
     setTimeout(() => {
       autoPlayref.current.play()
-    }, 6000)
+    }, 10000)
   }
 
   return (
@@ -40,8 +40,7 @@ export default function FeaturedProductsCarousel({
       opts={{
         align: "start",
         slidesToScroll: 1,
-
-        // containScroll: "trimSnaps",
+        containScroll: "trimSnaps",
       }}
       plugins={[autoPlayref.current]}
       className="w-3/4 2xl:w-2/3 mx-auto"

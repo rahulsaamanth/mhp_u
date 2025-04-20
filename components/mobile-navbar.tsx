@@ -1,4 +1,15 @@
-import { Menu } from "lucide-react"
+import { cn } from "@/lib/utils"
+import { AlignJustify } from "lucide-react"
+import Image from "next/image"
+import Link from "next/link"
+import { usePathname } from "next/navigation"
+import { useState } from "react"
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "./ui/accordion"
 import { Button } from "./ui/button"
 import {
   Sheet,
@@ -8,17 +19,6 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "./ui/sheet"
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from "./ui/accordion"
-import { cn } from "@/lib/utils"
-import Link from "next/link"
-import { usePathname } from "next/navigation"
-import Image from "next/image"
-import { useState } from "react"
 
 export default function MobileNavigation() {
   const [open, setOpen] = useState(false)
@@ -27,8 +27,12 @@ export default function MobileNavigation() {
     <div className="flex items-center justify-between">
       <Sheet open={open} onOpenChange={setOpen}>
         <SheetTrigger asChild>
-          <Button variant="outline" size="icon" className="border-none">
-            <Menu className="h-6 w-6" />
+          <Button
+            variant="outline"
+            size="icon"
+            className="active:ring-1 active:scale-95"
+          >
+            <AlignJustify className="size-4" />
           </Button>
         </SheetTrigger>
         <SheetContent

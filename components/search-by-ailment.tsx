@@ -131,7 +131,7 @@ export default function SearchByAilment() {
 
     setTimeout(() => {
       autoPlayref.current.play()
-    }, 6000)
+    }, 10000)
   }
 
   return (
@@ -142,8 +142,10 @@ export default function SearchByAilment() {
       <Carousel
         opts={{
           align: "start",
-          slidesToScroll: 1,
-          // containScroll: "trimSnaps",
+          dragFree: true,
+          containScroll: "trimSnaps",
+
+          // slidesToScroll: 1,
         }}
         plugins={[autoPlayref.current]}
         className="max-w-3/4 mx-auto"
@@ -152,7 +154,7 @@ export default function SearchByAilment() {
           {ailments.map((ailment, index) => (
             <CarouselItem
               key={index}
-              className="basis-full sm:basis-1/2 md:basis-1/3 lg:basis-1/4 xl:basis-1/5 2xl:basis-1/6"
+              className="basis-full sm:basis-1/2  lg:basis-1/3 xl:basis-1/4 2xl:basis-1/6"
             >
               <Link
                 href={`/products/all?ailment=${ailment.id}`}
@@ -161,8 +163,12 @@ export default function SearchByAilment() {
                 <Card className="w-full border-0 outline-0 shadow-none px-1 active:scale-95 transition-transform">
                   <CardContent className="flex items-center justify-center p-2">
                     <div
-                      className="relative outline outline-zinc-200 p-2 rounded-xl hover:outline-none
-                      transition-all duration-200 before:content-[''] before:absolute before:inset-0 before:outline-brand before:outline-dashed before:outline-2 before:opacity-0 before:rounded-xl before:-outline-offset-1 hover:before:opacity-100 before:transition-opacity before:duration-500 before:pointer-events-none"
+                      className="relative outline outline-zinc-200 p-2 rounded-xl hover:outline-none focus:outline-none active:outline-none
+                      transition-all duration-200 
+                      before:content-[''] before:absolute before:inset-0 before:outline-brand before:outline-dashed before:outline-2 
+                      before:opacity-0 before:rounded-xl before:-outline-offset-1 
+                      hover:before:opacity-100 focus:before:opacity-100 active:before:opacity-100 
+                      before:transition-opacity before:duration-500 before:pointer-events-none"
                     >
                       <Image
                         src={ailment.imagePath}

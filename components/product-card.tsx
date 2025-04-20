@@ -60,7 +60,7 @@ export default function ProductCard({
             transition-all duration-200 before:content-[''] before:absolute before:inset-0  
             before:outline-brand before:outline-dashed before:outline-2 before:opacity-0 
             before:-outline-offset-1 hover:before:opacity-100 focus-within:before:opacity-100 
-            active:before:opacity-100 before:transition-opacity before:duration-300 
+            active:before:opacity-100 before:transition-opacity before:duration-500 
             before:pointer-events-none md:before:opacity-0 touch-action-manipulation"
           >
             {discount > 0 && (

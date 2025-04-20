@@ -254,7 +254,7 @@ const DesktopNavigation = () => {
         variant="link"
         className={cn(
           "h-auto cursor-pointer p-0 font-medium hover:text-brand hover:underline hover:underline-offset-8 text-xs lg:text-base",
-          pathname.includes("/products/ointments") ? "text-brand underline" : ""
+          pathname.includes("/ailments") ? "text-brand underline" : ""
         )}
       >
         <Link
