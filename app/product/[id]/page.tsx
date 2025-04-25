@@ -3,7 +3,6 @@ import { Suspense } from "react"
 import { notFound } from "next/navigation"
 import FeaturedProducts from "@/components/featured-products"
 import ProductVariantSelector from "../_components/product-variant-selector"
-import { StockByLocation } from "@rahulsaamanth/mhp-schema"
 
 interface ProductDetailsProps {
   id: string
@@ -27,7 +26,10 @@ interface ProductDetailsProps {
     discount: number
     discountType: string
     variantImage: string[]
-    stockByLocation: StockByLocation[]
+    inventory: Array<{
+      storeId: string
+      stock: number
+    }>
     discontinued: boolean
   }>
 }
@@ -62,7 +64,16 @@ async function getProductDetails(
               'discount', pv."discount",
               'discountType', pv."discountType",
               'variantImage', pv."variantImage",
-              'stockByLocation', pv."stockByLocation",
+              'inventory', (
+                SELECT jsonb_agg(
+                  jsonb_build_object(
+                    'storeId', pi."storeId",
+                    'stock', pi."stock"
+                  )
+                )
+                FROM "ProductInventory" pi
+                WHERE pi."productVariantId" = pv."id"
+              ),
               'discontinued', pv."discontinued"
             )
           )

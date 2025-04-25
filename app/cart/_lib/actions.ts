@@ -4,7 +4,12 @@ import { db } from "@/db/db"
 import { CartItem, AddToCartInput } from "@/store/cart"
 import { currentUser } from "@/lib/auth"
 import { eq, isNull } from "drizzle-orm"
-import { cart, product, productVariant } from "@rahulsaamanth/mhp-schema"
+import {
+  cart,
+  product,
+  productVariant,
+  productInventory,
+} from "@rahulsaamanth/mhp-schema"
 import { generateId } from "@/lib/generate-id"
 
 export async function getUserCart() {
@@ -39,14 +44,22 @@ export async function getUserCart() {
           columns: {
             variantImage: true,
             sellingPrice: true,
-            stockByLocation: true,
           },
         })
 
-        // Calculate total stock across all locations
-        const stocks =
-          variantData?.stockByLocation?.map((data) => data.stock) || []
-        const totalStock = stocks.reduce((acc, stock) => acc + stock, 0)
+        // Get inventory data from productInventory table
+        const inventoryData = await db
+          .select({
+            stock: productInventory.stock,
+          })
+          .from(productInventory)
+          .where(eq(productInventory.productVariantId, item.variantId))
+
+        // Calculate total stock across all stores
+        const totalStock = inventoryData.reduce(
+          (acc, inv) => acc + inv.stock,
+          0
+        )
 
         return {
           id: item.id,
@@ -80,17 +93,16 @@ export async function addToCart(item: AddToCartInput) {
   }
 
   try {
-    // First, check available stock
-    const variantData = await db.query.productVariant.findFirst({
-      where: eq(productVariant.id, item.variantId),
-      columns: {
-        stockByLocation: true,
-      },
-    })
+    // First, check available stock from productInventory table
+    const inventoryData = await db
+      .select({
+        stock: productInventory.stock,
+      })
+      .from(productInventory)
+      .where(eq(productInventory.productVariantId, item.variantId))
 
-    // Calculate total stock across all locations
-    const stocks = variantData?.stockByLocation?.map((data) => data.stock) || []
-    const totalStock = stocks.reduce((acc, stock) => acc + stock, 0)
+    // Calculate total stock across all stores
+    const totalStock = inventoryData.reduce((acc, inv) => acc + inv.stock, 0)
 
     // Check if adding requested quantity would exceed stock
     if (item.quantity > totalStock) {
@@ -218,17 +230,16 @@ export async function updateCartItemQuantity(itemId: string, quantity: number) {
       return { success: false, error: "Item not found or unauthorized" }
     }
 
-    // Check available stock
-    const variantData = await db.query.productVariant.findFirst({
-      where: eq(productVariant.id, existingItem.variantId),
-      columns: {
-        stockByLocation: true,
-      },
-    })
+    // Check available stock from productInventory table
+    const inventoryData = await db
+      .select({
+        stock: productInventory.stock,
+      })
+      .from(productInventory)
+      .where(eq(productInventory.productVariantId, existingItem.variantId))
 
-    // Calculate total stock across all locations
-    const stocks = variantData?.stockByLocation?.map((data) => data.stock) || []
-    const totalStock = stocks.reduce((acc, stock) => acc + stock, 0)
+    // Calculate total stock across all stores
+    const totalStock = inventoryData.reduce((acc, inv) => acc + inv.stock, 0)
 
     // Check if quantity exceeds available stock
     if (quantity > totalStock) {

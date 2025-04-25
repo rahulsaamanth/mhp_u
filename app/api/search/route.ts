@@ -22,7 +22,7 @@ interface ProductSearchResult {
     discount: number
     discountType: string
     variantImage: string[]
-    stockByLocation: Array<{ location: string; stock: number }>
+    inventory: Array<{ storeId: string; stock: number }>
   }[]
 }
 
@@ -129,7 +129,16 @@ export async function GET(request: NextRequest) {
           'discount', v.discount,
           'discountType', v."discountType",
           'variantImage', v."variantImage",
-          'stockByLocation', v."stockByLocation"
+          'inventory', (
+            SELECT jsonb_agg(
+              jsonb_build_object(
+                'storeId', pi."storeId",
+                'stock', pi."stock"
+              )
+            )
+            FROM "ProductInventory" pi
+            WHERE pi."productVariantId" = v."id"
+          )
         )) AS "variants"
       FROM product_matches pm
       LEFT JOIN "ProductVariant" v ON v."productId" = pm.id
@@ -168,8 +177,8 @@ export async function GET(request: NextRequest) {
               variantImage: Array.isArray(variant.variantImage)
                 ? variant.variantImage
                 : ["https://placehold.co/600x400?text=No+Image"],
-              stockByLocation: Array.isArray(variant.stockByLocation)
-                ? variant.stockByLocation
+              inventory: Array.isArray(variant.inventory)
+                ? variant.inventory
                 : [],
             }))
           : [],

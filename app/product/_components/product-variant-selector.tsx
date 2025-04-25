@@ -3,7 +3,6 @@
 import { AddToCartButton } from "@/components/add-cart"
 import { Button } from "@/components/ui/button"
 import { QuantitySelector } from "@/components/ui/quantity-selector"
-import { StockByLocation } from "@rahulsaamanth/mhp-schema"
 import Image from "next/image"
 import { useEffect, useState, useMemo } from "react"
 
@@ -27,7 +26,10 @@ interface Variant {
   discount: number
   discountType: string
   variantImage: string[]
-  stockByLocation: StockByLocation[]
+  inventory: {
+    storeId: string
+    stock: number
+  }[]
   discontinued: boolean
 }
 
@@ -119,7 +121,7 @@ export default function ProductVariantSelector({
         )
     : 0
 
-  const stocks = selectedVariant?.stockByLocation.map((data) => {
+  const stocks = selectedVariant?.inventory.map((data) => {
     return data.stock
   })
 
@@ -182,7 +184,7 @@ export default function ProductVariantSelector({
       <div className="flex flex-col space-y-6">
         {/* Product Information Section */}
         <div className="space-y-3">
-          <h1 className="text-4xl font-bold text-gray-900">{`${manufacturer} ${productName}`}</h1>
+          <h1 className="text-4xl font-bold text-gray-900">{`${productName}`}</h1>
 
           <div className="flex flex-col gap-1 text-base text-gray-600">
             {category && (

@@ -13,7 +13,6 @@ export default async function PopularProducts() {
       GROUP BY p."id"
       ORDER BY "sales" DESC
       LIMIT 5
-      OFFSET 1
     )
     SELECT 
       p."id",

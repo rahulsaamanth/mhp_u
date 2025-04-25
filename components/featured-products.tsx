@@ -3,60 +3,67 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "./ui/tabs"
 import FeaturedProductsCarousel from "./featured-products-carousel"
 import type { ProductCardProps } from "./product-card"
 
-async function getProductsByCategory(
+async function getFeaturedProductsByCategory(
   category: string
 ): Promise<ProductCardProps[]> {
   return await executeRawQuery<ProductCardProps>(
-    `WITH FeaturedProducts AS (
-      SELECT
-        p."id",
-        p."name",
-        p."form",
-        p."unit",
-        c."name" as "category",
-        m."name" as "manufacturer",
-        (SELECT pv."id" FROM "ProductVariant" pv WHERE pv."productId" = p."id" LIMIT 1) as "variantId",
-        (SELECT pv."variantImage" FROM "ProductVariant" pv WHERE pv."productId" = p."id" LIMIT 1) as "image",
-        (SELECT pv."mrp" FROM "ProductVariant" pv WHERE pv."productId" = p."id" LIMIT 1) as "mrp",
-        (SELECT pv."sellingPrice" FROM "ProductVariant" pv WHERE pv."productId" = p."id" LIMIT 1) as "sellingPrice",
-        (SELECT pv."discountType" FROM "ProductVariant" pv WHERE pv."productId" = p."id" LIMIT 1) as "discountType",
-        (SELECT pv."discount" FROM "ProductVariant" pv WHERE pv."productId" = p."id" LIMIT 1) as "discount",
-        (SELECT jsonb_agg(DISTINCT pv."packSize") FROM "ProductVariant" pv WHERE pv."productId" = p."id") as "packSizes",
-        (
-          CASE 
-            WHEN (
-              SELECT COUNT(DISTINCT pv."potency") = 1 AND MAX(pv."potency") = 'NONE'  
-              FROM "ProductVariant" pv
-              WHERE pv."productId" = p."id"
-            ) THEN NULL
-            ELSE (
-              SELECT jsonb_agg(DISTINCT pv."potency")
-              FROM "ProductVariant" pv
-              WHERE pv."productId" = p."id"
-            )
-          END
-        ) as "potencies"
-      FROM "Product" p
-      JOIN "Category" c ON p."categoryId" = c."id"
-      JOIN "Manufacturer" m ON p."manufacturerId" = m."id"
-      WHERE p."isFeatured" = true
+    `WITH ProductVariants AS (
+      SELECT 
+        pv."productId",
+        jsonb_agg(DISTINCT pv."potency") FILTER (WHERE pv."potency" != 'NONE') AS potencies,
+        jsonb_agg(DISTINCT pv."packSize") AS packsizes,
+        MIN(pv."id") AS first_variant_id
+      FROM "ProductVariant" pv
+      GROUP BY pv."productId"
+    ),
+    FirstVariant AS (
+      SELECT 
+        pv."id" AS variantid,
+        pv."productId",
+        pv."variantImage" AS image,
+        pv."mrp",
+        pv."sellingPrice" AS sellingprice,
+        pv."discountType" AS discounttype,
+        pv."discount"
+      FROM "ProductVariant" pv
+      JOIN ProductVariants pvs ON pv."id" = pvs.first_variant_id
     )
-    SELECT * 
-    FROM FeaturedProducts
-    WHERE "category" ILIKE $1
-    ORDER BY "name" ASC;
-    `,
+    SELECT
+      p."id",
+      p."name",
+      p."form",
+      p."unit",
+      m."name" AS manufacturer,
+      fv.variantid AS "variantId",
+      fv.image,
+      fv.mrp,
+      fv.sellingprice AS "sellingPrice",
+      fv.discounttype AS "discountType",
+      fv.discount,
+      CASE 
+        WHEN pvs.potencies = '[null]' OR pvs.potencies IS NULL THEN NULL
+        ELSE pvs.potencies
+      END AS potencies,
+      pvs.packsizes AS "packSizes"
+    FROM "Product" p
+    JOIN "Category" c ON p."categoryId" = c."id"
+    JOIN "Manufacturer" m ON p."manufacturerId" = m."id"
+    JOIN ProductVariants pvs ON pvs."productId" = p."id"
+    JOIN FirstVariant fv ON fv."productId" = p."id"
+    WHERE 
+      p."isFeatured" = true AND
+      c."name" ILIKE $1
+    ORDER BY p."name" ASC;`,
     [category]
   )
 }
-
 export default async function FeaturedProducts() {
-  const dilutions = await getProductsByCategory("dilutions")
-  const motherTinctures = await getProductsByCategory("mothertinctures")
-  const biochemics = await getProductsByCategory("biochemics")
-  const biocombinations = await getProductsByCategory("biocombinations")
-  const personalCare = await getProductsByCategory("personal-care")
-  const nutritionSupplements = await getProductsByCategory(
+  const dilutions = await getFeaturedProductsByCategory("dilutions")
+  const motherTinctures = await getFeaturedProductsByCategory("mothertinctures")
+  const biochemics = await getFeaturedProductsByCategory("biochemics")
+  const biocombinations = await getFeaturedProductsByCategory("biocombinations")
+  const personalCare = await getFeaturedProductsByCategory("personal-care")
+  const nutritionSupplements = await getFeaturedProductsByCategory(
     "nutrition-supplements"
   )
 

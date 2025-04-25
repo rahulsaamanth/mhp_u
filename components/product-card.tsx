@@ -71,11 +71,13 @@ export default function ProductCard({
             <div
               className={cn(
                 "w-full overflow-hidden",
-                featured ? "h-full" : "h-48"
+                featured
+                  ? "h-[240px] md:h-[360px] lg:h-[500px] 2xl:h-[600px]"
+                  : "h-48"
               )}
             >
               <Image
-                src={image[0] || "/assets/hero1.jpg"}
+                src={image[0] || "/assets/hero1.webp"}
                 alt={name}
                 width={500}
                 height={500}
@@ -94,7 +96,7 @@ export default function ProductCard({
                   group-focus:after:w-full md:group-hover:after:w-full"
                   title={name}
                 >
-                  {`${manufacturer} ${name}`}
+                  {`${name}`}
                 </span>
               </h3>
               <p className="text-sm mb-1">{form}</p>
