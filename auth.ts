@@ -58,6 +58,8 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     }),
   ],
   trustHost: true,
+  // Add explicit URL configuration for production
+  basePath: "/api/auth",
   callbacks: {
     async session({ session, user: _user }) {
       if (session.user) {
@@ -97,7 +99,9 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       return true
     },
     async redirect({ url, baseUrl }) {
-      const appUrl = process.env.APP_URL || baseUrl
+      // Ensure proper redirection by using the correct base URL
+      const appUrl =
+        process.env.NEXTAUTH_URL || baseUrl || "https://homeosouth.com"
       if (url.startsWith("/")) return `${appUrl}${url}`
       else if (new URL(url).origin === appUrl) return url
       return appUrl
