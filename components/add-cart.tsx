@@ -112,7 +112,7 @@ export function AddToCartButton({
           ? "bg-brand hover:bg-brand/90 text-white"
           : disabled
           ? "bg-zinc-100 text-gray-400"
-          : "bg-zinc-200 hover:bg-zinc-300 text-black"
+          : "bg-zinc-200 hover:bg-zinc-300 text-brand-foreground"
       }
       active:bg-zinc-400 active:scale-95 
       focus:outline-none focus:ring-2 focus:ring-zinc-400 focus:ring-offset-1

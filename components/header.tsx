@@ -243,7 +243,7 @@ export default function Header() {
             className="relative transition-transform duration-150 active:scale-98"
           >
             <Image
-              src="/main_logo.png"
+              src="/logo_main.png"
               alt="LOGO"
               width={500}
               height={500}

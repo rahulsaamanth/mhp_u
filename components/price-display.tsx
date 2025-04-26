@@ -45,7 +45,7 @@ export default function PriceDisplay({
   return (
     <div className="flex flex-wrap items-baseline gap-2">
       {/* Current selling price */}
-      <span className={`${priceTextClass} text-black`}>
+      <span className={`${priceTextClass} text-brand-foreground`}>
         ₹{sellingPrice.toFixed(2)}
       </span>
 

@@ -58,7 +58,7 @@ export default function ProductCard({
             className="relative flex flex-col h-full outline outline-zinc-200 -outline-offset-1 p-2 
             hover:outline-0 focus:outline-0 active:outline-0
             transition-all duration-200 before:content-[''] before:absolute before:inset-0  
-            before:outline-brand before:outline-dashed before:outline-2 before:opacity-0 
+            before:outline-brand-foreground before:outline-dashed before:outline-2 before:opacity-0 
             before:-outline-offset-1 hover:before:opacity-100 focus-within:before:opacity-100 
             active:before:opacity-100 before:transition-opacity before:duration-500 
             before:pointer-events-none md:before:opacity-0 touch-action-manipulation"

@@ -63,7 +63,7 @@ export default function Cart() {
       <Button
         variant="link"
         className={`cursor-pointer text-brand transition-all duration-150 active:scale-95 ${
-          user ? "text-brand" : "text-black"
+          user ? "text-brand" : "text-brand-foreground"
         }`}
       >
         <ShoppingCart className="size-5 md:size-6" />

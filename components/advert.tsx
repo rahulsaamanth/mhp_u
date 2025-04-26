@@ -42,7 +42,7 @@ export default function Advert() {
 
   return (
     <Carousel
-      className="w-full text-center py-2 bg-brand"
+      className="w-full text-center py-2 bg-brand-foreground"
       setApi={setApi}
       opts={{
         loop: true,

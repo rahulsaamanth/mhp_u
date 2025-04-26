@@ -83,11 +83,11 @@ export default function Hero() {
   return (
     <div className="relative">
       <Carousel
-        // plugins={[
-        //   Autoplay({
-        //     delay: 8000,
-        //   }),
-        // ]}
+        plugins={[
+          Autoplay({
+            delay: 8000,
+          }),
+        ]}
         setApi={setApi}
       >
         <CarouselContent>
@@ -211,7 +211,7 @@ export default function Hero() {
               {/* Half color, half image for large screens */}
               <div className="hidden lg:block absolute inset-0 z-0">
                 {/* Dark slate color block on left half */}
-                <div className="absolute top-0 left-0 bottom-0 w-1/2 bg-stone-900">
+                <div className="absolute top-0 left-0 bottom-0 w-1/2 bg-brand-foreground">
                   <div className="absolute inset-0 bg-pattern opacity-10"></div>
                 </div>
                 {/* Image on right half with gradient overlay */}

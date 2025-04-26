@@ -52,7 +52,7 @@ function SubmenuLink({
     <Link
       href={href}
       className={cn(
-        "hover:bg-accent px-4 py-2 hover:border-b transition-all duration-150 active:scale-95",
+        "hover:bg-accent px-4 py-2 hover:border-b transition-all duration-150 active:scale-95 text-brand-foreground",
         isActive
           ? "text-brand border-b border-brand"
           : "hover:text-brand hover:border-brand"
@@ -74,12 +74,12 @@ const DesktopNavigation = () => {
   const pathname = usePathname()
 
   return (
-    <div className="flex justify-center items-center w-full gap-3 xl:gap-6 ">
+    <div className="flex justify-center items-center w-full gap-3 xl:gap-6">
       {/* HOME */}
       <Button
         variant="link"
         className={cn(
-          "h-auto cursor-pointer p-0 font-semibold hover:text-brand hover:underline hover:underline-offset-8 text-xs lg:text-base",
+          "h-auto cursor-pointer p-0 font-semibold hover:text-brand hover:underline hover:underline-offset-8 text-xs lg:text-base text-brand-foreground",
           pathname === "/" ? "text-brand underline" : ""
         )}
       >
@@ -100,7 +100,7 @@ const DesktopNavigation = () => {
           <Button
             variant="link"
             className={cn(
-              "h-auto cursor-pointer p-0 font-medium hover:text-brand hover:underline hover:underline-offset-8 text-xs lg:text-base !px-0",
+              "h-auto cursor-pointer p-0 font-medium hover:text-brand hover:underline hover:underline-offset-8 text-xs lg:text-base !px-0 text-brand-foreground",
               pathname.includes("/about/") ? "text-brand underline" : ""
             )}
           >
@@ -135,7 +135,7 @@ const DesktopNavigation = () => {
           <Button
             variant="link"
             className={cn(
-              "h-auto cursor-pointer p-0 font-medium hover:text-brand hover:underline hover:underline-offset-8 text-xs lg:text-base !px-0",
+              "h-auto cursor-pointer p-0 font-medium hover:text-brand hover:underline hover:underline-offset-8 text-xs lg:text-base !px-0 text-brand-foreground",
               pathname.includes("/products/homeopathic")
                 ? "text-brand underline"
                 : ""
@@ -200,7 +200,7 @@ const DesktopNavigation = () => {
           <Button
             variant="link"
             className={cn(
-              "h-auto cursor-pointer font-medium hover:text-brand hover:underline hover:underline-offset-8 text-xs lg:text-base !p-0",
+              "h-auto cursor-pointer font-medium hover:text-brand hover:underline hover:underline-offset-8 text-xs lg:text-base !p-0 text-brand-foreground",
               pathname.includes("/products/personal-care")
                 ? "text-brand underline"
                 : ""
@@ -253,7 +253,7 @@ const DesktopNavigation = () => {
       <Button
         variant="link"
         className={cn(
-          "h-auto cursor-pointer p-0 font-medium hover:text-brand hover:underline hover:underline-offset-8 text-xs lg:text-base",
+          "h-auto cursor-pointer p-0 font-medium hover:text-brand hover:underline hover:underline-offset-8 text-xs lg:text-base text-brand-foreground",
           pathname.includes("/ailments") ? "text-brand underline" : ""
         )}
       >
@@ -269,7 +269,7 @@ const DesktopNavigation = () => {
       <Button
         variant="link"
         className={cn(
-          "h-auto cursor-pointer p-0 font-medium hover:text-brand hover:underline hover:underline-offset-8 text-xs lg:text-base ml-3",
+          "h-auto cursor-pointer p-0 font-medium hover:text-brand hover:underline hover:underline-offset-8 text-xs lg:text-base text-brand-foreground",
           pathname.includes("/brands") ? "text-brand underline" : ""
         )}
       >
@@ -290,7 +290,7 @@ const DesktopNavigation = () => {
           <Button
             variant="link"
             className={cn(
-              "h-auto cursor-pointer p-0 font-medium hover:text-brand hover:underline hover:underline-offset-8 text-xs lg:text-base !px-0",
+              "h-auto cursor-pointer p-0 font-medium hover:text-brand hover:underline hover:underline-offset-8 text-xs lg:text-base !px-0 text-brand-foreground",
               pathname.includes("/products/") &&
                 (pathname.includes("/ointments") ||
                   pathname.includes("/herbals") ||
@@ -332,7 +332,7 @@ const DesktopNavigation = () => {
       <Button
         variant="link"
         className={cn(
-          "h-auto cursor-pointer p-0 font-medium hover:text-brand hover:underline hover:underline-offset-8 text-xs lg:text-base",
+          "h-auto cursor-pointer p-0 font-medium hover:text-brand hover:underline hover:underline-offset-8 text-xs lg:text-base text-brand-foreground",
           pathname.includes("/about-homeopathy") ? "text-brand underline" : ""
         )}
       >

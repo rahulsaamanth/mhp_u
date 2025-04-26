@@ -165,7 +165,7 @@ export default function SearchByAilment() {
                     <div
                       className="relative outline outline-zinc-200 p-2 rounded-xl hover:outline-none focus:outline-none active:outline-none
                       transition-all duration-200 
-                      before:content-[''] before:absolute before:inset-0 before:outline-brand before:outline-dashed before:outline-2 
+                      before:content-[''] before:absolute before:inset-0 before:outline-brand-foreground before:outline-dashed before:outline-2 
                       before:opacity-0 before:rounded-xl before:-outline-offset-1 
                       hover:before:opacity-100 focus:before:opacity-100 active:before:opacity-100 
                       before:transition-opacity before:duration-500 before:pointer-events-none"

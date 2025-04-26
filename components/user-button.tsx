@@ -21,14 +21,11 @@ export default function UserButton() {
   const callbackUrl = encodeURIComponent(pathname)
   if (!user)
     return (
-      <Link href={`/login?callbackUrl=${callbackUrl}`}>
-        <Button
-          variant="default"
-          size="sm"
-          className="cursor-pointer text-xs bg-brand rounded-none hover:bg-brand/80 transition-all duration-150 active:scale-95 active:bg-brand/70"
-        >
-          Login/Register
-        </Button>
+      <Link
+        href={`/login?callbackUrl=${callbackUrl}`}
+        className="cursor-pointer text-xs bg-brand rounded-none hover:bg-brand/80 transition-all duration-150 active:scale-95 active:bg-brand/70 p-1 md:p-2 font-semibold text-white"
+      >
+        Login/Register
       </Link>
     )
 
@@ -44,7 +41,7 @@ export default function UserButton() {
             />
             <AvatarFallback>
               {user.name?.[0]?.toUpperCase() || (
-                <User className="text-black size-4" />
+                <User className="text-brand-foreground size-4" />
               )}
             </AvatarFallback>
           </Avatar>

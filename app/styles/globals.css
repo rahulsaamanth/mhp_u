@@ -36,10 +36,8 @@
   --sidebar-ring: oklch(0.708 0 0);
 
   /* Add these new custom color variables */
-  --brand: #7cb518;
-  --brand-foreground: #ffffff;
-  --brand-hover: #38b000; /* slightly darker shade for hover states */
-  --brand-dark: #38b000; /* slightly darker shade for hover states */
+  --brand: #51a905;
+  --brand-foreground: #1c1917;
 }
 
 @theme inline {
