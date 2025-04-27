@@ -14,6 +14,7 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from "@/components/ui/carousel"
+import { Input } from "@/components/ui/input"
 
 interface Variant {
   id: string
@@ -58,7 +59,7 @@ export default function ProductVariantSelector({
   const firstVariant = safeVariants.length > 0 ? safeVariants[0] : null
 
   const [selectedPotency, setSelectedPotency] = useState<string>(
-    firstVariant?.potency || "NONE"
+    firstVariant?.potency || ""
   )
   const [selectedPackSize, setSelectedPackSize] = useState<string>(
     firstVariant?.packSize || ""
@@ -213,7 +214,7 @@ export default function ProductVariantSelector({
           <h2 className="text-lg font-semibold">Choose Variant</h2>
 
           {/* Potency Selection */}
-          {allUniquePotencies.length > 0 && (
+          {allUniquePotencies.length > 0 ? (
             <div className="space-y-2">
               <label className="text-sm font-medium">Potency:</label>
               <div className="flex flex-wrap gap-2">
@@ -232,7 +233,7 @@ export default function ProductVariantSelector({
                       <input
                         type="radio"
                         name="potency"
-                        value={potency}
+                        value={potency || ""}
                         checked={selectedPotency === potency}
                         onChange={() => setSelectedPotency(potency)}
                         disabled={!isAvailable}
@@ -254,50 +255,60 @@ export default function ProductVariantSelector({
                 })}
               </div>
             </div>
+          ) : (
+            <div className="text-sm text-gray-500">
+              No potency options available
+            </div>
           )}
 
           {/* Pack Size Selection */}
-          <div className="space-y-2">
-            <label className="text-sm font-medium">Pack Size:</label>
-            <div className="flex flex-wrap gap-2">
-              {allUniquePackSizes.map((packSize) => {
-                const isAvailable = selectedPotency
-                  ? availablePackSizesForPotency.includes(packSize)
-                  : true
+          {allUniquePackSizes.length > 0 ? (
+            <div className="space-y-2">
+              <label className="text-sm font-medium">Pack Size:</label>
+              <div className="flex flex-wrap gap-2">
+                {allUniquePackSizes.map((packSize) => {
+                  const isAvailable = selectedPotency
+                    ? availablePackSizesForPotency.includes(packSize)
+                    : true
 
-                return (
-                  <label
-                    key={packSize}
-                    className={`cursor-pointer ${
-                      !isAvailable ? "opacity-50" : ""
-                    }`}
-                  >
-                    <input
-                      type="radio"
-                      name="packSize"
-                      value={packSize}
-                      checked={selectedPackSize === packSize}
-                      onChange={() => setSelectedPackSize(packSize)}
-                      disabled={!isAvailable}
-                      className="sr-only peer"
-                    />
-                    <div
-                      className={`border border-gray-300 rounded px-4 py-2 text-sm ${
-                        selectedPackSize === packSize
-                          ? "bg-brand text-white"
-                          : !isAvailable
-                          ? "cursor-not-allowed bg-gray-100"
-                          : "hover:bg-gray-100"
+                  return (
+                    <label
+                      key={packSize}
+                      className={`cursor-pointer ${
+                        !isAvailable ? "opacity-50" : ""
                       }`}
                     >
-                      {packSize}{" "}
-                      {unit.replace("(s)", "").replace("TABLETS", "PILLS")}
-                    </div>
-                  </label>
-                )
-              })}
+                      <input
+                        type="radio"
+                        name="packSize"
+                        value={packSize || ""}
+                        checked={selectedPackSize === packSize}
+                        onChange={() => setSelectedPackSize(packSize)}
+                        disabled={!isAvailable}
+                        className="sr-only peer"
+                      />
+                      <div
+                        className={`border border-gray-300 rounded px-4 py-2 text-sm ${
+                          selectedPackSize === packSize
+                            ? "bg-brand text-white"
+                            : !isAvailable
+                            ? "cursor-not-allowed bg-gray-100"
+                            : "hover:bg-gray-100"
+                        }`}
+                      >
+                        {packSize}{" "}
+                        {unit.replace("(s)", "").replace("TABLETS", "PILLS")}
+                      </div>
+                    </label>
+                  )
+                })}
+              </div>
             </div>
-          </div>
+          ) : (
+            <div className="text-sm text-gray-500">
+              No pack size options available
+            </div>
+          )}
 
           {/* Quantity Selector */}
           <div className="space-y-2">

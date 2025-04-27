@@ -142,7 +142,7 @@ export default function SearchByAilment() {
       <Carousel
         opts={{
           align: "start",
-          dragFree: true,
+          // dragFree: true,
           containScroll: "trimSnaps",
 
           // slidesToScroll: 1,
