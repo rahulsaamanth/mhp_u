@@ -43,7 +43,7 @@ export default function MobileNavigation() {
             <SheetTitle className="text-brand">
               <div className="flex items-center justify-center">
                 <Image
-                  src="/the_logo.png"
+                  src="/the_logo1.png"
                   alt="Logo"
                   width={100}
                   height={100}

@@ -18,7 +18,7 @@ export default function LoginPage() {
       <div className="text-center space-y-2 mb-6">
         <div className="mx-auto w-32 h-20 relative mb-2">
           <Image
-            src="/the_logo.png"
+            src="/the_logo1.png"
             alt="Homeo South Logo"
             fill
             className="object-contain"

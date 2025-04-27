@@ -243,16 +243,16 @@ export default function Header() {
             className="relative transition-transform duration-150 active:scale-98"
           >
             <Image
-              src="/the_logo.png"
+              src="/the_logo1.png"
               alt="LOGO"
               width={500}
               height={500}
-              className="object-contain w-[120px] h-[80px] md:w-[160px] md:h-[100px] lg:w-[200px] lg:h-[100px]"
+              className="object-contain w-[140px] h-[80px] md:w-[200px] md:h-[100px] lg:w-[240px] lg:h-[100px]"
               priority
             />
           </Link>
           {/* Mobile cart and login */}
-          <div className="flex md:hidden items-center justify-center gap-3 md:gap-4 ml-auto">
+          <div className="flex md:hidden items-center justify-center gap-1 md:gap-4 ml-auto">
             <UserButton />
             <Cart />
             <div className="block md:hidden">

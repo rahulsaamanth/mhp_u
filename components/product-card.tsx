@@ -71,9 +71,7 @@ export default function ProductCard({
             <div
               className={cn(
                 "w-full overflow-hidden",
-                featured
-                  ? "h-[240px] md:h-[360px] lg:h-[500px] 2xl:h-[600px]"
-                  : "h-48"
+                featured ? "h-[240px] md:h-[360px] lg:h-[540px]" : "h-48"
               )}
             >
               <Image
