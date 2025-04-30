@@ -12,25 +12,27 @@ import {
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar"
 import { LogOut, User } from "lucide-react"
 import { LogoutButton } from "./auth/logout-button"
-import { usePathname } from "next/navigation"
+import { usePathname, useRouter } from "next/navigation"
 
 export default function UserButton() {
   const { user } = useCurrentUser()
   const pathname = usePathname()
+  const router = useRouter()
 
   const callbackUrl = encodeURIComponent(pathname)
   if (!user)
     return (
-      <Link
-        href={`/login?callbackUrl=${callbackUrl}`}
-        className="cursor-pointer text-xs bg-brand rounded-none hover:bg-brand/80 transition-all duration-150 active:scale-95 active:bg-brand/70 p-1 md:p-2 font-semibold text-white"
+      <Button
+        // href={`/login?callbackUrl=${callbackUrl}`}
+        onClick={() => router.push(`/login?callbackUrl=${callbackUrl}`)}
+        className="text-nowrap cursor-pointer text-xs bg-brand rounded-none hover:bg-brand/80 transition-all duration-150 active:scale-95 active:bg-brand/70 p-1 md:px-2 md:py-1 font-semibold text-white"
       >
         Login/Register
-      </Link>
+      </Button>
     )
 
   return (
-    <span className="w-16">
+    <span>
       <DropdownMenu>
         <DropdownMenuTrigger className="rounded-full border-2 focus-visible:outline-none cursor-pointer">
           <Avatar>
