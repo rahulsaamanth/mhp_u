@@ -526,7 +526,7 @@ const CartPage = () => {
   )
 
   return (
-    <div className="px-4 md:px-8 py-8 mx-auto min-h-[60vh]">
+    <div className="container px-4 md:px-8 py-8 mx-auto min-h-[60vh]">
       <h1 className="text-2xl font-bold mb-6">Your Cart</h1>
 
       {isLoading ? (
