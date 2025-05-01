@@ -5,14 +5,13 @@ import {
   removeCartItem,
   updateCartItemQuantity,
   getUserCart,
-  addToCart,
 } from "./_lib/actions"
-import { useState, useEffect, useCallback, useMemo, memo } from "react"
-import { Trash, PlusCircle } from "lucide-react"
+import { useState, useEffect, useCallback, useMemo, memo, useRef } from "react"
+import { Trash } from "lucide-react"
 import Image from "next/image"
 import { formatCurrency } from "@/lib/formatters"
 import Link from "next/link"
-import { CartItem, useCartStore, AddToCartInput } from "@/store/cart"
+import { CartItem, useCartStore } from "@/store/cart"
 import { cartEvents } from "@/lib/cart-events"
 import { toast } from "sonner"
 import { useCurrentUser } from "@/hooks/use-current-user"
@@ -27,7 +26,6 @@ interface CartItemComponentProps {
   user: any // Replace with proper user type if available
   onQuantityChange: (id: string, quantity: number) => void
   onRemove: (id: string) => void
-  onAddToAccount: (item: CartItem) => void
   isAtMaxStock: (item: CartItem) => boolean
 }
 
@@ -38,7 +36,6 @@ const CartItemComponent = memo(
     user,
     onQuantityChange,
     onRemove,
-    onAddToAccount,
     isAtMaxStock,
   }: CartItemComponentProps) => {
     // Use useTransition to avoid freezing the UI during state updates
@@ -107,41 +104,16 @@ const CartItemComponent = memo(
                 {formatCurrency(item.price * item.quantity)}
               </div>
             </div>
-            {user && !isServerItem ? (
-              <div className="flex gap-2 ml-auto">
-                <Button
-                  variant="outline"
-                  size="sm"
-                  className="flex items-center justify-evenly gap-1 text-nowrap px-2 flex-1 sm:flex-auto cursor-pointer"
-                  onClick={() => onAddToAccount(item)}
-                  disabled={isPending}
-                >
-                  <PlusCircle className="h-3 w-3" />
-                  <span className="text-xs">Add to Account</span>
-                </Button>
-                <Button
-                  variant="destructive"
-                  size="sm"
-                  onClick={() => onRemove(item.id)}
-                  className="flex items-center justify-evenly gap-1 px-2 flex-1 sm:flex-auto cursor-pointer"
-                  disabled={isPending}
-                >
-                  <Trash className="h-3 w-3" />
-                  <span className="text-xs">Remove</span>
-                </Button>
-              </div>
-            ) : (
-              <Button
-                variant="destructive"
-                size="sm"
-                onClick={() => onRemove(item.id)}
-                className="flex items-center gap-1 self-end sm:self-auto cursor-pointer"
-                disabled={isPending}
-              >
-                <Trash className="h-4 w-4" />
-                <span className="text-xs">Remove</span>
-              </Button>
-            )}
+            <Button
+              variant="destructive"
+              size="sm"
+              onClick={() => onRemove(item.id)}
+              className="flex items-center gap-1 self-end sm:self-auto cursor-pointer"
+              disabled={isPending}
+            >
+              <Trash className="h-4 w-4" />
+              <span className="text-xs">Remove</span>
+            </Button>
           </div>
         </div>
       </div>
@@ -152,491 +124,433 @@ const CartItemComponent = memo(
 // Add display name to help with debugging
 CartItemComponent.displayName = "CartItemComponent"
 
-export default function CartPage() {
-  const [serverItems, setServerItems] = useState<CartItem[]>([])
+// Create a pure functional component for better rendering performance
+const CartPage = () => {
+  // Use memo to prevent unnecessary re-renders
+  const [cartItems, setCartItems] = useState<CartItem[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const { user } = useCurrentUser()
   const { isLocalCart } = useCartContext()
 
-  // Fix the infinite loop warning by using separate selectors
-  const cartItems = useCartStore((state) => state.items)
+  // Use a ref to track if we're currently updating to prevent duplicate updates
+  const isUpdatingRef = useRef(false)
+  // Add a ref to track visibility state - initialize undefined to avoid SSR issues
+  const wasDocumentHiddenRef = useRef<boolean | undefined>(undefined)
+  // Add a ref to track if we should ignore the next cart event
+  const ignoreNextCartEventRef = useRef(false)
+  // Add a ref to track if we're in browser environment
+  const isBrowserRef = useRef(false)
+
+  // Initialize browser detection once after component mounts
+  useEffect(() => {
+    isBrowserRef.current = true
+    // Now safely set the initial document hidden state
+    wasDocumentHiddenRef.current =
+      typeof document !== "undefined" ? document.hidden : false
+  }, [])
+
+  // Fix the infinite loop warning by using separate selectors with stable references
+  const localCartItems = useCartStore((state) => state.items)
   const removeFromCart = useCartStore((state) => state.removeFromCart)
   const updateQuantity = useCartStore((state) => state.updateQuantity)
 
-  const [localItems, setLocalItems] = useState<CartItem[]>([])
-
   // Load cart items from the server or local storage
   const loadCartItems = useCallback(async () => {
+    // Prevent multiple simultaneous updates
+    if (isUpdatingRef.current) return
+    isUpdatingRef.current = true
+
     setIsLoading(true)
     try {
       if (user) {
         // Logged in user - get cart from server
-        const { items: cartItems } = await getUserCart()
-        setServerItems(cartItems)
-        // Keep local items separate when user is logged in
-        setLocalItems((prevItems) => {
-          // Only update if there's a change
-          return JSON.stringify(prevItems) !== JSON.stringify(cartItems)
-            ? cartItems
-            : prevItems
-        })
+        const { items: serverItems } = await getUserCart()
+        // Use functional updates to prevent stale state issues
+        setCartItems(serverItems)
       } else {
         // Anonymous user - get cart from local storage
-        setLocalItems(cartItems)
-        setServerItems([])
+        // Use object equality check to prevent unnecessary updates
+        setCartItems((prev) => {
+          // Only update if the items have actually changed
+          if (JSON.stringify(prev) !== JSON.stringify(localCartItems)) {
+            return localCartItems
+          }
+          return prev
+        })
       }
     } catch (error) {
       console.error("Failed to load cart:", error)
+      // If server fetch fails, use local cart for logged-in users
+      if (user) {
+        setCartItems([])
+      } else {
+        setCartItems(localCartItems)
+      }
     } finally {
       setIsLoading(false)
+      // Reset the updating flag after a short delay to prevent rapid consecutive updates
+      if (isBrowserRef.current) {
+        setTimeout(() => {
+          isUpdatingRef.current = false
+        }, 100)
+      } else {
+        isUpdatingRef.current = false
+      }
     }
-  }, [user, cartItems])
+  }, [user, localCartItems])
 
   // Initial load of cart items
   useEffect(() => {
     loadCartItems()
   }, [loadCartItems])
 
-  // Subscribe to cart item changes in local storage
+  // Handle visibility changes (tab focus/blur) - client-side only
   useEffect(() => {
-    // Only update local items when they've actually changed
-    if (JSON.stringify(localItems) !== JSON.stringify(cartItems)) {
-      setLocalItems(cartItems)
-    }
+    // Skip during server-side rendering
+    if (!isBrowserRef.current) return
 
-    // Subscribe to cart events (useful for server cart updates)
-    const unsubscribe = cartEvents.subscribe(() => {
-      if (user) {
-        // Reload server cart when cart events are triggered
-        getUserCart().then(({ items }) => {
-          // Only update if there are actual changes
-          if (JSON.stringify(items) !== JSON.stringify(serverItems)) {
-            setServerItems(items)
-          }
-        })
-      }
-    })
+    const handleVisibilityChange = () => {
+      const isHidden = document.hidden
 
-    return () => unsubscribe()
-  }, [user, cartItems, localItems, serverItems])
-
-  // Calculate cart totals - memoize to prevent recalculation on every render
-  const serverSubtotal = useMemo(
-    () =>
-      serverItems.reduce(
-        (total, item) => total + item.price * item.quantity,
-        0
-      ),
-    [serverItems]
-  )
-
-  const localSubtotal = useMemo(
-    () =>
-      localItems.reduce((total, item) => total + item.price * item.quantity, 0),
-    [localItems]
-  )
-
-  const totalAmount = useMemo(
-    () => serverSubtotal + (user ? 0 : localSubtotal),
-    [serverSubtotal, localSubtotal, user]
-  )
-
-  // Calculate total unique items for display
-  const serverUniqueItemCount = serverItems.length
-  const localUniqueItemCount = localItems.length
-  const totalUniqueItemCount =
-    (user ? serverUniqueItemCount : 0) + localUniqueItemCount
-
-  // Calculate total quantities (for reference - we won't display this)
-  const serverTotalQuantity = serverItems.reduce(
-    (total, item) => total + item.quantity,
-    0
-  )
-  const localTotalQuantity = localItems.reduce(
-    (total, item) => total + item.quantity,
-    0
-  )
-
-  // Memoize handlers to prevent recreation on every render
-  const handleRemoveServerItem = useCallback(async (itemId: string) => {
-    try {
-      const result = await removeCartItem(itemId)
-      if (result.success) {
-        setServerItems((prevItems) =>
-          prevItems.filter((item) => item.id !== itemId)
-        )
-        // Notify that cart has changed
-        cartEvents.notifyCartChanged()
-      }
-    } catch (error) {
-      console.error("Failed to remove item:", error)
-    }
-  }, [])
-
-  const handleRemoveLocalItem = useCallback(
-    (itemId: string) => {
-      removeFromCart(itemId)
-      setLocalItems(cartItems.filter((item) => item.id !== itemId))
-      cartEvents.notifyCartChanged()
-    },
-    [cartItems, removeFromCart]
-  )
-
-  const handleQuantityChangeServerItem = useCallback(
-    async (itemId: string, newQuantity: number) => {
-      if (newQuantity < 1) return
-
-      // Find the item to check against stock
-      const currentItem = serverItems.find((item) => item.id === itemId)
-      if (!currentItem) return
-
-      // Check if requesting more than available stock
+      // Only reload cart when tab becomes visible again (not when hidden)
+      // and only if the previous state was hidden (to avoid unnecessary loads on initial visibility)
       if (
-        currentItem.totalStock !== undefined &&
-        newQuantity > currentItem.totalStock
+        !isHidden &&
+        wasDocumentHiddenRef.current === true &&
+        !isUpdatingRef.current
       ) {
-        toast.error(
-          `Cannot add more items. Only ${currentItem.totalStock} available in stock.`
+        console.log(
+          "Tab visibility changed (focus), updating cart with debounce"
         )
+        // Reload cart with debounce
+        const timer = setTimeout(() => {
+          if (!ignoreNextCartEventRef.current) {
+            loadCartItems()
+          }
+        }, 1000) // Significant delay to avoid rapid reloads
+
+        return () => clearTimeout(timer)
+      }
+
+      // Update the ref with current hidden state
+      wasDocumentHiddenRef.current = isHidden
+    }
+
+    // Add event listener
+    document.addEventListener("visibilitychange", handleVisibilityChange)
+
+    // Cleanup
+    return () => {
+      document.removeEventListener("visibilitychange", handleVisibilityChange)
+    }
+  }, [loadCartItems])
+
+  // Subscribe to cart item changes - use a more efficient approach with debouncing
+  useEffect(() => {
+    let timeoutId: NodeJS.Timeout | null = null
+
+    // Handler for cart events with debouncing
+    const handleCartChange = () => {
+      // Skip if explicitly ignored for this event
+      if (ignoreNextCartEventRef.current) {
+        ignoreNextCartEventRef.current = false
         return
       }
 
+      // Cancel any pending updates
+      if (timeoutId) {
+        clearTimeout(timeoutId)
+      }
+
+      // Skip if we're already updating
+      if (isUpdatingRef.current) return
+
+      // For guest users, we can optimize by directly using the local cart items
+      // without making server requests
+      if (!user) {
+        // Only update if the items have actually changed to prevent unnecessary re-renders
+        setCartItems((prev) => {
+          if (JSON.stringify(prev) !== JSON.stringify(localCartItems)) {
+            return [...localCartItems] // Create a new array to ensure React detects the change
+          }
+          return prev
+        })
+      } else {
+        // For logged-in users, we need to fetch from server but with debounce
+        timeoutId = setTimeout(() => {
+          if (!isUpdatingRef.current) {
+            loadCartItems()
+          }
+        }, 1000) // Longer delay to prevent rapid re-renders
+      }
+    }
+
+    // Subscribe to cart events
+    const unsubscribe = cartEvents.subscribe(handleCartChange)
+
+    // Cleanup function
+    return () => {
+      if (timeoutId) {
+        clearTimeout(timeoutId)
+      }
+      unsubscribe()
+    }
+  }, [user, localCartItems, loadCartItems])
+
+  // Handle quantity change for server cart items
+  const handleQuantityChangeServerItem = useCallback(
+    async (id: string, newQuantity: number) => {
+      // Prevent multiple simultaneous updates
+      if (isUpdatingRef.current) return
+      isUpdatingRef.current = true
+
       try {
-        // Update locally for immediate feedback
-        setServerItems((prevItems) =>
+        // Update local state immediately for better UX
+        setCartItems((prevItems) =>
           prevItems.map((item) =>
-            item.id === itemId ? { ...item, quantity: newQuantity } : item
+            item.id === id ? { ...item, quantity: newQuantity } : item
           )
         )
 
-        // Update on server
-        await updateCartItemQuantity(itemId, newQuantity)
+        // Set flag to ignore next cart event to avoid redundant updates
+        ignoreNextCartEventRef.current = true
 
-        // Notify that cart has changed
-        cartEvents.notifyCartChanged()
+        // Then update the server (optimistic update pattern)
+        await updateCartItemQuantity(id, newQuantity)
+
+        // No need to notify cart changed here as the server update will trigger a refresh
+        // This prevents double-rendering
       } catch (error) {
         console.error("Failed to update quantity:", error)
-        // Revert on error
+        toast.error("Failed to update quantity")
+
+        // Revert the optimistic update on error
         loadCartItems()
-      }
-    },
-    [serverItems, loadCartItems]
-  )
-
-  const handleQuantityChangeLocalItem = useCallback(
-    (itemId: string, newQuantity: number) => {
-      if (newQuantity < 1) return
-
-      // Find the item to check against stock
-      const currentItem = localItems.find((item) => item.id === itemId)
-      if (!currentItem) return
-
-      // Check if requesting more than available stock
-      if (
-        currentItem.totalStock !== undefined &&
-        newQuantity > currentItem.totalStock
-      ) {
-        toast.error(
-          `Cannot add more items. Only ${currentItem.totalStock} available in stock.`
-        )
-        return
-      }
-
-      // Update in local storage
-      updateQuantity(itemId, newQuantity)
-
-      // Update local state with modified item
-      const updatedItems = localItems.map((item) =>
-        item.id === itemId ? { ...item, quantity: newQuantity } : item
-      )
-      setLocalItems(updatedItems)
-
-      cartEvents.notifyCartChanged()
-    },
-    [localItems, updateQuantity]
-  )
-
-  // Function to add a local cart item to server cart
-  const addLocalItemToServerCart = useCallback(
-    async (item: CartItem) => {
-      try {
-        // Create input object for server
-        const input: AddToCartInput = {
-          productId: item.productId,
-          variantId: item.variantId,
-          name: item.name,
-          image: item.image,
-          price: item.price,
-          quantity: item.quantity,
-          potency: item.potency,
-          packSize: item.packSize,
-        }
-
-        // Add to server cart
-        const result = await addToCart(input)
-
-        if (result.success) {
-          // First remove from local store directly
-          removeFromCart(item.id)
-
-          // Then update our local state to reflect the change
-          setLocalItems((prevItems) =>
-            prevItems.filter((localItem) => localItem.id !== item.id)
-          )
-
-          // Immediately fetch updated server cart
-          const { items: updatedServerItems } = await getUserCart()
-          setServerItems(updatedServerItems)
-
-          // Notify all other components about the change
-          cartEvents.notifyCartChanged()
-
-          toast.success("Item added to your account cart")
+      } finally {
+        // Reset the updating flag after a short delay
+        if (isBrowserRef.current) {
+          setTimeout(() => {
+            isUpdatingRef.current = false
+          }, 100)
         } else {
-          toast.error(result.error || "Failed to add to cart")
+          isUpdatingRef.current = false
         }
+      }
+    },
+    [loadCartItems]
+  )
+
+  // Handle quantity change for local cart items
+  const handleQuantityChangeLocalItem = useCallback(
+    (id: string, newQuantity: number) => {
+      // Prevent multiple simultaneous updates
+      if (isUpdatingRef.current) return
+      isUpdatingRef.current = true
+
+      try {
+        // Update local state immediately for better UX
+        setCartItems((prevItems) =>
+          prevItems.map((item) =>
+            item.id === id ? { ...item, quantity: newQuantity } : item
+          )
+        )
+
+        // Set flag to ignore next cart event
+        ignoreNextCartEventRef.current = true
+
+        // Then update the store
+        updateQuantity(id, newQuantity)
+
+        // No need to notify cart changed here as the store update will trigger a refresh
+        // This prevents double-rendering
+      } finally {
+        // Reset the updating flag after a short delay
+        if (isBrowserRef.current) {
+          setTimeout(() => {
+            isUpdatingRef.current = false
+          }, 100)
+        } else {
+          isUpdatingRef.current = false
+        }
+      }
+    },
+    [updateQuantity]
+  )
+
+  // Handle remove for server cart items
+  const handleRemoveServerItem = useCallback(
+    async (id: string) => {
+      // Prevent multiple simultaneous updates
+      if (isUpdatingRef.current) return
+      isUpdatingRef.current = true
+
+      try {
+        // Update local state immediately for better UX (optimistic update)
+        setCartItems((prevItems) => prevItems.filter((item) => item.id !== id))
+
+        // Set flag to ignore next cart event
+        ignoreNextCartEventRef.current = true
+
+        // Then update the server
+        await removeCartItem(id)
+
+        toast.success("Item removed from cart")
+        // No need to notify cart changed here as the server update will trigger a refresh
       } catch (error) {
-        console.error("Failed to add item to server cart:", error)
-        toast.error("Failed to add item to your account cart")
+        console.error("Failed to remove item:", error)
+        toast.error("Failed to remove item")
+
+        // Revert the optimistic update on error
+        loadCartItems()
+      } finally {
+        // Reset the updating flag after a short delay
+        if (isBrowserRef.current) {
+          setTimeout(() => {
+            isUpdatingRef.current = false
+          }, 100)
+        } else {
+          isUpdatingRef.current = false
+        }
+      }
+    },
+    [loadCartItems]
+  )
+
+  // Handle remove for local cart items
+  const handleRemoveLocalItem = useCallback(
+    (id: string) => {
+      // Prevent multiple simultaneous updates
+      if (isUpdatingRef.current) return
+      isUpdatingRef.current = true
+
+      try {
+        // Update local state immediately for better UX
+        setCartItems((prevItems) => prevItems.filter((item) => item.id !== id))
+
+        // Set flag to ignore next cart event
+        ignoreNextCartEventRef.current = true
+
+        // Then update the store
+        removeFromCart(id)
+
+        toast.success("Item removed from cart")
+        // No need to notify cart changed here as the store update will trigger a refresh
+      } finally {
+        // Reset the updating flag after a short delay
+        if (isBrowserRef.current) {
+          setTimeout(() => {
+            isUpdatingRef.current = false
+          }, 100)
+        } else {
+          isUpdatingRef.current = false
+        }
       }
     },
     [removeFromCart]
   )
-
-  // Function to add all local cart items to server cart
-  const addAllToAccountCart = useCallback(async () => {
-    try {
-      // Show loading message
-      toast.loading("Adding items to your account cart...")
-
-      // Process each local item
-      let successCount = 0
-      let failCount = 0
-
-      // Use Promise.all to process all items in parallel
-      const results = await Promise.all(
-        localItems.map(async (item) => {
-          try {
-            // Create input object for server
-            const input: AddToCartInput = {
-              productId: item.productId,
-              variantId: item.variantId,
-              name: item.name,
-              image: item.image,
-              price: item.price,
-              quantity: item.quantity,
-              potency: item.potency,
-              packSize: item.packSize,
-            }
-
-            // Add to server cart
-            const result = await addToCart(input)
-
-            if (result.success) {
-              successCount++
-              return { success: true, itemId: item.id }
-            } else {
-              failCount++
-              return { success: false, itemId: item.id, error: result.error }
-            }
-          } catch (error) {
-            failCount++
-            return { success: false, itemId: item.id, error: "Request failed" }
-          }
-        })
-      )
-
-      // Remove all successfully added items from local cart
-      results.forEach((result) => {
-        if (result.success) {
-          removeFromCart(result.itemId)
-        }
-      })
-
-      // Update local cart state with remaining items
-      setLocalItems(cartItems)
-
-      // Fetch updated server cart
-      const { items: updatedServerItems } = await getUserCart()
-      setServerItems(updatedServerItems)
-
-      // Notify all components about the change
-      cartEvents.notifyCartChanged()
-
-      // Show result message
-      toast.dismiss()
-      if (successCount > 0 && failCount === 0) {
-        toast.success(`All item(s) added to your account cart`)
-      } else if (successCount > 0 && failCount > 0) {
-        toast.info(
-          `${successCount} items added to your account cart. ${failCount} items failed.`
-        )
-      } else if (successCount === 0 && failCount > 0) {
-        toast.error(`Failed to add items to your account cart`)
-      }
-    } catch (error) {
-      console.error("Failed to add items to server cart:", error)
-      toast.error("Failed to add items to your account cart")
-    }
-  }, [localItems, cartItems, removeFromCart])
 
   // Check if item quantity is at max stock - memoize this function
   const isAtMaxStock = useCallback((item: CartItem) => {
     return item.totalStock !== undefined && item.quantity >= item.totalStock
   }, [])
 
-  if (isLoading) {
-    return (
-      <div className="container mx-auto py-10 text-center min-h-[50vh]">
-        <p>Loading your cart...</p>
+  // Render a cart item - memoize this function
+  const renderCartItem = useCallback(
+    (item: CartItem) => {
+      // Determine if this is a server item (for logged-in users) or local item
+      const isServerItem = user !== null && !item.id.includes("-")
+
+      return (
+        <CartItemComponent
+          key={item.id}
+          item={item}
+          isServerItem={isServerItem}
+          user={user}
+          onQuantityChange={
+            isServerItem
+              ? handleQuantityChangeServerItem
+              : handleQuantityChangeLocalItem
+          }
+          onRemove={
+            isServerItem ? handleRemoveServerItem : handleRemoveLocalItem
+          }
+          isAtMaxStock={isAtMaxStock}
+        />
+      )
+    },
+    [
+      user,
+      handleQuantityChangeServerItem,
+      handleQuantityChangeLocalItem,
+      handleRemoveServerItem,
+      handleRemoveLocalItem,
+      isAtMaxStock,
+    ]
+  )
+
+  // Calculate total amount
+  const totalAmount = useMemo(() => {
+    return cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0)
+  }, [cartItems])
+
+  // Memoize the order summary to prevent unnecessary re-renders
+  const OrderSummary = useMemo(
+    () => (
+      <div className="lg:col-span-1">
+        <div className="bg-gray-50 p-6 rounded-lg">
+          <h2 className="text-xl font-semibold mb-4">Order Summary</h2>
+          <div className="space-y-2">
+            <div className="flex justify-between">
+              <span>Subtotal</span>
+              <span>{formatCurrency(totalAmount)}</span>
+            </div>
+            <div className="flex justify-between">
+              <span>Shipping</span>
+              <span>Calculated at checkout</span>
+            </div>
+            <div className="flex justify-between font-bold pt-2 border-t">
+              <span>Total</span>
+              <span>{formatCurrency(totalAmount)}</span>
+            </div>
+          </div>
+          <Button
+            className="w-full mt-4 bg-brand hover:bg-brand/80 text-white"
+            asChild
+          >
+            <Link href="/checkout">Proceed to Checkout</Link>
+          </Button>
+        </div>
       </div>
-    )
-  }
-
-  // Helper function to render a cart item (replace with the memoized component)
-  const renderCartItem = (item: CartItem, isServerItem: boolean) => (
-    <CartItemComponent
-      key={item.id}
-      item={item}
-      isServerItem={isServerItem}
-      user={user}
-      onQuantityChange={
-        isServerItem
-          ? handleQuantityChangeServerItem
-          : handleQuantityChangeLocalItem
-      }
-      onRemove={isServerItem ? handleRemoveServerItem : handleRemoveLocalItem}
-      onAddToAccount={addLocalItemToServerCart}
-      isAtMaxStock={isAtMaxStock}
-    />
+    ),
+    [totalAmount]
   )
-
-  const noItemsMessage = (
-    <div className="text-center py-10">
-      <p className="text-lg mb-4">Your cart is empty</p>
-      <Button asChild>
-        <Link href="/">Continue Shopping</Link>
-      </Button>
-    </div>
-  )
-
-  const bothCartsEmpty = serverItems.length === 0 && localItems.length === 0
 
   return (
-    <div className="container mx-auto min-h-[50vh] py-10 px-4">
-      <h1 className="text-2xl font-bold mb-8">Your Shopping Cart</h1>
+    <div className="container py-8 mx-auto min-h-[60vh]">
+      <h1 className="text-2xl font-bold mb-6">Your Cart</h1>
 
-      {!user && (
-        <div className="bg-blue-50 border border-blue-200 rounded p-3 mb-4">
-          <p className="text-sm text-blue-800">
-            Shopping as guest.{" "}
-            <Link href="/login" className="underline font-medium">
-              Sign in
-            </Link>{" "}
-            to save your cart.
-          </p>
+      {isLoading ? (
+        <div className="py-8 text-center">Loading your cart...</div>
+      ) : cartItems.length === 0 ? (
+        <div className="py-8 text-center">
+          <p className="mb-4">Your cart is empty</p>
+          <Button asChild>
+            <Link href="/products">Continue Shopping</Link>
+          </Button>
         </div>
-      )}
-
-      {bothCartsEmpty ? (
-        noItemsMessage
       ) : (
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           <div className="lg:col-span-2">
-            {/* Account Cart Items (Server Cart) */}
-            {user && serverItems.length > 0 && (
-              <div className="mb-8">
-                <h2 className="text-xl font-semibold mb-4 pb-2 border-b">
-                  Your Account Cart
-                </h2>
-                {serverItems.map((item) => renderCartItem(item, true))}
-              </div>
-            )}
-
-            {/* Local (Guest) Cart Items */}
-            {localItems.length > 0 && (
-              <div>
-                {user ? (
-                  <div className="py-4 border-b flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 sm:gap-0">
-                    <h2 className="text-xl font-semibold">
-                      Guest Cart Items
-                      <span className="text-sm font-normal ml-2 text-gray-500 block sm:inline-block">
-                        (Not yet added to your account)
-                      </span>
-                    </h2>
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={addAllToAccountCart}
-                      className="cursor-pointer"
-                    >
-                      <PlusCircle className="size-4 mr-2" />
-                      Add All to Account
-                    </Button>
-                  </div>
-                ) : null}
-
-                {localItems.map((item) => renderCartItem(item, false))}
-              </div>
-            )}
+            {/* Cart Items */}
+            <div>{cartItems.map((item) => renderCartItem(item))}</div>
           </div>
 
-          <div className="lg:col-span-1">
-            <div className="border rounded-lg p-6 sticky top-24">
-              <h3 className="text-lg font-medium mb-4">Order Summary</h3>
-              <div className="space-y-2">
-                {user && serverItems.length > 0 && (
-                  <div className="flex justify-between">
-                    <span>
-                      Account Items Subtotal ({serverUniqueItemCount}{" "}
-                      {serverUniqueItemCount === 1 ? "item" : "items"})
-                    </span>
-                    <span>{formatCurrency(serverSubtotal)}</span>
-                  </div>
-                )}
-
-                {localItems.length > 0 && (
-                  <div className="flex justify-between">
-                    <span>
-                      Guest Items Subtotal ({localUniqueItemCount}{" "}
-                      {localUniqueItemCount === 1 ? "item" : "items"})
-                    </span>
-                    <span>{formatCurrency(localSubtotal)}</span>
-                  </div>
-                )}
-
-                <div className="flex justify-between font-medium text-lg pt-2 border-t">
-                  <span>
-                    Total ({totalUniqueItemCount}{" "}
-                    {totalUniqueItemCount === 1 ? "item" : "items"})
-                  </span>
-                  <span>{formatCurrency(totalAmount)}</span>
-                </div>
-              </div>
-              {user && localItems.length > 0 && (
-                <div className="mt-4 p-3 bg-amber-50 border border-amber-200 rounded text-sm">
-                  <p className="text-amber-800">
-                    Please add guest cart items to your account before checkout.
-                    Or remove them from your cart.
-                  </p>
-                </div>
-              )}
-              <Button
-                className="w-full mt-4 bg-brand hover:bg-brand/80 text-brand-foreground"
-                asChild
-                disabled={user && localItems.length > 0}
-                title={
-                  user && localItems.length > 0
-                    ? "Please add guest items to your account first"
-                    : ""
-                }
-              >
-                <Link href="/checkout">Proceed to Checkout</Link>
-              </Button>
-            </div>
-          </div>
+          {/* Order Summary - Now memoized */}
+          {OrderSummary}
         </div>
       )}
     </div>
   )
 }
+
+export default memo(CartPage)

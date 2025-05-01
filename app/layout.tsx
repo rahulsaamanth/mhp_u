@@ -10,6 +10,7 @@ import { SessionProvider } from "next-auth/react"
 import { CartProvider } from "./cart/_components/cart-provider"
 import { Providers } from "@/lib/providers"
 import { NuqsAdapter } from "nuqs/adapters/next/app"
+import { CartMergeHandler } from "@/components/cart-merge-handler"
 
 const dmSans = DM_Sans({ subsets: ["latin"] })
 
@@ -37,6 +38,7 @@ export default async function RootLayout({
           <NuqsAdapter>
             <Providers>
               <CartProvider>
+                <CartMergeHandler />
                 <Advert />
                 <Header />
                 {children}

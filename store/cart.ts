@@ -150,13 +150,14 @@ export const useCartStore = create<CartState>()(
         }
       },
 
-      // New function to merge local cart with server cart
+      // Function to merge local cart with server cart
       mergeCartWithServer: async () => {
         try {
           const localCart = get().items
 
           // If there are no items in local cart, no need to call the API
           if (localCart.length === 0) {
+            console.log('No local cart items to merge')
             return {
               success: true,
               message: "No items to merge",
@@ -175,6 +176,8 @@ export const useCartStore = create<CartState>()(
               "Content-Type": "application/json",
             },
             body: JSON.stringify({ items: localCart }),
+            // Add credentials to ensure cookies are sent
+            credentials: "include",
           })
 
           // Parse the response
@@ -189,6 +192,15 @@ export const useCartStore = create<CartState>()(
             console.log("Cart merge successful, clearing local cart")
             // Clear local cart after successful merge
             set({ items: [] })
+            
+            // Force localStorage update
+            try {
+              if (typeof window !== 'undefined') {
+                localStorage.setItem('cart-storage', JSON.stringify({ state: { items: [] }, version: 0 }))
+              }
+            } catch (e) {
+              console.error('Failed to clear localStorage cart after merge:', e)
+            }
           }
 
           return result
@@ -203,8 +215,17 @@ export const useCartStore = create<CartState>()(
 
       // Function to clear cart when user logs out
       clearCartOnLogout: () => {
-        // Clear cart items
+        console.log('Clearing local cart on logout')
+        // Clear cart items and ensure it's persisted
         set({ items: [] })
+        // Force localStorage update
+        try {
+          if (typeof window !== 'undefined') {
+            localStorage.setItem('cart-storage', JSON.stringify({ state: { items: [] }, version: 0 }))
+          }
+        } catch (e) {
+          console.error('Failed to clear localStorage cart:', e)
+        }
       },
     }),
     {

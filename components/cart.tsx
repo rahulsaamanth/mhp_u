@@ -14,35 +14,39 @@ import { useCartContext } from "@/app/cart/_components/cart-provider"
 export default function Cart() {
   const { user } = useCurrentUser()
   const { isLocalCart } = useCartContext()
-  const localCart = useCartStore()
+  
+  // Use a more specific selector to avoid unnecessary re-renders
+  const localItemCount = useCartStore((state) => state.items.length)
+  
   const [serverItemCount, setServerItemCount] = useState(0)
-  const [totalItemCount, setTotalItemCount] = useState(0)
+  const [displayCount, setDisplayCount] = useState(0)
 
-  // Function to fetch cart count
+  // Function to fetch cart count - memoized to prevent unnecessary re-renders
   const fetchCartItemsCount = useCallback(async () => {
-    // Get local cart count - counting unique items instead of quantities
-    const localCount = localCart.items.length
-
+    // For authenticated users, only show server cart items
+    // For guest users, only show local cart items
     if (user) {
-      // Logged-in user - get count from server and combine with local
       try {
         const { items } = await getUserCart()
-        const serverCount = items.length // Count unique items instead of quantities
-        setServerItemCount(serverCount)
-
-        // Set total count (server + local)
-        setTotalItemCount(serverCount + localCount)
+        const count = items.length
+        setServerItemCount(count)
+        setDisplayCount(count) // For authenticated users, only show server cart items
+        
+        // Force clear the merging flag if it exists
+        if (typeof window !== 'undefined' && sessionStorage.getItem('needs_cart_merge')) {
+          sessionStorage.removeItem('needs_cart_merge')
+        }
       } catch (error) {
         console.error("Failed to fetch cart items count:", error)
         setServerItemCount(0)
-        setTotalItemCount(localCount) // Still show local items if server fetch fails
+        setDisplayCount(0)
       }
     } else {
       // Anonymous user - only use local cart count
       setServerItemCount(0)
-      setTotalItemCount(localCount)
+      setDisplayCount(localItemCount)
     }
-  }, [user, localCart.items])
+  }, [user, localItemCount])
 
   // Fetch cart items count when user is logged in or cart changes
   useEffect(() => {
@@ -67,12 +71,12 @@ export default function Cart() {
         }`}
       >
         <ShoppingCart className="size-5 md:size-6" />
-        {totalItemCount > 0 && (
+        {displayCount > 0 && (
           <Badge
             variant="default"
             className="absolute -top-1 -right-1 h-5 w-5 flex items-center justify-center p-0 rounded-full text-xs bg-brand text-white"
           >
-            {totalItemCount}
+            {displayCount}
           </Badge>
         )}
       </Button>
