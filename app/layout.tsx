@@ -1,6 +1,5 @@
 import "./styles/globals.css"
 import type { Metadata } from "next"
-import { DM_Sans } from "next/font/google"
 import Advert from "@/components/advert"
 import Header from "@/components/header"
 import Footer from "@/components/footer"
@@ -11,9 +10,11 @@ import { CartProvider } from "./cart/_components/cart-provider"
 import { Providers } from "@/lib/providers"
 import { NuqsAdapter } from "nuqs/adapters/next/app"
 import { CartMergeHandler } from "@/components/cart-merge-handler"
+import { DM_Sans } from "next/font/google"
 
 const dmSans = DM_Sans({ subsets: ["latin"] })
 
+// Using local Menco font defined in globals.css
 export const metadata: Metadata = {
   title: "Homeo South - Buy Homeopathic Medicines Online",
   description: "Homeo South - Premium quality homeopathic remedies from India",
@@ -32,6 +33,7 @@ export default async function RootLayout({
     <SessionProvider session={session}>
       <html lang="en">
         <body
+          // className="font-['Menco'] antialiased"
           className={`${dmSans.className} antialiased`}
           // suppressHydrationWarning={true}
         >

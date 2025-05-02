@@ -55,13 +55,14 @@ export default function ProductCard({
       <Card className="group border-0 shadow-none w-full h-full py-0 cursor-pointer rounded-none active:scale-[0.98] transition-transform">
         <CardContent className="p-0">
           <div
-            className="relative flex flex-col h-full outline outline-zinc-200 -outline-offset-1 p-2 
+            className="relative flex flex-col h-full outline outline-zinc-200 -outline-offset-4 p-2
             hover:outline-0 focus:outline-0 active:outline-0
-            transition-all duration-200 before:content-[''] before:absolute before:inset-0  
-            before:outline-brand-foreground before:outline-dashed before:outline-2 before:opacity-0 
-            before:-outline-offset-1 hover:before:opacity-100 focus-within:before:opacity-100 
-            active:before:opacity-100 before:transition-opacity before:duration-500 
+            transition-all duration-200 before:content-[''] before:absolute before:inset-0
+            before:outline-brand-foreground before:outline-dashed before:outline-2 before:opacity-0
+            before:-outline-offset-4 hover:before:opacity-100 focus-within:before:opacity-100
+            active:before:opacity-100 before:transition-opacity before:duration-500
             before:pointer-events-none md:before:opacity-0 touch-action-manipulation"
+            // className="custom-border"
           >
             {discount > 0 && (
               <div className="absolute top-2 right-2 z-10 bg-brand/20 text-brand text-xs p-2 rounded-full font-semibold">

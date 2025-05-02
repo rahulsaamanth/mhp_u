@@ -3,6 +3,9 @@ import type { Config } from "tailwindcss"
 const config = {
   theme: {
     extend: {
+      fontFamily: {
+        menco: ["Menco", "system-ui", "sans-serif"],
+      },
       colors: {
         brand: {
           DEFAULT: "var(--brand)",

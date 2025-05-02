@@ -394,8 +394,10 @@ const CartPage = () => {
         // Then update the server
         await removeCartItem(id)
 
+        // Important: Explicitly notify cart has changed so the cart icon updates immediately
+        cartEvents.notifyCartChanged(50)
+
         toast.success("Item removed from cart")
-        // No need to notify cart changed here as the server update will trigger a refresh
       } catch (error) {
         console.error("Failed to remove item:", error)
         toast.error("Failed to remove item")
@@ -433,8 +435,10 @@ const CartPage = () => {
         // Then update the store
         removeFromCart(id)
 
+        // Important: Explicitly notify cart has changed so the cart icon updates immediately
+        cartEvents.notifyCartChanged(50)
+
         toast.success("Item removed from cart")
-        // No need to notify cart changed here as the store update will trigger a refresh
       } finally {
         // Reset the updating flag after a short delay
         if (isBrowserRef.current) {
