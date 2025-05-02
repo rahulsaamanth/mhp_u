@@ -69,7 +69,7 @@ export default async function PopularProducts() {
               />
             </div>
             {/* Right side - 4 products in a 2x2 grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 h-full">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 h-full">
               {popularProducts.slice(1).map((product) => (
                 <ProductCard key={product.id} product={product} />
               ))}

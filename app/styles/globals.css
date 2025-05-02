@@ -181,31 +181,9 @@
   background-position: 0 100%;
   background-repeat: no-repeat;
   background-size: 0% 1px;
-  transition: background-size 0.5s ease;
+  transition: background-size 0.4s ease-in-out;
 }
 
 .group:hover .underline-animate {
   background-size: 100% 1px;
-}
-
-.group:hover .custom-border {
-  /* display: inline-block; */
-  /* padding: 20px; */
-  /* Optional: 
-     A normal dashed border can be set as a fallback, particularly if older browsers need to be supported. Notes:
-     - the 4px width here is overwritten with any border-image-width value
-     - a border-image-width can be omitted if it is the same value as the dashed border width
-  */
-  border: dashed 2px #000; /*optional*/
-
-  /* the initial value of border-style is "none", so it must be set to a different value for the border-image to show*/
-  border-style: dashed;
-
-  /* Individual border image properties */
-  border-image-source: url("https://i.sstatic.net/wLdVc.png");
-  border-image-slice: 2;
-  border-image-repeat: round;
-
-  /* or use the shorthand border-image */
-  border-image: url("https://i.sstatic.net/wLdVc.png") 2 round;
 }
