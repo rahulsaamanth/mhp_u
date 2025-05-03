@@ -71,7 +71,7 @@ export default function ProductCard({
                 alt={name}
                 width={500}
                 height={500}
-                className="w-full h-full object-contain rounded-lg p-4 my-2"
+                className="w-full h-full object-contain rounded-lg p-4 my-2 group-hover:scale-105 transition-all duration-300 ease-in-out"
               />
             </div>
             <div className="flex flex-col p-4 flex-grow">

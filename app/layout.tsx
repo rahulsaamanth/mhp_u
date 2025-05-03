@@ -53,7 +53,7 @@ export default async function RootLayout({
             richColors
             theme="light"
             toastOptions={{
-              duration: 3000,
+              duration: 1500,
             }}
             position="top-right"
           />

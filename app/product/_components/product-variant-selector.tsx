@@ -326,7 +326,7 @@ export default function ProductVariantSelector({
         {selectedVariant && (
           <>
             <div className="flex items-baseline gap-2 mb-4">
-              <span className="text-3xl font-bold text-brand">
+              <span className="text-3xl font-bold">
                 ₹{selectedVariant.sellingPrice}
               </span>
               {selectedVariant.discount > 0 && (

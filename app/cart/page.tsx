@@ -19,7 +19,8 @@ import { useCartContext } from "./_components/cart-provider"
 import { useTransition } from "react"
 import { QuantitySelector } from "@/components/ui/quantity-selector"
 
-// Add proper type for CartItemComponent props
+// Add proper type for CartItemComponent
+
 interface CartItemComponentProps {
   item: CartItem
   isServerItem: boolean
@@ -62,7 +63,12 @@ const CartItemComponent = memo(
           />
         </div>
         <div className="ml-4 flex-grow">
-          <h3 className="font-medium">{item.name}</h3>
+          <Link
+            href={`/product/${item.productId}`}
+            className="hover:text-brand transition-colors"
+          >
+            <h3 className="font-medium">{item.name}</h3>
+          </Link>
           {item.potency && (
             <p className="text-sm text-gray-500">Potency: {item.potency}</p>
           )}
@@ -539,7 +545,7 @@ const CartPage = () => {
         <div className="py-8 text-center">
           <p className="mb-4">Your cart is empty</p>
           <Button asChild>
-            <Link href="/products">Continue Shopping</Link>
+            <Link href="/products/all">Continue Shopping</Link>
           </Button>
         </div>
       ) : (
