@@ -52,18 +52,9 @@ export default function ProductCard({
       href={`/product/${id}`}
       className="w-full p-0 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand/40 rounded-sm"
     >
-      <Card className="group w-full h-fit py-0 cursor-pointer rounded-none active:scale-[0.98] outline-1 outline-primary-foreground border-transparent hover:border-brand border-2 hover:border-dashed -outline-offset-2 ring-1 ring-stone-200 hover:ring-0 transition-all duration-300 ease-in-out shadow-md hover:shadow-none">
+      <Card className="group w-full h-fit py-0 cursor-pointer rounded-none active:scale-[0.98] outline-1 outline-primary-foreground border-transparent hover:border-brand focus:border-brand active:border-brand border-2 hover:border-dashed focus:border-dashed active:border-dashed -outline-offset-2 ring-1 ring-stone-200 hover:ring-0 focus:ring-0 active:ring-0 transition-all duration-300 ease-in-out shadow-md hover:shadow-none focus:shadow-none active:shadow-none">
         <CardContent className="p-0">
-          <div
-            // className="relative flex flex-col h-full outline outline-zinc-200 -outline-offset-4 p-2
-            // hover:outline-0 focus:outline-0 active:outline-0
-            // transition-all duration-200 before:content-[''] before:absolute before:inset-0
-            // before:outline-brand-foreground before:outline-dashed before:outline-2 before:opacity-0
-            // before:-outline-offset-4 hover:before:opacity-100 focus-within:before:opacity-100
-            // active:before:opacity-100 before:transition-opacity before:duration-500
-            // before:pointer-events-none md:before:opacity-0 touch-action-manipulation"
-            className="relative"
-          >
+          <div className="relative">
             {discount > 0 && (
               <div className="absolute top-2 right-2 z-10 bg-brand/20 text-brand text-xs p-2 rounded-full font-semibold">
                 -{discountPercentage}%
@@ -92,7 +83,7 @@ export default function ProductCard({
               >
                 <span
                   className="underline-animate w-auto inline-block text-center group-active:after:w-full 
-                  group-focus:after:w-full md:group-hover:after:w-full"
+          group-focus:after:w-full md:group-hover:after:w-full"
                   title={name}
                 >
                   {`${name}`}
@@ -147,19 +138,10 @@ export default function ProductCard({
                 </p>
               </div>
               <div className="grid grid-cols-2 gap-2 mt-auto">
-                {/* <AddToCartButton
-                  productId={id}
-                  variantId={variantId || ""}
-                  name={name}
-                  image={image[0]}
-                  price={sellingPrice}
-                  potency={potencies?.[0]}
-                  packSize={packSizes?.[0]}
-                /> */}
                 <Button
                   variant="default"
                   className="rounded-none py-5 px-4 md:px-3 xl:px-4 bg-brand hover:bg-brand/90 focus:bg-brand/90 active:bg-brand/80 text-white text-sm font-medium cursor-pointer
-                  focus:outline-none focus:ring-2 focus:ring-brand/20 focus:ring-offset-2 active:scale-95 transition-transform"
+          focus:outline-none focus:ring-2 focus:ring-brand/20 focus:ring-offset-2 active:scale-95 transition-transform"
                 >
                   Buy Now
                 </Button>
