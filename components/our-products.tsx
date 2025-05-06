@@ -38,18 +38,21 @@ export default function OurProducts() {
       <h1 className="text-center text-xl md:text-4xl font-bold py-2">
         Our Products
       </h1>
-      <div className="w-full flex items-center justify-center gap-4 sm:gap-8 xl:gap-12 flex-wrap">
+      <div className="p-8 w-full flex items-center justify-center gap-4 sm:gap-8 xl:gap-12 flex-wrap">
         {OurProducts.map((cat) => (
-          <Link
-            href={`/products/${cat.name}`}
+          <Card
+            className="w-fit border-0 outline-0 shadow-none px-1 active:scale-95 transition-transform"
             key={cat.id}
-            className="block focus:outline-none focus-visible:ring-2 focus-visible:ring-brand/40 rounded-md"
           >
-            <Card className="w-full border-0 outline-0 shadow-none px-1 active:scale-95 transition-transform">
-              <CardContent className="flex items-center justify-center p-2">
+            <CardContent className="flex items-center justify-center p-2">
+              <Link
+                href={`/products/${cat.name}`}
+                className="block focus:outline-none focus-visible:ring-2 focus-visible:ring-brand/40 rounded-md"
+              >
                 <div
-                  className="relative outline outline-zinc-200 p-2 rounded-xl hover:outline-none focus:outline-none active:outline-none
-                      transition-all duration-200 before:content-[''] before:absolute before:inset-0 before:outline-brand-foreground before:outline-dashed before:outline-2 before:opacity-0 before:rounded-xl before:-outline-offset-1 hover:before:opacity-100 focus:before:opacity-100 active:before:opacity-100 before:transition-opacity before:duration-500 before:pointer-events-none"
+                  // className="relative outline outline-zinc-200 p-2 rounded-xl hover:outline-none focus:outline-none active:outline-none
+                  //     transition-all duration-200 before:content-[''] before:absolute before:inset-0 before:outline-brand-foreground before:outline-dashed before:outline-2 before:opacity-0 before:rounded-xl before:-outline-offset-1 hover:before:opacity-100 focus:before:opacity-100 active:before:opacity-100 before:transition-opacity before:duration-500 before:pointer-events-none"
+                  className="outline-1 outline-primary-foreground border-transparent hover:border-brand-foreground focus:border-brand-foreground active:border-brand-foreground border-2 hover:border-dashed focus:border-dashed active:border-dashed -outline-offset-2 ring-1 ring-stone-200 hover:ring-0 focus:ring-0 active:ring-0 transition-all duration-300 ease-out shadow-md hover:shadow-none focus:shadow-none active:shadow-none rounded-xl p-2"
                 >
                   <Image
                     src={cat.image}
@@ -64,9 +67,9 @@ export default function OurProducts() {
                     {cat.name}
                   </h3>
                 </div>
-              </CardContent>
-            </Card>
-          </Link>
+              </Link>
+            </CardContent>
+          </Card>
         ))}
       </div>
     </section>

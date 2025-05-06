@@ -156,19 +156,20 @@ export default function SearchByAilment() {
               key={index}
               className="basis-full sm:basis-1/2  lg:basis-1/3 xl:basis-1/4 2xl:basis-1/6"
             >
-              <Link
-                href={`/products/all?ailment=${ailment.id}`}
-                className="block focus:outline-none focus-visible:ring-2 focus-visible:ring-brand/40 rounded-md"
-              >
-                <Card className="w-full border-0 outline-0 shadow-none px-1 active:scale-95 transition-transform">
-                  <CardContent className="flex items-center justify-center p-2">
+              <Card className="w-full border-0 outline-0 shadow-none cursor-default px-1">
+                <CardContent className="flex items-center justify-center p-2">
+                  <Link
+                    href={`/products/all?ailment=${ailment.id}`}
+                    className="block focus:outline-none focus-visible:ring-2 focus-visible:ring-brand/40 rounded-md"
+                  >
                     <div
-                      className="relative outline outline-zinc-200 p-2 rounded-xl hover:outline-none focus:outline-none active:outline-none
-                      transition-all duration-200 
-                      before:content-[''] before:absolute before:inset-0 before:outline-brand-foreground before:outline-dashed before:outline-2 
-                      before:opacity-0 before:rounded-xl before:-outline-offset-1 
-                      hover:before:opacity-100 focus:before:opacity-100 active:before:opacity-100 
-                      before:transition-opacity before:duration-500 before:pointer-events-none"
+                      // className="relative outline outline-zinc-200 p-2 rounded-xl hover:outline-none focus:outline-none active:outline-none
+                      // transition-all duration-200
+                      // before:content-[''] before:absolute before:inset-0 before:outline-brand-foreground before:outline-dashed before:outline-2
+                      // before:opacity-0 before:rounded-xl before:-outline-offset-1
+                      // hover:before:opacity-100 focus:before:opacity-100 active:before:opacity-100
+                      // before:transition-opacity before:duration-500 before:pointer-events-none cursor-pointer"
+                      className="outline-1 outline-primary-foreground border-transparent hover:border-brand-foreground focus:border-brand-foreground active:border-brand-foreground border-2 hover:border-dashed focus:border-dashed active:border-dashed -outline-offset-2 ring-1 ring-stone-200 hover:ring-0 focus:ring-0 active:ring-0 transition-all duration-300 ease-out shadow-md hover:shadow-none focus:shadow-none active:shadow-none rounded-xl p-2"
                     >
                       <Image
                         src={ailment.imagePath}
@@ -183,9 +184,9 @@ export default function SearchByAilment() {
                         {ailment.displayName}
                       </h3>
                     </div>
-                  </CardContent>
-                </Card>
-              </Link>
+                  </Link>
+                </CardContent>
+              </Card>
             </CarouselItem>
           ))}
         </CarouselContent>

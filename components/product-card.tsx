@@ -52,9 +52,9 @@ export default function ProductCard({
       href={`/product/${id}`}
       className="w-full p-0 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand/40 rounded-sm"
     >
-      <Card className="group w-full h-fit py-0 cursor-pointer rounded-none active:scale-[0.98] outline-1 outline-primary-foreground border-transparent hover:border-brand focus:border-brand active:border-brand border-2 hover:border-dashed focus:border-dashed active:border-dashed -outline-offset-2 ring-1 ring-stone-200 hover:ring-0 focus:ring-0 active:ring-0 transition-all duration-300 ease-in-out shadow-md hover:shadow-none focus:shadow-none active:shadow-none">
-        <CardContent className="p-0">
-          <div className="relative">
+      <Card className="group w-full h-fit flex flex-col cursor-pointer rounded-none active:scale-[0.98] outline-1 outline-primary-foreground border-transparent hover:border-brand focus:border-brand active:border-brand border-2 hover:border-dashed focus:border-dashed active:border-dashed -outline-offset-2 ring-1 ring-stone-200 hover:ring-0 focus:ring-0 active:ring-0 transition-all duration-300 ease-out shadow-md hover:shadow-none focus:shadow-none active:shadow-none">
+        <CardContent className="p-0 flex flex-col">
+          <div className="relative flex flex-col">
             {discount > 0 && (
               <div className="absolute top-2 right-2 z-10 bg-brand/20 text-brand text-xs p-2 rounded-full font-semibold">
                 -{discountPercentage}%
@@ -62,7 +62,7 @@ export default function ProductCard({
             )}
             <div
               className={cn(
-                "w-full overflow-hidden",
+                "w-full overflow-hidden flex-shrink-0",
                 featured ? "h-[240px] md:h-[360px] lg:h-[540px]" : "h-48"
               )}
             >
@@ -71,7 +71,7 @@ export default function ProductCard({
                 alt={name}
                 width={500}
                 height={500}
-                className="w-full h-full object-contain rounded-lg p-4 my-2 group-hover:scale-105 transition-all duration-300 ease-in-out"
+                className="w-full h-full object-contain rounded-lg p-4 my-2 group-hover:scale-105 transition-all duration-400 ease-out"
               />
             </div>
             <div className="flex flex-col p-4 flex-grow">
@@ -90,38 +90,57 @@ export default function ProductCard({
                 </span>
               </h3>
               <p className="text-sm mb-1">{form}</p>
-              <div className="py-2">
+
+              {/* Pack sizes - show as many as fit and then ellipses */}
+              <div className="min-h-[1.75rem] overflow-hidden">
                 {packSizes && packSizes.length > 0 && (
-                  <p className="text-xs line-clamp-1 flex gap-1 xl:gap-2 flex-wrap items-center">
-                    PackSize:{"   "}
-                    {packSizes.map((size, index) => (
-                      <span
-                        key={index}
-                        className="bg-blue-600 p-1 text-white font-semibold"
-                      >
-                        {size}
-                        {" " +
-                          unit.replace("(s)", "").replace("TABLETS", "PILLS")}
-                      </span>
-                    ))}
+                  <p className="text-xs">
+                    PackSize:{" "}
+                    <span className="inline-flex flex-wrap items-center gap-1">
+                      {packSizes.slice(0, 3).map((size, index) => (
+                        <span
+                          key={index}
+                          className="bg-blue-600 p-1 text-white font-semibold"
+                        >
+                          {size}
+                          {" " +
+                            unit.replace("(s)", "").replace("TABLETS", "PILLS")}
+                        </span>
+                      ))}
+                      {packSizes.length > 3 && (
+                        <span className="font-semibold text-gray-500 whitespace-nowrap">
+                          +{packSizes.length - 3} more
+                        </span>
+                      )}
+                    </span>
                   </p>
                 )}
               </div>
-              <div className="min-h-[1.5rem]">
+
+              {/* Potencies - show as many as fit and then ellipses */}
+              <div className="min-h-[1.75rem] mb-1 overflow-hidden">
                 {potencies && potencies.length > 0 && (
-                  <p className="text-xs line-clamp-1 flex gap-1 xl:gap-2 flex-wrap items-center">
-                    Potencies:{"   "}
-                    {potencies.map((potency, index) => (
-                      <span
-                        key={index}
-                        className="bg-blue-600 p-1 text-white font-semibold"
-                      >
-                        {potency}
-                      </span>
-                    ))}
+                  <p className="text-xs">
+                    Potencies:{" "}
+                    <span className="inline-flex flex-wrap items-center gap-1">
+                      {potencies.slice(0, 3).map((potency, index) => (
+                        <span
+                          key={index}
+                          className="bg-blue-600 p-1 text-white font-semibold"
+                        >
+                          {potency}
+                        </span>
+                      ))}
+                      {potencies.length > 3 && (
+                        <span className="font-semibold text-gray-500 whitespace-nowrap">
+                          +{potencies.length - 3} more
+                        </span>
+                      )}
+                    </span>
                   </p>
                 )}
               </div>
+
               <div className="mb-4 pt-2">
                 <p
                   className={cn(

@@ -1,8 +1,9 @@
 import { executeRawQuery } from "@/db/db"
 import { Suspense } from "react"
 import { notFound } from "next/navigation"
-import FeaturedProducts from "@/components/featured-products"
+import ProductCard, { ProductCardProps } from "@/components/product-card"
 import ProductVariantSelector from "../_components/product-variant-selector"
+import FeaturedProductsCarousel from "@/components/featured-products-carousel"
 
 interface ProductDetailsProps {
   id: string
@@ -96,6 +97,94 @@ async function getProductDetails(
   }
 }
 
+async function getRelatedProducts(
+  productId: string,
+  categoryId: string,
+  form: string,
+  manufacturerId: string
+): Promise<ProductCardProps[]> {
+  try {
+    return await executeRawQuery<ProductCardProps>(
+      `
+      WITH ProductVariants AS (
+        SELECT 
+          pv."productId",
+          MIN(pv."id") AS first_variant_id,
+          jsonb_agg(DISTINCT pv."potency") FILTER (WHERE pv."potency" != 'NONE') AS potencies,
+          jsonb_agg(DISTINCT pv."packSize") AS "packSizes"
+        FROM "ProductVariant" pv
+        GROUP BY pv."productId"
+      ),
+      FirstVariant AS (
+        SELECT 
+          pv."id" AS "variantId",
+          pv."productId",
+          pv."variantImage" AS "image",
+          pv."mrp",
+          pv."sellingPrice",
+          pv."discountType",
+          pv."discount"
+        FROM "ProductVariant" pv
+        JOIN ProductVariants pvs ON pv."id" = pvs.first_variant_id
+      ),
+      RelatedProducts AS (
+        (
+          -- Products from same category
+          SELECT p.*, 1 as priority
+          FROM "Product" p
+          WHERE p."categoryId" = $1 AND p."id" != $2 AND p.status = 'ACTIVE'
+          LIMIT 6
+        )
+        UNION ALL
+        (
+          -- Products from same manufacturer
+          SELECT p.*, 2 as priority
+          FROM "Product" p
+          WHERE p."manufacturerId" = $3 AND p."id" != $2 AND p.status = 'ACTIVE'
+          AND p."categoryId" != $1  -- Exclude products already included from category
+          LIMIT 3
+        )
+        UNION ALL
+        (
+          -- Products with same form
+          SELECT p.*, 3 as priority
+          FROM "Product" p
+          WHERE p.form = $4 AND p."id" != $2 AND p.status = 'ACTIVE'
+          AND p."categoryId" != $1  -- Exclude products already included from category
+          AND p."manufacturerId" != $3  -- Exclude products already included from manufacturer
+          LIMIT 3
+        )
+      )
+      SELECT DISTINCT ON (p."id")
+        p."id",
+        p."name",
+        p."form",
+        p."unit",
+        m."name" as "manufacturer",
+        fv."variantId",
+        fv."image",
+        fv."mrp",
+        fv."sellingPrice",
+        fv."discountType",
+        fv."discount",
+        pvs.potencies,
+        pvs."packSizes"
+      FROM RelatedProducts p
+      JOIN "Category" c ON p."categoryId" = c."id"
+      JOIN "Manufacturer" m ON p."manufacturerId" = m."id"
+      JOIN ProductVariants pvs ON pvs."productId" = p."id"
+      JOIN FirstVariant fv ON fv."productId" = p."id"
+      ORDER BY p."id", priority ASC
+      LIMIT 12
+      `,
+      [categoryId, productId, manufacturerId, form]
+    )
+  } catch (error) {
+    console.error("Error fetching related products:", error)
+    return []
+  }
+}
+
 export default async function ProductPage({
   params,
 }: {
@@ -108,6 +197,14 @@ export default async function ProductPage({
   if (!product) {
     notFound()
   }
+
+  // Fetch related products
+  const relatedProducts = await getRelatedProducts(
+    product.id,
+    product.categoryId,
+    product.form,
+    product.manufacturer
+  )
 
   const sortedVariants = [...product.variants].sort((a, b) => {
     if (a.potency !== b.potency) {
@@ -266,13 +363,13 @@ export default async function ProductPage({
           </div>
         </div>
       </main>
-      <div className="py-8">
+      <div className="py-8 mx-auto">
         <h2 className="text-xl font-semibold mb-6 text-center">
           You May Also Like
         </h2>
-        <Suspense fallback={<div>Loading related products...</div>}>
-          <FeaturedProducts />
-        </Suspense>
+        {relatedProducts.length > 0 && (
+          <FeaturedProductsCarousel products={relatedProducts} />
+        )}
       </div>
     </div>
   )

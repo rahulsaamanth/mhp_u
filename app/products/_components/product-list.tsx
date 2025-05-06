@@ -1,8 +1,9 @@
 "use client"
 
-import { useEffect, useState, useRef, useCallback } from "react"
+import { useEffect, useState } from "react"
 import ProductCard, { ProductCardProps } from "@/components/product-card"
 import { useRouter, useSearchParams, usePathname } from "next/navigation"
+import { Button } from "@/components/ui/button"
 
 interface ProductListProps {
   products: ProductCardProps[]
@@ -12,68 +13,43 @@ export default function ProductList({ products }: ProductListProps) {
   const router = useRouter()
   const pathname = usePathname()
   const searchParams = useSearchParams()
-  const loaderRef = useRef<HTMLDivElement>(null)
   const perPage = 8
 
   // Get current page from URL or default to 1
   const initialPage = parseInt(searchParams.get("page") || "1", 10)
-  const [page, setPage] = useState<number>(initialPage)
-  const [isLoading, setIsLoading] = useState(false)
+  const [currentPage, setCurrentPage] = useState<number>(initialPage)
 
-  // Calculate how many products to show based on current page
-  const visibleProducts = products.slice(0, page * perPage)
+  // Calculate total pages
+  const totalPages = Math.ceil(products.length / perPage)
+
+  // Calculate visible products for current page
+  const startIndex = (currentPage - 1) * perPage
+  const endIndex = startIndex + perPage
+  const visibleProducts = products.slice(startIndex, endIndex)
 
   // Update URL when page changes
   useEffect(() => {
     const current = new URLSearchParams(Array.from(searchParams.entries()))
 
-    // Only update if page changed
-    if (page !== parseInt(current.get("page") || "1", 10)) {
-      current.set("page", page.toString())
+    if (currentPage !== parseInt(current.get("page") || "1", 10)) {
+      if (currentPage === 1) {
+        current.delete("page")
+      } else {
+        current.set("page", currentPage.toString())
+      }
 
-      // Create new URL with updated page parameter
       const search = current.toString()
       const query = search ? `?${search}` : ""
 
-      // Update URL without reloading the page
-      router.push(`${pathname}${query}`, { scroll: false })
+      router.push(`${pathname}${query}`, { scroll: true })
     }
-  }, [page, router, pathname, searchParams])
+  }, [currentPage, router, pathname, searchParams])
 
-  // Load more products when scrolling to bottom
-  const loadMoreProducts = useCallback(() => {
-    if (isLoading || page * perPage >= products.length) return
-
-    setIsLoading(true)
-
-    // Add a small delay to show loading indicator
-    setTimeout(() => {
-      setPage((prevPage) => prevPage + 1)
-      setIsLoading(false)
-    }, 300)
-  }, [isLoading, page, products.length])
-
-  // Set up intersection observer for infinite scroll
-  useEffect(() => {
-    if (!loaderRef.current) return
-
-    const observer = new IntersectionObserver(
-      (entries) => {
-        if (entries[0].isIntersecting && !isLoading) {
-          loadMoreProducts()
-        }
-      },
-      { threshold: 0.1 }
-    )
-
-    observer.observe(loaderRef.current)
-
-    return () => {
-      if (loaderRef.current) {
-        observer.unobserve(loaderRef.current)
-      }
-    }
-  }, [loadMoreProducts, isLoading])
+  // Handle page navigation
+  const handlePageChange = (pageNumber: number) => {
+    setCurrentPage(pageNumber)
+    window.scrollTo({ top: 0, behavior: "smooth" })
+  }
 
   return (
     <div>
@@ -89,7 +65,7 @@ export default function ProductList({ products }: ProductListProps) {
           <div className="flex justify-between items-center mb-4">
             <p className="text-sm">{products.length} products found</p>
             <p className="text-sm">
-              Page {page} of {Math.ceil(products.length / perPage)}
+              Page {currentPage} of {totalPages}
             </p>
           </div>
 
@@ -99,30 +75,74 @@ export default function ProductList({ products }: ProductListProps) {
             ))}
           </div>
 
-          {/* Loading indicator and sentinel element for infinite scroll */}
-          {visibleProducts.length < products.length && (
-            <div ref={loaderRef} className="w-full py-8 flex justify-center">
-              {isLoading ? (
-                <div className="flex items-center justify-center">
-                  <div className="w-6 h-6 border-t-2 border-brand border-solid rounded-full animate-spin"></div>
-                  <span className="ml-2">Loading more products...</span>
-                </div>
-              ) : (
-                <div className="h-16"></div> // Invisible sentinel element
-              )}
-            </div>
-          )}
-
-          {/* Add manual pagination links as a fallback */}
-          {visibleProducts.length < products.length && (
-            <div className="w-full flex justify-center pt-4 pb-8">
-              <button
-                onClick={loadMoreProducts}
-                disabled={isLoading}
-                className="px-4 py-2 bg-brand text-white rounded hover:bg-brand/90 disabled:opacity-50"
+          {/* Pagination Controls */}
+          {totalPages > 1 && (
+            <div className="mt-8 flex justify-center items-center gap-2">
+              <Button
+                variant="outline"
+                onClick={() => handlePageChange(currentPage - 1)}
+                disabled={currentPage === 1}
+                className="h-10 px-4 py-2 cursor-pointer"
               >
-                {isLoading ? "Loading..." : "Load More"}
-              </button>
+                Previous
+              </Button>
+
+              <div className="flex items-center gap-1">
+                {/* First page */}
+                {currentPage > 2 && (
+                  <>
+                    <Button
+                      variant={currentPage === 1 ? "default" : "outline"}
+                      onClick={() => handlePageChange(1)}
+                      className="h-10 w-10 cursor-pointer"
+                    >
+                      1
+                    </Button>
+                    {currentPage > 3 && <span className="px-1">...</span>}
+                  </>
+                )}
+
+                {/* Current page and siblings */}
+                {Array.from({ length: 3 }, (_, i) => currentPage - 1 + i)
+                  .filter((page) => page > 0 && page <= totalPages)
+                  .map((page) => (
+                    <Button
+                      key={page}
+                      variant={currentPage === page ? "default" : "outline"}
+                      onClick={() => handlePageChange(page)}
+                      className="h-10 w-10 cursor-pointer"
+                    >
+                      {page}
+                    </Button>
+                  ))}
+
+                {/* Last page */}
+                {currentPage < totalPages - 1 && (
+                  <>
+                    {currentPage < totalPages - 2 && (
+                      <span className="px-1">...</span>
+                    )}
+                    <Button
+                      variant={
+                        currentPage === totalPages ? "default" : "outline"
+                      }
+                      onClick={() => handlePageChange(totalPages)}
+                      className="h-10 w-10 cursor-pointer"
+                    >
+                      {totalPages}
+                    </Button>
+                  </>
+                )}
+              </div>
+
+              <Button
+                variant="outline"
+                onClick={() => handlePageChange(currentPage + 1)}
+                disabled={currentPage === totalPages}
+                className="h-10 px-4 py-2 cursor-pointer"
+              >
+                Next
+              </Button>
             </div>
           )}
         </>

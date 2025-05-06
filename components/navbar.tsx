@@ -52,7 +52,7 @@ function SubmenuLink({
     <Link
       href={href}
       className={cn(
-        "hover:bg-accent px-4 py-2 hover:border-b transition-all duration-150 active:scale-95 text-brand-foreground",
+        "hover:bg-accent px-4 py-2 border-b hover:border-b transition-all duration-150 active:scale-95 text-brand-foreground",
         isActive
           ? "text-brand border-b border-brand"
           : "hover:text-brand hover:border-brand"

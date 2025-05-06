@@ -12,8 +12,9 @@ const TermsAndConditionsPage = () => {
         <p>
           These Terms and Conditions govern the use of HOMEOSOUTH's website and
           the purchase of homeopathic products offered by HOMEOSOUTH, a business
-          operating under [Your Business Legal Entity] (hereinafter referred to
-          as "HOMEOSOUTH", "we", "us", or "our").
+          operating under{" "}
+          <span className="uppercase bg-brand/10 p-1">HOMEOSOUTH.COM</span>{" "}
+          (hereinafter referred to as "HOMEOSOUTH", "we", "us", or "our").
         </p>
 
         <p>
