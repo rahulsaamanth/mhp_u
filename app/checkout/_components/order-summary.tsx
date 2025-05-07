@@ -79,7 +79,10 @@ export default function OrderSummary({
           <div key={item.id} className="flex items-center gap-3">
             <div className="w-16 h-16 relative flex-shrink-0 border rounded-md overflow-hidden">
               <Image
-                src={item.image || "/placeholder.png"}
+                src={
+                  // item.image ||
+                  "/placeholder.png"
+                }
                 alt={item.name}
                 fill
                 className="object-contain p-1"

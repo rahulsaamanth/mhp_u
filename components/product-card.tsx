@@ -67,7 +67,10 @@ export default function ProductCard({
               )}
             >
               <Image
-                src={image[0] || "/assets/hero1.webp"}
+                src={
+                  // image[0] ||
+                  "/placeholder.png"
+                }
                 alt={name}
                 width={500}
                 height={500}

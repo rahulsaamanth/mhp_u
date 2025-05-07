@@ -405,12 +405,12 @@ export default async function ProductsOfCategoryPage({
         <span className="font-medium text-brand">{formattedCategory}</span>
       </div>
 
-      <h1 className="text-2xl md:text-3xl font-bold mb-6">
+      {/* <h1 className="text-2xl md:text-3xl font-bold mb-6">
         {formattedCategory}
-      </h1>
+      </h1> */}
 
       {/* Display subcategories if this is a parent category */}
-      {subcategories.length > 0 && (
+      {/* {subcategories.length > 0 && (
         <div className="mb-8">
           <h2 className="text-lg font-medium mb-3">Subcategories:</h2>
           <div className="flex flex-wrap gap-2">
@@ -428,9 +428,9 @@ export default async function ProductsOfCategoryPage({
             })}
           </div>
         </div>
-      )}
+      )} */}
 
-      <div className="flex flex-col md:flex-row gap-8">
+      <div className="flex flex-col-reverse md:flex-row gap-8">
         {/* Sidebar with filters */}
         <div className="w-full md:w-64 flex-shrink-0">
           <FilterSidebar

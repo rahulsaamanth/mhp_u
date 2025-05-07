@@ -153,7 +153,10 @@ export default function ProductVariantSelector({
                   <CarouselItem key={idx}>
                     <div className="aspect-square relative border rounded-lg overflow-hidden bg-white flex items-center justify-center p-4">
                       <Image
-                        src={img || "/assets/hero1.webp"}
+                        src={
+                          // img ||
+                          "/placeholder.png"
+                        }
                         alt={`${productName} - view ${idx + 1}`}
                         width={320}
                         height={320}

@@ -53,7 +53,10 @@ const CartItemComponent = memo(
       <div className="flex border-b py-4">
         <div className="w-24 h-24 relative flex-shrink-0">
           <Image
-            src={item.image || "/assets/hero1.webp"}
+            src={
+              // item.image ||
+              "/placeholder.png"
+            }
             alt={item.name}
             fill
             className="object-contain"

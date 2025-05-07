@@ -4,6 +4,7 @@ import { notFound } from "next/navigation"
 import ProductCard, { ProductCardProps } from "@/components/product-card"
 import ProductVariantSelector from "../_components/product-variant-selector"
 import FeaturedProductsCarousel from "@/components/featured-products-carousel"
+import FeaturedProducts from "@/components/featured-products"
 
 interface ProductDetailsProps {
   id: string
@@ -365,10 +366,14 @@ export default async function ProductPage({
       </main>
       <div className="py-8 mx-auto">
         <h2 className="text-xl font-semibold mb-6 text-center">
-          You May Also Like
+          {relatedProducts.length > 0 ? "You May Also Like" : ""}
         </h2>
-        {relatedProducts.length > 0 && (
+        {relatedProducts.length > 0 ? (
           <FeaturedProductsCarousel products={relatedProducts} />
+        ) : (
+          <Suspense>
+            <FeaturedProducts />
+          </Suspense>
         )}
       </div>
     </div>

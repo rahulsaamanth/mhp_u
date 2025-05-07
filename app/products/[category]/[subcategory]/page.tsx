@@ -247,7 +247,7 @@ export default async function ProductsOfSubcategoryPage({
         {formattedSubcategory}
       </h1>
 
-      <div className="flex flex-col md:flex-row gap-8">
+      <div className="flex flex-col-reverse md:flex-row gap-8">
         {/* Sidebar with filters */}
         <div className="w-full md:w-64 flex-shrink-0">
           <FilterSidebar
