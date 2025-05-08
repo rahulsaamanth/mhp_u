@@ -57,7 +57,7 @@ export default async function PopularProducts() {
         </h2>
         <div className="h-0.5 flex-1 bg-gradient-to-l from-transparent to-primary"></div>
       </div>
-      <div className="space-y-8 w-full md:max-w-4/5 2xl:max-w-3/5 mx-auto px-4 sm:px-8 lg:px-4 py-8">
+      <div className="space-y-8 w-full md:max-w-4/5 xl:max-w-2/4 2xl:max-w-4/6 mx-auto px-4 sm:px-8 lg:px-4 py-8">
         {popularProducts.length > 0 && (
           <div className="grid grid-cols-1 2xl:grid-cols-2 gap-8 px-4">
             {/* Left side - featured product (full height) */}
@@ -69,7 +69,7 @@ export default async function PopularProducts() {
               />
             </div>
             {/* Right side - 4 products in a 2x2 grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 h-full">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 h-full">
               {popularProducts.slice(1).map((product) => (
                 <ProductCard key={product.id} product={product} />
               ))}

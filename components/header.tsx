@@ -252,10 +252,7 @@ export default function Header() {
             />
           </Link>
           {/* Mobile cart and login */}
-          <div
-            className="flex md:hidden items-center justify-center gap-2
-           md:gap-4 ml-auto"
-          >
+          <div className="flex md:hidden items-center justify-center">
             <UserButton />
             <Cart />
             <div className="block md:hidden">

@@ -85,7 +85,7 @@ export default function Cart() {
   }, [user, fetchCartItemsCount])
 
   return (
-    <Link href="/cart" className="cursor-pointer relative">
+    <Link href="/cart" className="cursor-pointer relative mr-2">
       <Button
         variant="link"
         className={`cursor-pointer text-brand transition-all duration-150 active:scale-95 ${

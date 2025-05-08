@@ -63,7 +63,7 @@ export default function ProductCard({
             <div
               className={cn(
                 "w-full overflow-hidden flex-shrink-0",
-                featured ? "h-[240px] md:h-[360px] lg:h-[540px]" : "h-48"
+                featured ? "h-[240px] md:h-[360px] 2xl:h-[540px]" : "h-48"
               )}
             >
               <Image

@@ -137,6 +137,7 @@ CartItemComponent.displayName = "CartItemComponent"
 const CartPage = () => {
   // Use memo to prevent unnecessary re-renders
   const [cartItems, setCartItems] = useState<CartItem[]>([])
+  const [isInitialized, setIsInitialized] = useState(false)
   const [isLoading, setIsLoading] = useState(true)
   const { user } = useCurrentUser()
   const { isLocalCart } = useCartContext()
@@ -149,13 +150,20 @@ const CartPage = () => {
   const ignoreNextCartEventRef = useRef(false)
   // Add a ref to track if we're in browser environment
   const isBrowserRef = useRef(false)
+  // Add a ref to track if component is mounted
+  const isMountedRef = useRef(false)
 
   // Initialize browser detection once after component mounts
   useEffect(() => {
     isBrowserRef.current = true
+    isMountedRef.current = true
     // Now safely set the initial document hidden state
     wasDocumentHiddenRef.current =
       typeof document !== "undefined" ? document.hidden : false
+
+    return () => {
+      isMountedRef.current = false
+    }
   }, [])
 
   // Fix the infinite loop warning by using separate selectors with stable references
@@ -165,40 +173,51 @@ const CartPage = () => {
 
   // Load cart items from the server or local storage
   const loadCartItems = useCallback(async () => {
+    // Don't proceed if component is unmounted
+    if (!isMountedRef.current) return
+
     // Prevent multiple simultaneous updates
     if (isUpdatingRef.current) return
     isUpdatingRef.current = true
 
-    setIsLoading(true)
     try {
       if (user) {
         // Logged in user - get cart from server
         const { items: serverItems } = await getUserCart()
         // Use functional updates to prevent stale state issues
-        setCartItems(serverItems)
+        if (isMountedRef.current) {
+          setCartItems(serverItems)
+        }
       } else {
         // Anonymous user - get cart from local storage
         // Use object equality check to prevent unnecessary updates
-        setCartItems((prev) => {
-          // Only update if the items have actually changed
-          if (JSON.stringify(prev) !== JSON.stringify(localCartItems)) {
-            return localCartItems
-          }
-          return prev
-        })
+        if (isMountedRef.current) {
+          setCartItems((prev) => {
+            // Only update if the items have actually changed
+            if (JSON.stringify(prev) !== JSON.stringify(localCartItems)) {
+              return localCartItems
+            }
+            return prev
+          })
+        }
       }
     } catch (error) {
       console.error("Failed to load cart:", error)
       // If server fetch fails, use local cart for logged-in users
-      if (user) {
-        setCartItems([])
-      } else {
-        setCartItems(localCartItems)
+      if (isMountedRef.current) {
+        if (user) {
+          setCartItems([])
+        } else {
+          setCartItems(localCartItems)
+        }
       }
     } finally {
-      setIsLoading(false)
+      if (isMountedRef.current) {
+        setIsLoading(false)
+        setIsInitialized(true)
+      }
       // Reset the updating flag after a short delay to prevent rapid consecutive updates
-      if (isBrowserRef.current) {
+      if (isBrowserRef.current && isMountedRef.current) {
         setTimeout(() => {
           isUpdatingRef.current = false
         }, 100)
@@ -208,10 +227,19 @@ const CartPage = () => {
     }
   }, [user, localCartItems])
 
-  // Initial load of cart items
+  // Initial load of cart items - ensure this runs only once after mount
   useEffect(() => {
-    loadCartItems()
-  }, [loadCartItems])
+    if (!isInitialized) {
+      loadCartItems()
+    }
+  }, [loadCartItems, isInitialized])
+
+  // Update cart when local items change
+  useEffect(() => {
+    if (!user && isInitialized) {
+      setCartItems(localCartItems)
+    }
+  }, [localCartItems, user, isInitialized])
 
   // Handle visibility changes (tab focus/blur) - client-side only
   useEffect(() => {
@@ -542,7 +570,7 @@ const CartPage = () => {
     <div className="container px-4 md:px-8 py-8 mx-auto min-h-[60vh]">
       <h1 className="text-2xl font-bold mb-6">Your Cart</h1>
 
-      {isLoading ? (
+      {!isInitialized || isLoading ? (
         <div className="py-8 text-center">Loading your cart...</div>
       ) : cartItems.length === 0 ? (
         <div className="py-8 text-center">
