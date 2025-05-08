@@ -18,7 +18,7 @@ export function ReviewCard({
   timeAgo,
 }: ReviewCardProps) {
   return (
-    <Card className="relative border bg-white overflow-hidden h-[320px] transition-all duration-300 border-brand-foreground/50 rounded-none">
+    <Card className="relative border bg-white overflow-hidden h-[320px] transition-all duration-300 border-brand-foreground/20">
       <CardContent className="p-6 flex flex-col h-full">
         {/* Header */}
         <div className="flex-col sm:flex justify-between items-center mb-4">

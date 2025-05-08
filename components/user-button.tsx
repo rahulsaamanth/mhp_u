@@ -26,7 +26,7 @@ export default function UserButton() {
         // href={`/login?callbackUrl=${callbackUrl}`}
         variant="link"
         onClick={() => router.push(`/login?callbackUrl=${callbackUrl}`)}
-        className="text-nowrap text-brand-foreground cursor-pointer text-xs transition-all duration-150 active:scale-95 p-1 md:px-2 md:py-1 font-semibold ml-2"
+        className="text-nowrap text-brand-foreground cursor-pointer text-xs transition-all duration-150 active:scale-98 p-1 md:px-2 md:py-1 font-semibold ml-2 hover:text-brand"
       >
         <User className="size-6" />
         Login/Register

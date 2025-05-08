@@ -83,32 +83,32 @@ export default async function FeaturedProducts() {
           className="mx-auto h-full space-y-8"
         >
           <TabsList className="bg-transparent flex items-center justify-between flex-wrap gap-6 h-fit mx-auto">
+            <TabsTrigger value="biocombinations">biocombinations</TabsTrigger>
+            <TabsTrigger value="biochemics">biochemics</TabsTrigger>
             <TabsTrigger value="dilutions">dilutions</TabsTrigger>
             <TabsTrigger value="mother-tinctures">mother-tinctures</TabsTrigger>
-            <TabsTrigger value="biochemics">biochemics</TabsTrigger>
-            <TabsTrigger value="biocombinations">biocombinations</TabsTrigger>
-            <TabsTrigger value="personal-care">personal-care</TabsTrigger>
             <TabsTrigger value="nutrition-supplements">
               nutrition-supplements
             </TabsTrigger>
+            <TabsTrigger value="personal-care">personal-care</TabsTrigger>
           </TabsList>
+          <TabsContent value="biocombinations">
+            <FeaturedProductsCarousel products={biocombinations} />
+          </TabsContent>
+          <TabsContent value="biochemics">
+            <FeaturedProductsCarousel products={biochemics} />
+          </TabsContent>
           <TabsContent value="dilutions">
             <FeaturedProductsCarousel products={dilutions} />
           </TabsContent>
           <TabsContent value="mother-tinctures">
             <FeaturedProductsCarousel products={motherTinctures} />
           </TabsContent>
-          <TabsContent value="biochemics">
-            <FeaturedProductsCarousel products={biochemics} />
-          </TabsContent>
-          <TabsContent value="biocombinations">
-            <FeaturedProductsCarousel products={biocombinations} />
-          </TabsContent>
-          <TabsContent value="personal-care">
-            <FeaturedProductsCarousel products={personalCare} />
-          </TabsContent>
-          <TabsContent value="nutrition-supplements" className="pb-8">
+          <TabsContent value="nutrition-supplements">
             <FeaturedProductsCarousel products={nutritionSupplements} />
+          </TabsContent>
+          <TabsContent value="personal-care" className="pb-8">
+            <FeaturedProductsCarousel products={personalCare} />
           </TabsContent>
         </Tabs>
       </div>

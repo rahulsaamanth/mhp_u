@@ -2,13 +2,14 @@
 
 import { useState } from "react"
 import Image from "next/image"
+import Link from "next/link"
 import { CartItem } from "@/store/cart"
 import { CouponData, validateCoupon } from "../_lib/actions"
 import { formatCurrency } from "@/lib/formatters"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { toast } from "sonner"
-import { AlertCircle, CheckCircle2, Tag } from "lucide-react"
+import { AlertCircle, CheckCircle2, Tag, PenSquare } from "lucide-react"
 
 interface OrderSummaryProps {
   cartItems: CartItem[]
@@ -72,7 +73,18 @@ export default function OrderSummary({
 
   return (
     <div className="border rounded-lg p-6 space-y-4 sticky top-8">
-      <h2 className="text-xl font-medium">Order Summary</h2>
+      <div className="flex justify-between items-center">
+        <h2 className="text-xl font-medium">Order Summary</h2>
+        <Link href="/cart">
+          <Button
+            variant="ghost"
+            size="sm"
+            className="text-brand hover:text-brand/80 -mr-2 cursor-pointer transition-all duration-150 active:scale-95"
+          >
+            <PenSquare className="h-4 w-4 mr-1" />
+          </Button>
+        </Link>
+      </div>
 
       <div className="max-h-60 overflow-y-auto space-y-3">
         {cartItems.map((item) => (
