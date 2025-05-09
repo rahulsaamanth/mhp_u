@@ -12,6 +12,13 @@ import {
   payment,
 } from "@rahulsaamanth/mhp-schema"
 import { and, eq, gt, isNull, or } from "drizzle-orm"
+import Razorpay from "razorpay"
+
+// Initialize Razorpay instance
+const razorpay = new Razorpay({
+  key_id: process.env.RAZORPAY_KEY_ID!,
+  key_secret: process.env.RAZORPAY_KEY_SECRET!,
+})
 
 export type CouponData = {
   id: string
@@ -217,13 +224,58 @@ export async function processCheckout(
       }
     }
 
-    // For online payments (handled separately)
+    // For online payments, create Razorpay order
+    if (data.paymentMethod === "ONLINE") {
+      try {
+        // Create Razorpay order directly using the SDK
+        const razorpayOrder = await razorpay.orders.create({
+          amount: totalAmount * 100, // Amount in paise
+          currency: "INR",
+          receipt: _order.id,
+          notes: {
+            orderId: _order.id,
+          },
+        })
+
+        // Create payment record for Razorpay
+        await db.insert(payment).values({
+          orderId: _order.id,
+          amount: totalAmount,
+          status: "PENDING",
+          paymentType: "UPI",
+          gateway: "RAZORPAY",
+          gatewayOrderId: razorpayOrder.id,
+        })
+
+        return {
+          success: true,
+          orderId: _order.id,
+          razorpayOrderId: razorpayOrder.id,
+          amount: totalAmount,
+          message: "Order created. Please complete payment.",
+        }
+      } catch (error) {
+        console.error("Razorpay order creation failed:", error)
+        // Delete the order and address if payment creation fails
+        await db.delete(order).where(eq(order.id, _order.id))
+        await db.delete(address).where(eq(address.id, _address.id))
+
+        return {
+          success: false,
+          orderId: null,
+          razorpayOrderId: null,
+          amount: 0,
+          message: "Failed to create payment order",
+        }
+      }
+    }
+
     return {
-      success: true,
-      orderId: _order.id,
-      message: "Order created. Please complete payment.",
+      success: false,
+      orderId: null,
       razorpayOrderId: null,
-      amount: totalAmount,
+      amount: 0,
+      message: "Invalid payment method",
     }
   } catch (error) {
     console.error("Checkout failed:", error)

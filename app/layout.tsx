@@ -11,6 +11,7 @@ import { Providers } from "@/lib/providers"
 import { NuqsAdapter } from "nuqs/adapters/next/app"
 import { CartMergeHandler } from "@/components/cart-merge-handler"
 import { DM_Sans } from "next/font/google"
+import Script from "next/script"
 
 const dmSans = DM_Sans({ subsets: ["latin"] })
 
@@ -32,11 +33,7 @@ export default async function RootLayout({
   return (
     <SessionProvider session={session}>
       <html lang="en">
-        <body
-          // className="font-['Menco'] antialiased"
-          className={`${dmSans.className} antialiased`}
-          // suppressHydrationWarning={true}
-        >
+        <body className={`${dmSans.className} antialiased`}>
           <NuqsAdapter>
             <Providers>
               <CartProvider>

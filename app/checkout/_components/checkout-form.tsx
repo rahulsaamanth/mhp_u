@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useRef } from "react"
 import { useRouter } from "next/navigation"
 import { useForm } from "react-hook-form"
 import { CartItem } from "@/store/cart"
@@ -20,6 +20,7 @@ import {
 import { toast } from "sonner"
 import { cartEvents } from "@/lib/cart-events"
 import { formatCurrency } from "@/lib/formatters"
+import { useRazorpay } from "./razorpay-provider"
 
 interface CheckoutFormProps {
   cartItems: CartItem[]
@@ -33,6 +34,7 @@ export default function CheckoutForm({
   const [isProcessing, setIsProcessing] = useState(false)
   const [showConfirmation, setShowConfirmation] = useState(false)
   const [formData, setFormData] = useState<CheckoutFormData | null>(null)
+  const { isRazorpayLoaded } = useRazorpay()
   const router = useRouter()
 
   const {
@@ -49,12 +51,101 @@ export default function CheckoutForm({
   const paymentMethod = watch("paymentMethod")
 
   const handleFormSubmit = (data: CheckoutFormData) => {
+    // If it's online payment and Razorpay isn't loaded yet, show error
+    if (data.paymentMethod === "ONLINE" && !isRazorpayLoaded) {
+      toast.error(
+        "Payment gateway is still loading. Please try again in a moment."
+      )
+      return
+    }
     setFormData(data)
     setShowConfirmation(true)
   }
 
+  const handleRazorpayPayment = async (
+    orderId: string,
+    amount: number,
+    razorpayOrderId: string
+  ) => {
+    if (!isRazorpayLoaded || !(window as any).Razorpay) {
+      toast.error("Payment gateway is not ready. Please try again.")
+      return
+    }
+
+    const options = {
+      key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID,
+      amount: amount * 100, // Converting to paise
+      currency: "INR",
+      name: "HOMEOSOUTH",
+      description: "Payment for your order",
+      image: "/the_logo1.png",
+      order_id: razorpayOrderId,
+      handler: async (response: any) => {
+        try {
+          const verifyResponse = await fetch("/api/razorpay/verify", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              razorpay_payment_id: response.razorpay_payment_id,
+              razorpay_order_id: response.razorpay_order_id,
+              razorpay_signature: response.razorpay_signature,
+            }),
+          })
+
+          const verifyData = await verifyResponse.json()
+
+          if (verifyData.success) {
+            cartEvents.notifyCartChanged()
+            toast.success("Payment successful!")
+            router.push(`/order-confirmation/${orderId}`)
+          } else {
+            toast.error("Payment verification failed. Please contact support.")
+          }
+        } catch (error) {
+          console.error("Payment verification failed:", error)
+          toast.error("Payment verification failed. Please try again.")
+        }
+      },
+      prefill: {
+        name: formData?.fullName || "",
+        email: formData?.email || "",
+        contact: formData?.phone || "",
+      },
+      notes: {
+        address: `${formData?.address}, ${formData?.city}, ${formData?.state} - ${formData?.pincode}`,
+      },
+      theme: {
+        color: "#16a34a",
+      },
+      modal: {
+        confirm_close: true,
+        escape: false,
+      },
+    }
+
+    try {
+      // Create a new instance each time
+      const razorpay = new (window as any).Razorpay(options)
+      razorpay.on("payment.failed", function (response: any) {
+        console.error("Payment failed:", response.error)
+        toast.error("Payment failed. Please try again.")
+      })
+      razorpay.open()
+    } catch (error) {
+      console.error("Failed to initialize Razorpay:", error)
+      toast.error("Failed to initialize payment. Please try again.")
+    }
+  }
+
   const processOrder = async () => {
     if (!formData) return
+
+    if (formData.paymentMethod === "ONLINE" && !isRazorpayLoaded) {
+      toast.error("Payment gateway is not ready. Please try again.")
+      return
+    }
 
     setIsProcessing(true)
     setShowConfirmation(false)
@@ -63,14 +154,22 @@ export default function CheckoutForm({
       const result = await processCheckout(cartItems, formData, appliedCoupon)
 
       if (result.success) {
-        // Clear cart from local state
-        cartEvents.notifyCartChanged()
-
-        // Show success message
-        toast.success(result.message)
-
-        // Redirect to order confirmation page
-        router.push(`/order-confirmation/${result.orderId}`)
+        if (formData.paymentMethod === "COD") {
+          // Clear cart from local state
+          cartEvents.notifyCartChanged()
+          toast.success(result.message)
+          router.push(`/order-confirmation/${result.orderId}`)
+        } else if (
+          formData.paymentMethod === "ONLINE" &&
+          result.razorpayOrderId
+        ) {
+          // Handle Razorpay payment
+          await handleRazorpayPayment(
+            result.orderId!,
+            result.amount,
+            result.razorpayOrderId
+          )
+        }
       } else {
         toast.error(result.message)
       }
@@ -210,7 +309,16 @@ export default function CheckoutForm({
 
           <RadioGroup
             defaultValue="COD"
-            {...register("paymentMethod", { required: true })}
+            value={watch("paymentMethod")}
+            onValueChange={(value) => {
+              const event = {
+                target: {
+                  name: "paymentMethod",
+                  value: value,
+                },
+              }
+              register("paymentMethod").onChange(event)
+            }}
             className="space-y-3"
           >
             <div className="flex items-center space-x-2 border p-4 rounded-md">

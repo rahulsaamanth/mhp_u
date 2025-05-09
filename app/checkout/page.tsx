@@ -9,6 +9,7 @@ import OrderSummary from "./_components/order-summary"
 import { CouponData } from "./_lib/actions"
 import { Button } from "@/components/ui/button"
 import Link from "next/link"
+import { RazorpayProvider } from "./_components/razorpay-provider"
 
 export default function CheckoutPage() {
   const [cartItems, setCartItems] = useState<CartItem[]>([])
@@ -76,27 +77,28 @@ export default function CheckoutPage() {
   return (
     <div className="container mx-auto py-10 px-4 min-h-[50vh]">
       <h1 className="text-2xl font-bold mb-8">Checkout</h1>
+      <RazorpayProvider>
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          {/* Main checkout form */}
+          <div className="lg:col-span-2">
+            <CheckoutForm cartItems={cartItems} appliedCoupon={appliedCoupon} />
+          </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        {/* Main checkout form */}
-        <div className="lg:col-span-2">
-          <CheckoutForm cartItems={cartItems} appliedCoupon={appliedCoupon} />
+          {/* Order summary */}
+          <div className="lg:col-span-1">
+            <OrderSummary
+              cartItems={cartItems}
+              subtotal={subtotal}
+              shippingFee={shippingFee}
+              appliedCoupon={appliedCoupon}
+              setAppliedCoupon={setAppliedCoupon}
+              discountAmount={discountAmount}
+              setDiscountAmount={setDiscountAmount}
+              total={total}
+            />
+          </div>
         </div>
-
-        {/* Order summary */}
-        <div className="lg:col-span-1">
-          <OrderSummary
-            cartItems={cartItems}
-            subtotal={subtotal}
-            shippingFee={shippingFee}
-            appliedCoupon={appliedCoupon}
-            setAppliedCoupon={setAppliedCoupon}
-            discountAmount={discountAmount}
-            setDiscountAmount={setDiscountAmount}
-            total={total}
-          />
-        </div>
-      </div>
+      </RazorpayProvider>
     </div>
   )
 }
