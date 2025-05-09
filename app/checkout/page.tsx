@@ -46,17 +46,10 @@ export default function CheckoutPage() {
     0
   )
 
-  const shippingFee = 100
+  const shippingFee = 50
 
-  // Calculate shipping cost (free if coupon type is shipping)
-  const actualShippingFee =
-    appliedCoupon?.discountType === "shipping" ? 0 : shippingFee
-
-  // Calculate final total
-  const total =
-    subtotal +
-    actualShippingFee -
-    (appliedCoupon?.discountType !== "shipping" ? discountAmount : 0)
+  // Calculate final total - always include shipping fee and apply any discount
+  const total = subtotal + shippingFee - discountAmount
 
   if (isLoading) {
     return (

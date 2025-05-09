@@ -49,7 +49,7 @@ export default function OrderSummary({
       const result = await validateCoupon(couponCode, subtotal)
 
       if (result.valid && result.coupon) {
-        setAppliedCoupon(result.coupon as CouponData)
+        setAppliedCoupon(result.coupon)
         setDiscountAmount(result.discountAmount || 0)
         toast.success(result.message)
         setCouponCode("")
@@ -68,7 +68,7 @@ export default function OrderSummary({
   const handleRemoveCoupon = () => {
     setAppliedCoupon(null)
     setDiscountAmount(0)
-    toast.success("Coupon removed")
+    toast.warning("Coupon removed")
   }
 
   return (
@@ -131,23 +131,20 @@ export default function OrderSummary({
                   <p className="font-medium text-green-700">
                     {appliedCoupon.code}
                   </p>
-                  {appliedCoupon.discountType === "percentage" && (
-                    <p className="text-xs text-green-600">
-                      {appliedCoupon.discountValue}% off up to ₹
-                      {appliedCoupon.maxDiscountAmount}
-                    </p>
-                  )}
-                  {appliedCoupon.discountType === "fixed" && (
-                    <p className="text-xs text-green-600">
-                      ₹{appliedCoupon.discountValue} off
-                    </p>
-                  )}
-                  {appliedCoupon.discountType === "shipping" && (
-                    <p className="text-xs text-green-600">Free shipping</p>
-                  )}
+                  <p className="text-xs text-green-600">
+                    {appliedCoupon.description ||
+                      (appliedCoupon.discountType === "PERCENTAGE"
+                        ? `${appliedCoupon.discountAmount}% off`
+                        : `₹${appliedCoupon.discountAmount} off`)}
+                  </p>
                 </div>
               </div>
-              <Button variant="outline" size="sm" onClick={handleRemoveCoupon}>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={handleRemoveCoupon}
+                className="cursor-pointer"
+              >
                 Remove
               </Button>
             </div>
@@ -162,6 +159,7 @@ export default function OrderSummary({
               <Button
                 onClick={handleCouponApply}
                 disabled={isValidating || !couponCode}
+                className="cursor-pointer"
               >
                 {isValidating ? "Checking..." : "Apply"}
               </Button>
@@ -185,26 +183,13 @@ export default function OrderSummary({
 
           <div className="flex justify-between">
             <span>Shipping</span>
-            {appliedCoupon?.discountType === "shipping" ? (
-              <span className="line-through text-gray-500">
-                {formatCurrency(shippingFee)}
-              </span>
-            ) : (
-              <span>{formatCurrency(shippingFee)}</span>
-            )}
+            <span>{formatCurrency(shippingFee)}</span>
           </div>
 
-          {appliedCoupon && appliedCoupon.discountType !== "shipping" && (
+          {appliedCoupon && (
             <div className="flex justify-between text-green-600">
               <span>Discount</span>
               <span>-{formatCurrency(discountAmount)}</span>
-            </div>
-          )}
-
-          {appliedCoupon?.discountType === "shipping" && (
-            <div className="flex justify-between text-green-600">
-              <span>Free Shipping</span>
-              <span>-{formatCurrency(shippingFee)}</span>
             </div>
           )}
 

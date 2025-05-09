@@ -12,6 +12,9 @@ import {
   CarouselPrevious,
 } from "./ui/carousel"
 import Autoplay from "embla-carousel-autoplay"
+import { eq, and, gt, or, isNull, desc } from "drizzle-orm"
+import { db } from "@/db/db"
+import { discountCode } from "@rahulsaamanth/mhp-schema"
 
 export default function Hero() {
   const [copied, setCopied] = useState(false)
@@ -31,52 +34,30 @@ export default function Hero() {
     }
   }, [api])
 
-  const copyToClipboard = () => {
-    const couponCode = "WELCOME10"
-
-    // Try to use the Clipboard API first
-    if (navigator.clipboard && navigator.clipboard.writeText) {
-      navigator.clipboard
-        .writeText(couponCode)
-        .then(() => {
-          setCopied(true)
-          setTimeout(() => setCopied(false), 2000)
-        })
-        .catch((err) => {
-          console.error("Failed to copy: ", err)
-          fallbackCopyToClipboard(couponCode)
-        })
-    } else {
-      // Fallback for browsers without clipboard API support
-      fallbackCopyToClipboard(couponCode)
-    }
-  }
-
-  const fallbackCopyToClipboard = (text: string) => {
+  const copyToClipboard = async () => {
     try {
-      // Create a temporary textarea element
-      const textArea = document.createElement("textarea")
-      textArea.value = text
+      // Find an active welcome discount code
+      const welcomeCode = await db.query.discountCode.findFirst({
+        where: and(
+          eq(discountCode.isActive, true),
+          or(
+            isNull(discountCode.expiresAt),
+            gt(discountCode.expiresAt, new Date())
+          ),
+          or(
+            eq(discountCode.limit, 0),
+            gt(discountCode.limit, discountCode.usageCount)
+          )
+        ),
+        orderBy: desc(discountCode.discountAmount),
+      })
 
-      // Make the textarea out of viewport
-      textArea.style.position = "fixed"
-      textArea.style.left = "-999999px"
-      textArea.style.top = "-999999px"
-
-      document.body.appendChild(textArea)
-      textArea.focus()
-      textArea.select()
-
-      // Execute the copy command
-      const successful = document.execCommand("copy")
-      document.body.removeChild(textArea)
-
-      if (successful) {
-        setCopied(true)
-        setTimeout(() => setCopied(false), 2000)
-      }
+      const couponCode = welcomeCode?.code || "WELCOME10"
+      await navigator.clipboard.writeText(couponCode)
+      setCopied(true)
+      setTimeout(() => setCopied(false), 2000)
     } catch (err) {
-      console.error("Fallback copy method failed: ", err)
+      console.error("Failed to copy:", err)
     }
   }
 
@@ -91,9 +72,8 @@ export default function Hero() {
         setApi={setApi}
       >
         <CarouselContent>
-          <CarouselItem>
-            <section className="h-[60vh] relative min-w-full w-full overflow-hidden">
-              {/* Full-width background image with overlay - only for small to medium screens */}
+          <CarouselItem className="h-[60vh]">
+            <section className="h-full relative min-w-full w-full overflow-hidden">
               <div className="absolute inset-0 z-0 lg:hidden">
                 <Image
                   src="/assets/hero.jpg"
@@ -105,13 +85,10 @@ export default function Hero() {
                 <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/60 to-black/40 z-10" />
               </div>
 
-              {/* Half color, half image for large screens */}
               <div className="hidden lg:block absolute inset-0 z-0">
-                {/* Brand color block on left half */}
                 <div className="absolute top-0 left-0 bottom-0 w-1/2 bg-brand">
                   <div className="absolute inset-0 bg-pattern opacity-10"></div>
                 </div>
-                {/* Image on right half with gradient overlay */}
                 <div className="absolute top-0 right-0 bottom-0 w-1/2">
                   <Image
                     src="/assets/hero.jpg"
@@ -126,7 +103,6 @@ export default function Hero() {
 
               <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-20 h-full">
                 <div className="max-w-xl space-y-8 @min-xs:space-y-16 sm:space-y-12 xl:space-y-20 z-10 h-full grid place-content-center">
-                  {/* Title and intro group */}
                   <div className="space-y-3 sm:space-y-4 xl:space-y-10">
                     <h1
                       className="text-4xl sm:text-5xl lg:text-6xl font-bold leading-tight tracking-tight text-white"
@@ -148,7 +124,6 @@ export default function Hero() {
                     </span>
                   </div>
 
-                  {/* Offers group */}
                   <div className="space-y-4 xl:space-y-6">
                     <div className="bg-white/30 backdrop-blur-lg p-3 inline-block text-sm sm:text-base border border-white/40 shadow-md transition-all duration-300 hover:bg-white/40 leading-relaxed rounded-lg">
                       <span
@@ -193,10 +168,8 @@ export default function Hero() {
             </section>
           </CarouselItem>
 
-          {/* Brand Showcase Carousel Item */}
-          <CarouselItem>
-            <section className="h-[60vh] relative min-w-full w-full overflow-hidden">
-              {/* Full-width background image with overlay - only visible on smaller screens */}
+          <CarouselItem className="h-[60vh]">
+            <section className="h-full relative min-w-full w-full overflow-hidden">
               <div className="absolute inset-0 z-0 lg:hidden">
                 <Image
                   src="/assets/hero2.jpg"
@@ -208,13 +181,10 @@ export default function Hero() {
                 <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/60 to-black/40 z-10" />
               </div>
 
-              {/* Half color, half image for large screens */}
               <div className="hidden lg:block absolute inset-0 z-0">
-                {/* Dark slate color block on left half */}
                 <div className="absolute top-0 left-0 bottom-0 w-1/2 bg-brand-foreground">
                   <div className="absolute inset-0 bg-pattern opacity-10"></div>
                 </div>
-                {/* Image on right half with gradient overlay */}
                 <div className="absolute top-0 right-0 bottom-0 w-1/2">
                   <Image
                     src="/assets/hero2.jpg"
@@ -229,7 +199,6 @@ export default function Hero() {
 
               <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-20 h-full">
                 <div className="max-w-xl @max-xs:space-y-4 space-y-6 sm:space-y-8 xl:space-y-10 z-10 h-full grid place-content-center">
-                  {/* Title and intro group */}
                   <div className="space-y-3">
                     <h2
                       className="text-3xl sm:text-4xl lg:text-5xl font-bold leading-tight tracking-tight text-white"
@@ -251,7 +220,6 @@ export default function Hero() {
                     </span>
                   </div>
 
-                  {/* Responsive brand grid - shows different number of brands based on screen size */}
                   <div className="grid grid-cols-2 xs:grid-cols-3 sm:grid-cols-3 lg:grid-cols-6 gap-2 sm:gap-3">
                     {[
                       "sbl.png",
@@ -300,7 +268,6 @@ export default function Hero() {
           </CarouselItem>
         </CarouselContent>
 
-        {/* Dot indicators */}
         <div className="flex justify-center space-x-1.5 absolute bottom-4 left-0 right-0">
           {[0, 1].map((index) => (
             <button

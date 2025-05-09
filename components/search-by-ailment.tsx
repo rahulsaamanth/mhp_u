@@ -154,7 +154,7 @@ export default function SearchByAilment() {
           {ailments.map((ailment, index) => (
             <CarouselItem
               key={index}
-              className="basis-full sm:basis-1/2  lg:basis-1/3 xl:basis-1/4 2xl:basis-1/6"
+              className="basis-full sm:basis-1/2 lg:basis-1/3 xl:basis-1/4 2xl:basis-1/6"
             >
               <Card className="w-full border-0 outline-0 shadow-none cursor-default px-1">
                 <CardContent className="flex items-center justify-center p-2">
@@ -180,7 +180,7 @@ export default function SearchByAilment() {
                         className="size-48 object-cover rounded-xl"
                         loading="lazy"
                       />
-                      <h3 className="text-center font-semibold py-2 uppercase text-sm">
+                      <h3 className="text-center font-semibold py-2 uppercase text-sm text-nowrap">
                         {ailment.displayName}
                       </h3>
                     </div>
