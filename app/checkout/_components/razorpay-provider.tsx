@@ -17,7 +17,6 @@ export const useRazorpay = () => useContext(RazorpayContext)
 export function RazorpayProvider({ children }: { children: React.ReactNode }) {
   const { isRazorpayLoaded, setIsRazorpayLoaded } = useRazorpayStore()
 
-  // Check if Razorpay is already loaded when component mounts
   useEffect(() => {
     if (typeof window !== "undefined" && (window as any).Razorpay) {
       setIsRazorpayLoaded(true)

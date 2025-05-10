@@ -5,7 +5,6 @@ import FilterSidebar from "../_components/filter-sidebar"
 import { redirect } from "next/navigation"
 import Link from "next/link"
 
-// Define category structure to match database
 interface CategoryItem {
   id: string
   name: string
@@ -14,13 +13,11 @@ interface CategoryItem {
   depth: number
 }
 
-// Helper function to check if a category is a subcategory and get its parent
 async function checkCategoryType(category: string): Promise<{
   isSubcategory: boolean
   parentCategory?: string
   subcategoryInfo?: CategoryItem
 }> {
-  // Query to check if this is a subcategory
   const categoryInfo = await executeRawQuery<CategoryItem>(
     `
     SELECT 
@@ -47,7 +44,6 @@ async function checkCategoryType(category: string): Promise<{
   let parentCategory
 
   if (isSubcategory) {
-    // Get parent category name
     const parentInfo = await executeRawQuery<{ name: string }>(
       `
       SELECT name
@@ -81,24 +77,20 @@ async function getProductsByCategory(
   categories: CategoryItem[]
   currentCategoryInfo: CategoryItem | null
 }> {
-  // For "all" category, fetch all active products
   if (category.toLowerCase() === "all") {
     let conditions = `p.status = 'ACTIVE'`
     const params: any[] = []
 
-    // Add letter filter if provided
     if (letter) {
       conditions += ` AND p.name ILIKE $${params.length + 1}`
       params.push(`${letter}%`)
     }
 
-    // Add manufacturer filter if provided
     if (manufacturer) {
       conditions += ` AND m.name = $${params.length + 1}`
       params.push(manufacturer)
     }
 
-    // Add ailment filter if provided
     if (ailment) {
       const normalizedAilment = ailment.replace(/[^a-zA-Z0-9]/g, "")
       conditions += ` AND EXISTS (
@@ -107,7 +99,6 @@ async function getProductsByCategory(
       params.push(`%${normalizedAilment}%`)
     }
 
-    // Query for all products
     const products = await executeAllProductsQuery(conditions, params)
     const manufacturers = await executeManufacturersQuery(conditions, params)
     const categories = await executeAllCategoriesQuery()
@@ -120,7 +111,6 @@ async function getProductsByCategory(
     }
   }
 
-  // Get current category information
   const categoryInfo = await executeRawQuery<CategoryItem>(
     `
     SELECT 
@@ -138,39 +128,32 @@ async function getProductsByCategory(
 
   const currentCategoryInfo = categoryInfo.length > 0 ? categoryInfo[0] : null
 
-  // Build the base conditions
   let conditions = ``
   const params: any[] = []
 
   if (currentCategoryInfo) {
     if (currentCategoryInfo.depth === 0) {
-      // This is a parent category - include both direct products and products from subcategories
       conditions = `(c.id = $1 OR c."parentId" = $1)`
       params.push(currentCategoryInfo.id)
     } else {
-      // This is a subcategory - get only direct products
       conditions = `c.id = $1`
       params.push(currentCategoryInfo.id)
     }
   } else {
-    // Fallback if category not found by exact match
     conditions = `LOWER(REPLACE(c.name, ' ', '-')) = LOWER($1)`
     params.push(category)
   }
 
-  // Add manufacturer filter if provided
   if (manufacturer) {
     conditions += ` AND m.name = $${params.length + 1}`
     params.push(manufacturer)
   }
 
-  // Add letter filter if provided
   if (letter) {
     conditions += ` AND p.name ILIKE $${params.length + 1}`
     params.push(`${letter}%`)
   }
 
-  // Add ailment filter if provided
   if (ailment) {
     const normalizedAilment = ailment.replace(/[^a-zA-Z0-9]/g, "")
     conditions += ` AND EXISTS (
@@ -179,7 +162,6 @@ async function getProductsByCategory(
     params.push(`%${normalizedAilment}%`)
   }
 
-  // Fetch products based on the category and any filters
   const products = await executeProductsQuery(conditions, params)
   const manufacturers = await executeManufacturersQuery(conditions, params)
   const categories = await executeAllCategoriesQuery()
@@ -192,7 +174,6 @@ async function getProductsByCategory(
   }
 }
 
-// Helper function to query products
 async function executeProductsQuery(
   conditions: string,
   params: any[]
@@ -242,7 +223,6 @@ async function executeProductsQuery(
   )
 }
 
-// Helper function for all products query
 async function executeAllProductsQuery(
   conditions: string,
   params: any[]
@@ -291,7 +271,6 @@ async function executeAllProductsQuery(
   )
 }
 
-// Helper function to query manufacturers
 async function executeManufacturersQuery(
   conditions: string,
   params: any[]
@@ -309,7 +288,6 @@ async function executeManufacturersQuery(
   )
 }
 
-// Helper function to get all categories
 async function executeAllCategoriesQuery(): Promise<CategoryItem[]> {
   return await executeRawQuery<CategoryItem>(
     `
@@ -345,16 +323,12 @@ export default async function ProductsOfCategoryPage({
   const { category } = await params
   const { manufacturer, letter, ailment } = await searchParams
 
-  // Check if this is a subcategory trying to be accessed via the main category route
   const { isSubcategory, parentCategory, subcategoryInfo } =
     await checkCategoryType(category)
 
-  // If this is a subcategory, redirect to the proper nested route
   if (isSubcategory && parentCategory) {
-    // Build the redirect URL with any search params
     let redirectPath = `/products/${parentCategory}/${category}`
 
-    // Add search params if they exist
     const searchParamsEntries = Object.entries({
       manufacturer,
       letter,
@@ -371,11 +345,9 @@ export default async function ProductsOfCategoryPage({
     redirect(redirectPath)
   }
 
-  // Fetch products with any applied filters
   const { products, manufacturers, categories, currentCategoryInfo } =
     await getProductsByCategory(category, manufacturer, letter, ailment)
 
-  // Format category name for display
   const formattedCategory =
     currentCategoryInfo?.name ||
     category
@@ -383,12 +355,10 @@ export default async function ProductsOfCategoryPage({
       .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
       .join(" ")
 
-  // Generate alphabet array for letter filtering
   const alphabet = Array.from({ length: 26 }, (_, i) =>
     String.fromCharCode(65 + i)
   )
 
-  // Get subcategories for the current category for display in the header
   const subcategories =
     currentCategoryInfo && currentCategoryInfo.depth === 0
       ? categories.filter((cat) => cat.parentId === currentCategoryInfo.id)
@@ -444,7 +414,6 @@ export default async function ProductsOfCategoryPage({
           />
         </div>
 
-        {/* Product grid */}
         <div className="flex-1">
           {products.length === 0 ? (
             <div className="flex flex-col items-center justify-center h-64">

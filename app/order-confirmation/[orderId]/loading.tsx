@@ -3,7 +3,6 @@ import { Separator } from "@/components/ui/separator"
 export default function OrderConfirmationLoading() {
   return (
     <div className="min-h-[50vh] bg-gray-50">
-      {/* Header Section */}
       <div className="bg-white py-8 shadow-sm">
         <div className="container max-w-6xl mx-auto px-4">
           <div className="text-center space-y-3">
@@ -16,12 +15,9 @@ export default function OrderConfirmationLoading() {
         </div>
       </div>
 
-      {/* Main Content */}
       <div className="container max-w-6xl mx-auto px-4 py-8">
         <div className="bg-white rounded-lg shadow-sm p-8">
-          {/* Order Info Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
-            {/* Left Column */}
             <div className="space-y-6">
               <div>
                 <div className="h-6 w-32 bg-gray-200 rounded mb-4" />
@@ -47,7 +43,6 @@ export default function OrderConfirmationLoading() {
               </div>
             </div>
 
-            {/* Right Column */}
             <div>
               <div className="h-6 w-32 bg-gray-200 rounded mb-4" />
               <div className="bg-gray-50 rounded-lg p-4">
@@ -84,7 +79,6 @@ export default function OrderConfirmationLoading() {
             </div>
           </div>
 
-          {/* Button */}
           <div className="flex justify-center mt-8">
             <div className="h-11 w-40 bg-gray-200 rounded" />
           </div>

@@ -11,7 +11,7 @@ export async function POST(request: Request) {
     const { amount, orderId } = await request.json()
 
     const razorpayOrder = await razorpay.orders.create({
-      amount: amount * 100, // Razorpay expects amount in smallest currency unit (paise)
+      amount: amount * 100,
       currency: "INR",
       receipt: orderId,
     })

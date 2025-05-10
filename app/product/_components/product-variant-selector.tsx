@@ -6,7 +6,6 @@ import { QuantitySelector } from "@/components/ui/quantity-selector"
 import Image from "next/image"
 import { useEffect, useState, useMemo } from "react"
 
-// Import shadcn carousel components
 import {
   Carousel,
   CarouselContent,
@@ -51,7 +50,6 @@ export default function ProductVariantSelector({
   category = "Health Supplements",
   manufacturer = "MHP Pharmaceuticals",
 }: ProductVariantSelectorProps) {
-  // Ensure variants is an array before using it in useState initializers
   const safeVariants = useMemo(
     () => (Array.isArray(variants) ? variants : []),
     [variants]
@@ -69,7 +67,6 @@ export default function ProductVariantSelector({
   )
   const [quantity, setQuantity] = useState<number>(1)
 
-  // Get ALL unique potencies and pack sizes
   const allUniquePotencies = Array.from(
     new Set(safeVariants.map((v) => v.potency))
   ).filter((p) => p !== "NONE")
@@ -78,17 +75,14 @@ export default function ProductVariantSelector({
     new Set(safeVariants.map((v) => v.packSize))
   )
 
-  // Get pack sizes available for the selected potency
   const availablePackSizesForPotency = safeVariants
     .filter((v) => v.potency === selectedPotency)
     .map((v) => v.packSize)
 
-  // Get potencies available for the selected pack size
   const availablePotenciesForPackSize = safeVariants
     .filter((v) => v.packSize === selectedPackSize)
     .map((v) => v.potency)
 
-  // Update selected variant when potency or pack size changes
   useEffect(() => {
     const newVariant = safeVariants.find(
       (v) => v.potency === selectedPotency && v.packSize === selectedPackSize
@@ -97,10 +91,8 @@ export default function ProductVariantSelector({
     if (newVariant) {
       setSelectedVariant(newVariant)
     } else if (availablePackSizesForPotency.length > 0) {
-      // If current selection is invalid, select first available pack size for this potency
       setSelectedPackSize(availablePackSizesForPotency[0])
     } else if (availablePotenciesForPackSize.length > 0) {
-      // If no pack sizes available for this potency, select first available potency for the pack size
       setSelectedPotency(availablePotenciesForPackSize[0])
     }
   }, [
@@ -111,7 +103,6 @@ export default function ProductVariantSelector({
     availablePotenciesForPackSize,
   ])
 
-  // Calculate discount percentage for display
   const discountPercentage = selectedVariant
     ? selectedVariant.discountType === "PERCENTAGE"
       ? selectedVariant.discount
@@ -130,7 +121,6 @@ export default function ProductVariantSelector({
     return acc + stock
   }, 0)
 
-  // Check if any stock exists across locations
   const hasStock = totalStock && totalStock > 0
 
   if (!safeVariants.length) {
@@ -153,10 +143,7 @@ export default function ProductVariantSelector({
                   <CarouselItem key={idx}>
                     <div className="aspect-square relative border rounded-lg overflow-hidden bg-white flex items-center justify-center p-4">
                       <Image
-                        src={
-                          // img ||
-                          "/placeholder.png"
-                        }
+                        src={"/placeholder.png"}
                         alt={`${productName} - view ${idx + 1}`}
                         width={320}
                         height={320}
@@ -186,7 +173,6 @@ export default function ProductVariantSelector({
       </div>
 
       <div className="flex flex-col space-y-6">
-        {/* Product Information Section */}
         <div className="space-y-3">
           <h1 className="text-4xl font-bold text-gray-900">{`${productName}`}</h1>
 
@@ -212,11 +198,9 @@ export default function ProductVariantSelector({
           </div>
         </div>
 
-        {/* Variant Selection */}
         <div className="space-y-4">
           <h2 className="text-lg font-semibold">Choose Variant</h2>
 
-          {/* Potency Selection */}
           {allUniquePotencies.length > 0 ? (
             <div className="space-y-2">
               <label className="text-sm font-medium">Potency:</label>
@@ -264,7 +248,6 @@ export default function ProductVariantSelector({
             </div>
           )}
 
-          {/* Pack Size Selection */}
           {allUniquePackSizes.length > 0 ? (
             <div className="space-y-2">
               <label className="text-sm font-medium">Pack Size:</label>
@@ -313,7 +296,6 @@ export default function ProductVariantSelector({
             </div>
           )}
 
-          {/* Quantity Selector */}
           <div className="space-y-2">
             <label className="text-sm font-medium">Quantity:</label>
             <QuantitySelector
@@ -325,7 +307,6 @@ export default function ProductVariantSelector({
           </div>
         </div>
 
-        {/* Price and Add to Cart */}
         {selectedVariant && (
           <>
             <div className="flex items-baseline gap-2 mb-4">
@@ -380,7 +361,6 @@ export default function ProductVariantSelector({
             </div>
 
             <div className="mt-4 space-y-2">
-              {/* Stock availability indicator */}
               {selectedVariant && (
                 <div className="flex items-start gap-2">
                   <div

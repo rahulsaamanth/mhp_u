@@ -8,7 +8,6 @@ import { generateId } from "@/lib/generate-id"
 
 export async function POST(request: Request) {
   try {
-    // Get current user
     const user = await currentUser()
     if (!user?.id) {
       return NextResponse.json(
@@ -17,7 +16,6 @@ export async function POST(request: Request) {
       )
     }
 
-    // Get cart items from request body
     const body = await request.json()
     const { items } = body as { items: CartItem[] }
 
@@ -29,17 +27,14 @@ export async function POST(request: Request) {
       })
     }
 
-    // Process each item to merge with server cart
     const results = await Promise.all(
       items.map(async (item) => {
-        // Build the where conditions to check if item exists
         const conditions = [
           eq(cart.userId, user.id!),
           eq(cart.productId, item.productId),
           eq(cart.variantId, item.variantId),
         ]
 
-        // For potency and packSize, handle null/undefined values
         if (item.potency) {
           conditions.push(eq(cart.potency, item.potency))
         } else {
@@ -52,13 +47,11 @@ export async function POST(request: Request) {
           conditions.push(isNull(cart.packSize))
         }
 
-        // Check if this item already exists in the server cart
         const existingItem = await db.query.cart.findFirst({
           where: (fields, { and }) => and(...conditions),
         })
 
         if (existingItem) {
-          // Item exists - update quantity
           await db
             .update(cart)
             .set({
@@ -69,10 +62,9 @@ export async function POST(request: Request) {
 
           return { action: "updated", itemId: existingItem.id }
         } else {
-          // Item doesn't exist - create new
           const newItemId = generateId()
           await db.insert(cart).values({
-            id: newItemId, // Make sure ID is included
+            id: newItemId,
             userId: user.id!,
             productId: item.productId,
             variantId: item.variantId,
@@ -88,7 +80,6 @@ export async function POST(request: Request) {
       })
     )
 
-    // Count how many items were created vs updated
     const created = results.filter((r) => r.action === "created").length
     const updated = results.filter((r) => r.action === "updated").length
 

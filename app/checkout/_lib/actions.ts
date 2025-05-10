@@ -14,7 +14,6 @@ import {
 import { and, eq, gt, isNull, or } from "drizzle-orm"
 import Razorpay from "razorpay"
 
-// Initialize Razorpay instance
 const razorpay = new Razorpay({
   key_id: process.env.RAZORPAY_KEY_ID!,
   key_secret: process.env.RAZORPAY_KEY_SECRET!,
@@ -81,7 +80,6 @@ export async function validateCoupon(code: string, cartTotal: number) {
       discountAmount = coupon.discountAmount
     }
 
-    // Update usage count
     await db
       .update(discountCode)
       .set({ usageCount: (coupon.usageCount ?? 0) + 1 })
@@ -135,27 +133,27 @@ export async function processCheckout(
   appliedCoupon: CouponData | null
 ): Promise<CreateOrderResponse> {
   const user = await currentUser()
-  if (!user?.id) {
-    return {
-      success: false,
-      message: "Please login to complete checkout",
-      orderId: null,
-      amount: 0,
-      razorpayOrderId: null,
+  if (!user?.id) throw new Error("User not found")
+
+  const subtotal = cartItems.reduce(
+    (sum, item) => sum + item.price * item.quantity,
+    0
+  )
+  const shippingCost = 0
+  const tax = 0
+  let discountAmount = 0
+
+  if (appliedCoupon) {
+    if (appliedCoupon.discountType === "PERCENTAGE") {
+      discountAmount = (subtotal * appliedCoupon.discountAmount) / 100
+    } else {
+      discountAmount = appliedCoupon.discountAmount
     }
   }
 
-  try {
-    // Calculate order totals
-    const subtotal = cartItems.reduce((sum, item) => {
-      return sum + item.price * item.quantity
-    }, 0)
-    const shippingCost = 50 // Fixed shipping cost
-    const discountAmount = appliedCoupon?.discountAmount || 0
-    const tax = 0 // Add tax calculation if needed
-    const totalAmount = subtotal + shippingCost - discountAmount + tax
+  const totalAmount = subtotal + shippingCost + tax - discountAmount
 
-    // First create the shipping address
+  try {
     const [_address] = await db
       .insert(address)
       .values({
@@ -168,7 +166,13 @@ export async function processCheckout(
       })
       .returning()
 
-    // Create the order
+    const invoiceNumber = `INV-${new Date().getFullYear()}-${String(
+      new Date().getMonth() + 1
+    ).padStart(2, "0")}-${String(Math.floor(Math.random() * 100000)).padStart(
+      5,
+      "0"
+    )}`
+
     const [_order] = await db
       .insert(order)
       .values({
@@ -176,7 +180,7 @@ export async function processCheckout(
         customerName: data.fullName,
         customerEmail: data.email,
         customerPhone: data.phone,
-        orderType: "ONLINE", // Since it's an online order even if COD
+        orderType: "ONLINE",
         deliveryStatus: "PROCESSING",
         paymentStatus: "PENDING",
         addressId: _address.id,
@@ -187,10 +191,10 @@ export async function processCheckout(
         totalAmountPaid: totalAmount,
         discountCodeId: appliedCoupon?.id,
         orderDate: new Date(),
+        invoiceNumber: invoiceNumber,
       })
       .returning()
 
-    // Create order details for each item
     for (const item of cartItems) {
       await db.insert(orderDetails).values({
         orderId: _order.id,
@@ -198,12 +202,11 @@ export async function processCheckout(
         originalPrice: item.price,
         unitPrice: item.price,
         quantity: item.quantity,
-        discountAmount: 0, // Add item-level discount if needed
-        taxAmount: 0, // Add item-level tax if needed
+        discountAmount: 0,
+        taxAmount: 0,
       })
     }
 
-    // For COD orders, create a payment record
     if (data.paymentMethod === "COD") {
       await db.insert(payment).values({
         orderId: _order.id,
@@ -212,7 +215,6 @@ export async function processCheckout(
         paymentType: "CASH_ON_DELIVERY",
       })
 
-      // Clear the cart after successful order creation
       await db.delete(cart).where(eq(cart.userId, user.id))
 
       return {
@@ -224,12 +226,10 @@ export async function processCheckout(
       }
     }
 
-    // For online payments, create Razorpay order
     if (data.paymentMethod === "ONLINE") {
       try {
-        // Create Razorpay order directly using the SDK
         const razorpayOrder = await razorpay.orders.create({
-          amount: totalAmount * 100, // Amount in paise
+          amount: totalAmount * 100,
           currency: "INR",
           receipt: _order.id,
           notes: {
@@ -237,7 +237,6 @@ export async function processCheckout(
           },
         })
 
-        // Create payment record for Razorpay
         await db.insert(payment).values({
           orderId: _order.id,
           amount: totalAmount,
@@ -256,7 +255,6 @@ export async function processCheckout(
         }
       } catch (error) {
         console.error("Razorpay order creation failed:", error)
-        // Delete the order and address if payment creation fails
         await db.delete(order).where(eq(order.id, _order.id))
         await db.delete(address).where(eq(address.id, _address.id))
 

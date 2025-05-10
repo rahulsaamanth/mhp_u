@@ -8,7 +8,6 @@ interface Ailment {
   displayName: string
 }
 
-// Using the same ailment list as in search-by-ailment component
 const ailments: Ailment[] = [
   {
     id: "skin-care",
@@ -115,7 +114,6 @@ const ailments: Ailment[] = [
 export default function AilmentsPage() {
   return (
     <div className="container mx-auto px-4 py-10">
-      {/* Breadcrumb */}
       <div className="mb-6 flex items-center text-sm text-gray-500">
         <Link href="/" className="hover:text-brand">
           Home

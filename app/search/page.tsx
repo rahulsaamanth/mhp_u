@@ -205,7 +205,6 @@ export default function SearchPage() {
                       </svg>
                     </Button>
 
-                    {/* Always show first page */}
                     {page > 3 && (
                       <>
                         <Button
@@ -222,7 +221,6 @@ export default function SearchPage() {
                       </>
                     )}
 
-                    {/* Show pages around current page */}
                     {Array.from({ length: searchQuery.data?.totalPages }).map(
                       (_, idx) => {
                         const pageNumber = idx + 1
@@ -255,7 +253,6 @@ export default function SearchPage() {
                       }
                     )}
 
-                    {/* Always show last page */}
                     {page < searchQuery.data?.totalPages - 2 && (
                       <>
                         {page < searchQuery.data?.totalPages - 3 && (

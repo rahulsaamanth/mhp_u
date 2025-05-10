@@ -19,12 +19,10 @@ import { useCartContext } from "./_components/cart-provider"
 import { useTransition } from "react"
 import { QuantitySelector } from "@/components/ui/quantity-selector"
 
-// Add proper type for CartItemComponent
-
 interface CartItemComponentProps {
   item: CartItem
   isServerItem: boolean
-  user: any // Replace with proper user type if available
+  user: any
   onQuantityChange: (id: string, quantity: number) => void
   onRemove: (id: string) => void
   isAtMaxStock: (item: CartItem) => boolean
@@ -39,10 +37,8 @@ const CartItemComponent = memo(
     onRemove,
     isAtMaxStock,
   }: CartItemComponentProps) => {
-    // Use useTransition to avoid freezing the UI during state updates
     const [isPending, startTransition] = useTransition()
 
-    // Handle quantity change with transition
     const handleQuantityChange = (newQuantity: number) => {
       startTransition(() => {
         onQuantityChange(item.id, newQuantity)
@@ -53,10 +49,7 @@ const CartItemComponent = memo(
       <div className="flex border-b py-4">
         <div className="w-24 h-24 relative flex-shrink-0">
           <Image
-            src={
-              // item.image ||
-              "/placeholder.png"
-            }
+            src={"/placeholder.png"}
             alt={item.name}
             fill
             className="object-contain"
@@ -79,7 +72,6 @@ const CartItemComponent = memo(
             <p className="text-sm text-gray-500">Pack Size: {item.packSize}</p>
           )}
 
-          {/* Stock availability indicator */}
           {item.totalStock !== undefined && (
             <div className="flex items-center mt-1 mb-2">
               <div
@@ -130,34 +122,24 @@ const CartItemComponent = memo(
   }
 )
 
-// Add display name to help with debugging
 CartItemComponent.displayName = "CartItemComponent"
 
-// Create a pure functional component for better rendering performance
 const CartPage = () => {
-  // Use memo to prevent unnecessary re-renders
   const [cartItems, setCartItems] = useState<CartItem[]>([])
   const [isInitialized, setIsInitialized] = useState(false)
   const [isLoading, setIsLoading] = useState(true)
   const { user } = useCurrentUser()
   const { isLocalCart } = useCartContext()
 
-  // Use a ref to track if we're currently updating to prevent duplicate updates
   const isUpdatingRef = useRef(false)
-  // Add a ref to track visibility state - initialize undefined to avoid SSR issues
   const wasDocumentHiddenRef = useRef<boolean | undefined>(undefined)
-  // Add a ref to track if we should ignore the next cart event
   const ignoreNextCartEventRef = useRef(false)
-  // Add a ref to track if we're in browser environment
   const isBrowserRef = useRef(false)
-  // Add a ref to track if component is mounted
   const isMountedRef = useRef(false)
 
-  // Initialize browser detection once after component mounts
   useEffect(() => {
     isBrowserRef.current = true
     isMountedRef.current = true
-    // Now safely set the initial document hidden state
     wasDocumentHiddenRef.current =
       typeof document !== "undefined" ? document.hidden : false
 
@@ -166,34 +148,25 @@ const CartPage = () => {
     }
   }, [])
 
-  // Fix the infinite loop warning by using separate selectors with stable references
   const localCartItems = useCartStore((state) => state.items)
   const removeFromCart = useCartStore((state) => state.removeFromCart)
   const updateQuantity = useCartStore((state) => state.updateQuantity)
 
-  // Load cart items from the server or local storage
   const loadCartItems = useCallback(async () => {
-    // Don't proceed if component is unmounted
     if (!isMountedRef.current) return
 
-    // Prevent multiple simultaneous updates
     if (isUpdatingRef.current) return
     isUpdatingRef.current = true
 
     try {
       if (user) {
-        // Logged in user - get cart from server
         const { items: serverItems } = await getUserCart()
-        // Use functional updates to prevent stale state issues
         if (isMountedRef.current) {
           setCartItems(serverItems)
         }
       } else {
-        // Anonymous user - get cart from local storage
-        // Use object equality check to prevent unnecessary updates
         if (isMountedRef.current) {
           setCartItems((prev) => {
-            // Only update if the items have actually changed
             if (JSON.stringify(prev) !== JSON.stringify(localCartItems)) {
               return localCartItems
             }
@@ -203,7 +176,6 @@ const CartPage = () => {
       }
     } catch (error) {
       console.error("Failed to load cart:", error)
-      // If server fetch fails, use local cart for logged-in users
       if (isMountedRef.current) {
         if (user) {
           setCartItems([])
@@ -216,7 +188,6 @@ const CartPage = () => {
         setIsLoading(false)
         setIsInitialized(true)
       }
-      // Reset the updating flag after a short delay to prevent rapid consecutive updates
       if (isBrowserRef.current && isMountedRef.current) {
         setTimeout(() => {
           isUpdatingRef.current = false
@@ -227,30 +198,24 @@ const CartPage = () => {
     }
   }, [user, localCartItems])
 
-  // Initial load of cart items - ensure this runs only once after mount
   useEffect(() => {
     if (!isInitialized) {
       loadCartItems()
     }
   }, [loadCartItems, isInitialized])
 
-  // Update cart when local items change
   useEffect(() => {
     if (!user && isInitialized) {
       setCartItems(localCartItems)
     }
   }, [localCartItems, user, isInitialized])
 
-  // Handle visibility changes (tab focus/blur) - client-side only
   useEffect(() => {
-    // Skip during server-side rendering
     if (!isBrowserRef.current) return
 
     const handleVisibilityChange = () => {
       const isHidden = document.hidden
 
-      // Only reload cart when tab becomes visible again (not when hidden)
-      // and only if the previous state was hidden (to avoid unnecessary loads on initial visibility)
       if (
         !isHidden &&
         wasDocumentHiddenRef.current === true &&
@@ -259,73 +224,58 @@ const CartPage = () => {
         console.log(
           "Tab visibility changed (focus), updating cart with debounce"
         )
-        // Reload cart with debounce
         const timer = setTimeout(() => {
           if (!ignoreNextCartEventRef.current) {
             loadCartItems()
           }
-        }, 1000) // Significant delay to avoid rapid reloads
+        }, 1000)
 
         return () => clearTimeout(timer)
       }
 
-      // Update the ref with current hidden state
       wasDocumentHiddenRef.current = isHidden
     }
 
-    // Add event listener
     document.addEventListener("visibilitychange", handleVisibilityChange)
 
-    // Cleanup
     return () => {
       document.removeEventListener("visibilitychange", handleVisibilityChange)
     }
   }, [loadCartItems])
 
-  // Subscribe to cart item changes - use a more efficient approach with debouncing
   useEffect(() => {
     let timeoutId: NodeJS.Timeout | null = null
 
-    // Handler for cart events with debouncing
     const handleCartChange = () => {
-      // Skip if explicitly ignored for this event
       if (ignoreNextCartEventRef.current) {
         ignoreNextCartEventRef.current = false
         return
       }
 
-      // Cancel any pending updates
       if (timeoutId) {
         clearTimeout(timeoutId)
       }
 
-      // Skip if we're already updating
       if (isUpdatingRef.current) return
 
-      // For guest users, we can optimize by directly using the local cart items
-      // without making server requests
       if (!user) {
-        // Only update if the items have actually changed to prevent unnecessary re-renders
         setCartItems((prev) => {
           if (JSON.stringify(prev) !== JSON.stringify(localCartItems)) {
-            return [...localCartItems] // Create a new array to ensure React detects the change
+            return [...localCartItems]
           }
           return prev
         })
       } else {
-        // For logged-in users, we need to fetch from server but with debounce
         timeoutId = setTimeout(() => {
           if (!isUpdatingRef.current) {
             loadCartItems()
           }
-        }, 1000) // Longer delay to prevent rapid re-renders
+        }, 1000)
       }
     }
 
-    // Subscribe to cart events
     const unsubscribe = cartEvents.subscribe(handleCartChange)
 
-    // Cleanup function
     return () => {
       if (timeoutId) {
         clearTimeout(timeoutId)
@@ -334,37 +284,27 @@ const CartPage = () => {
     }
   }, [user, localCartItems, loadCartItems])
 
-  // Handle quantity change for server cart items
   const handleQuantityChangeServerItem = useCallback(
     async (id: string, newQuantity: number) => {
-      // Prevent multiple simultaneous updates
       if (isUpdatingRef.current) return
       isUpdatingRef.current = true
 
       try {
-        // Update local state immediately for better UX
         setCartItems((prevItems) =>
           prevItems.map((item) =>
             item.id === id ? { ...item, quantity: newQuantity } : item
           )
         )
 
-        // Set flag to ignore next cart event to avoid redundant updates
         ignoreNextCartEventRef.current = true
 
-        // Then update the server (optimistic update pattern)
         await updateCartItemQuantity(id, newQuantity)
-
-        // No need to notify cart changed here as the server update will trigger a refresh
-        // This prevents double-rendering
       } catch (error) {
         console.error("Failed to update quantity:", error)
         toast.error("Failed to update quantity")
 
-        // Revert the optimistic update on error
         loadCartItems()
       } finally {
-        // Reset the updating flag after a short delay
         if (isBrowserRef.current) {
           setTimeout(() => {
             isUpdatingRef.current = false
@@ -377,31 +317,22 @@ const CartPage = () => {
     [loadCartItems]
   )
 
-  // Handle quantity change for local cart items
   const handleQuantityChangeLocalItem = useCallback(
     (id: string, newQuantity: number) => {
-      // Prevent multiple simultaneous updates
       if (isUpdatingRef.current) return
       isUpdatingRef.current = true
 
       try {
-        // Update local state immediately for better UX
         setCartItems((prevItems) =>
           prevItems.map((item) =>
             item.id === id ? { ...item, quantity: newQuantity } : item
           )
         )
 
-        // Set flag to ignore next cart event
         ignoreNextCartEventRef.current = true
 
-        // Then update the store
         updateQuantity(id, newQuantity)
-
-        // No need to notify cart changed here as the store update will trigger a refresh
-        // This prevents double-rendering
       } finally {
-        // Reset the updating flag after a short delay
         if (isBrowserRef.current) {
           setTimeout(() => {
             isUpdatingRef.current = false
@@ -414,24 +345,18 @@ const CartPage = () => {
     [updateQuantity]
   )
 
-  // Handle remove for server cart items
   const handleRemoveServerItem = useCallback(
     async (id: string) => {
-      // Prevent multiple simultaneous updates
       if (isUpdatingRef.current) return
       isUpdatingRef.current = true
 
       try {
-        // Update local state immediately for better UX (optimistic update)
         setCartItems((prevItems) => prevItems.filter((item) => item.id !== id))
 
-        // Set flag to ignore next cart event
         ignoreNextCartEventRef.current = true
 
-        // Then update the server
         await removeCartItem(id)
 
-        // Important: Explicitly notify cart has changed so the cart icon updates immediately
         cartEvents.notifyCartChanged(50)
 
         toast.success("Item removed from cart")
@@ -439,10 +364,8 @@ const CartPage = () => {
         console.error("Failed to remove item:", error)
         toast.error("Failed to remove item")
 
-        // Revert the optimistic update on error
         loadCartItems()
       } finally {
-        // Reset the updating flag after a short delay
         if (isBrowserRef.current) {
           setTimeout(() => {
             isUpdatingRef.current = false
@@ -455,29 +378,22 @@ const CartPage = () => {
     [loadCartItems]
   )
 
-  // Handle remove for local cart items
   const handleRemoveLocalItem = useCallback(
     (id: string) => {
-      // Prevent multiple simultaneous updates
       if (isUpdatingRef.current) return
       isUpdatingRef.current = true
 
       try {
-        // Update local state immediately for better UX
         setCartItems((prevItems) => prevItems.filter((item) => item.id !== id))
 
-        // Set flag to ignore next cart event
         ignoreNextCartEventRef.current = true
 
-        // Then update the store
         removeFromCart(id)
 
-        // Important: Explicitly notify cart has changed so the cart icon updates immediately
         cartEvents.notifyCartChanged(50)
 
         toast.success("Item removed from cart")
       } finally {
-        // Reset the updating flag after a short delay
         if (isBrowserRef.current) {
           setTimeout(() => {
             isUpdatingRef.current = false
@@ -490,15 +406,12 @@ const CartPage = () => {
     [removeFromCart]
   )
 
-  // Check if item quantity is at max stock - memoize this function
   const isAtMaxStock = useCallback((item: CartItem) => {
     return item.totalStock !== undefined && item.quantity >= item.totalStock
   }, [])
 
-  // Render a cart item - memoize this function
   const renderCartItem = useCallback(
     (item: CartItem) => {
-      // Determine if this is a server item (for logged-in users) or local item
       const isServerItem = user !== null && !item.id.includes("-")
 
       return (
@@ -529,12 +442,10 @@ const CartPage = () => {
     ]
   )
 
-  // Calculate total amount
   const totalAmount = useMemo(() => {
     return cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0)
   }, [cartItems])
 
-  // Memoize the order summary to prevent unnecessary re-renders
   const OrderSummary = useMemo(
     () => (
       <div className="lg:col-span-1">
@@ -582,11 +493,9 @@ const CartPage = () => {
       ) : (
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           <div className="lg:col-span-2">
-            {/* Cart Items */}
             <div>{cartItems.map((item) => renderCartItem(item))}</div>
           </div>
 
-          {/* Order Summary - Now memoized */}
           {OrderSummary}
         </div>
       )}

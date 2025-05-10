@@ -2,7 +2,6 @@ import { NextRequest, NextResponse } from "next/server"
 import { db } from "@/db/db"
 import { sql } from "drizzle-orm"
 
-// Define interface for product suggestions
 interface ProductSuggestion {
   id: string
   name: string
@@ -35,12 +34,9 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ suggestions: [] }, { status: 200 })
     }
 
-    // Sanitize the input to prevent SQL injection
     const sanitizedQuery = query.replace(/[^\w\s]/gi, "").trim()
     const searchPattern = `%${sanitizedQuery}%`
 
-    // Improved SQL query with proper joins for related tables
-    // using Common Table Expression (CTE) to avoid GROUP BY issues
     const products = await db.execute(sql`
       WITH product_matches AS (
         SELECT 
@@ -95,7 +91,6 @@ export async function GET(request: NextRequest) {
       GROUP BY pm.id, pm.name, pm.description, pm.form, pm.unit, pm.tags, pm."categoryName", pm."manufacturerName"
     `)
 
-    // Transform the response to match the expected format
     const suggestions: ProductSuggestion[] = products.rows.map(
       (product: any) => ({
         id: product.id,

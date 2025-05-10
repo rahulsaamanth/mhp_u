@@ -3,7 +3,6 @@ import { ArrowRight, Leaf } from "lucide-react"
 export default function AboutHomeopathy() {
   return (
     <main className="max-w-4xl mx-auto py-12 px-4 space-y-12">
-      {/* Header */}
       <header className="text-center space-y-4">
         <h1 className="text-3xl md:text-4xl font-bold text-brand flex items-center justify-center gap-2">
           About Homeopathy <Leaf className="size-8" />
@@ -13,7 +12,6 @@ export default function AboutHomeopathy() {
         </p>
       </header>
 
-      {/* Introduction */}
       <section className="space-y-4">
         <p className="text-lg leading-relaxed">
           Homeopathy is a natural form of medicine used by over 200 million
@@ -23,7 +21,6 @@ export default function AboutHomeopathy() {
         </p>
       </section>
 
-      {/* Key Principles */}
       <section className="space-y-6">
         <h2 className="text-2xl font-semibold">Core Principles</h2>
         <div className="grid gap-6">
@@ -60,7 +57,6 @@ export default function AboutHomeopathy() {
         </div>
       </section>
 
-      {/* Benefits */}
       <section className="space-y-6">
         <h2 className="text-2xl font-semibold">Benefits of Homeopathy</h2>
         <ul className="list-disc pl-6 space-y-3 text-muted-foreground">
@@ -73,7 +69,6 @@ export default function AboutHomeopathy() {
         </ul>
       </section>
 
-      {/* Footer Note */}
       <footer className="text-center text-sm text-muted-foreground pt-8 border-t">
         <p>
           Note: Homeopathic treatment should be undertaken under the guidance of

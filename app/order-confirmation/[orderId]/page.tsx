@@ -18,6 +18,7 @@ interface OrderDetails {
   discount: number
   tax: number
   totalAmountPaid: number
+  invoiceNumber: string
   address: {
     street: string
     city: string
@@ -105,7 +106,6 @@ export default async function OrderConfirmationPage({
 
   return (
     <div className="min-h-[50vh] bg-gray-50">
-      {/* Header Section */}
       <div className="bg-white py-8 shadow-sm">
         <div className="container max-w-6xl mx-auto px-4">
           <div className="text-center space-y-3">
@@ -125,12 +125,9 @@ export default async function OrderConfirmationPage({
         </div>
       </div>
 
-      {/* Main Content */}
       <div className="container max-w-6xl mx-auto px-4 py-8">
         <div className="bg-white rounded-lg shadow-sm p-8">
-          {/* Order Info Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
-            {/* Left Column */}
             <div className="space-y-6">
               <div>
                 <h2 className="text-lg font-semibold text-gray-900 mb-4">
@@ -138,6 +135,10 @@ export default async function OrderConfirmationPage({
                 </h2>
                 <div className="grid grid-cols-2 gap-4 text-sm">
                   <div className="space-y-3">
+                    <div>
+                      <p className="text-gray-500">Invoice Number</p>
+                      <p className="font-medium">{order.invoiceNumber}</p>
+                    </div>
                     <div>
                       <p className="text-gray-500">Order ID</p>
                       <p className="font-medium">{order.id}</p>
@@ -180,7 +181,6 @@ export default async function OrderConfirmationPage({
               </div>
             </div>
 
-            {/* Right Column - Order Summary */}
             <div>
               <h2 className="text-lg font-semibold text-gray-900 mb-4">
                 Order Summary
@@ -237,7 +237,6 @@ export default async function OrderConfirmationPage({
             </div>
           </div>
 
-          {/* Continue Shopping Button */}
           <div className="flex justify-center mt-8">
             <Button asChild size="lg">
               <Link href="/">Continue Shopping</Link>

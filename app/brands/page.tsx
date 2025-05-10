@@ -9,7 +9,6 @@ interface Manufacturer {
   logo?: string | null
 }
 
-// Function to fetch all manufacturers from the database
 async function getManufacturers(): Promise<Manufacturer[]> {
   const manufacturers = await executeRawQuery<Manufacturer>(
     `
@@ -25,12 +24,10 @@ async function getManufacturers(): Promise<Manufacturer[]> {
 export default async function BrandsPage() {
   const manufacturers = await getManufacturers()
 
-  // Default logo placeholder if manufacturer doesn't have a logo
   const defaultLogo = "/assets/default-brand-logo.png"
 
   return (
     <div className="container mx-auto px-4 py-10">
-      {/* Breadcrumb */}
       <div className="mb-6 flex items-center text-sm text-gray-500">
         <Link href="/" className="hover:text-brand">
           Home

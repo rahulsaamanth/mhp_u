@@ -1,18 +1,17 @@
 "use client"
 
-import Link from "next/link"
-import { Button } from "./ui/button"
 import { useCurrentUser } from "@/hooks/use-current-user"
+import { LogOut, User } from "lucide-react"
+import { usePathname, useRouter } from "next/navigation"
+import { LogoutButton } from "./auth/logout-button"
+import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar"
+import { Button } from "./ui/button"
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "./ui/dropdown-menu"
-import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar"
-import { LogOut, User } from "lucide-react"
-import { LogoutButton } from "./auth/logout-button"
-import { usePathname, useRouter } from "next/navigation"
 
 export default function UserButton() {
   const { user } = useCurrentUser()

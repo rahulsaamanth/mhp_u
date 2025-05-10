@@ -12,7 +12,6 @@ import React, {
   useCallback,
 } from "react"
 
-// Create context types
 type CartContextType = {
   isLocalCart: boolean
 }
@@ -31,23 +30,18 @@ export function CartProvider({ children }: { children: ReactNode }) {
   const [isLocalCart, setIsLocalCart] = useState(true)
   const { user, isLoading } = useCurrentUser()
 
-  // Only get the item count instead of the full items array to prevent unnecessary re-renders
   const itemCount = useCartStore((state) => state.items.length)
 
-  // Use our cart authentication hook to handle sync/clear operations
   useCartAuth()
 
-  // Update local cart status when user authentication changes
   useEffect(() => {
     if (!isLoading) {
       setIsLocalCart(!user)
     }
   }, [user, isLoading])
 
-  // Memoize the context value to prevent unnecessary re-renders
   const contextValue = React.useMemo(() => ({ isLocalCart }), [isLocalCart])
 
-  // For debugging only - using itemCount instead of full items array
   useEffect(() => {
     if (!isLoading && process.env.NODE_ENV !== "production") {
       console.log(

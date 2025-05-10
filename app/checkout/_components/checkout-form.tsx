@@ -51,7 +51,6 @@ export default function CheckoutForm({
   const paymentMethod = watch("paymentMethod")
 
   const handleFormSubmit = (data: CheckoutFormData) => {
-    // If it's online payment and Razorpay isn't loaded yet, show error
     if (data.paymentMethod === "ONLINE" && !isRazorpayLoaded) {
       toast.error(
         "Payment gateway is still loading. Please try again in a moment."
@@ -74,7 +73,7 @@ export default function CheckoutForm({
 
     const options = {
       key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID,
-      amount: amount * 100, // Converting to paise
+      amount: amount * 100,
       currency: "INR",
       name: "HOMEOSOUTH",
       description: "Payment for your order",
@@ -126,7 +125,6 @@ export default function CheckoutForm({
     }
 
     try {
-      // Create a new instance each time
       const razorpay = new (window as any).Razorpay(options)
       razorpay.on("payment.failed", function (response: any) {
         console.error("Payment failed:", response.error)
@@ -155,7 +153,6 @@ export default function CheckoutForm({
 
       if (result.success) {
         if (formData.paymentMethod === "COD") {
-          // Clear cart from local state
           cartEvents.notifyCartChanged()
           toast.success(result.message)
           router.push(`/order-confirmation/${result.orderId}`)
@@ -163,7 +160,6 @@ export default function CheckoutForm({
           formData.paymentMethod === "ONLINE" &&
           result.razorpayOrderId
         ) {
-          // Handle Razorpay payment
           await handleRazorpayPayment(
             result.orderId!,
             result.amount,

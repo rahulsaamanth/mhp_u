@@ -2,7 +2,6 @@ import { NextRequest, NextResponse } from "next/server"
 import { db } from "@/db/db"
 import { and, desc, eq, ilike, or, sql } from "drizzle-orm"
 
-// Define a proper interface for the API response
 interface ProductSearchResult {
   id: string
   name: string
@@ -37,14 +36,11 @@ export async function GET(request: NextRequest) {
     const page = parseInt(url.searchParams.get("page") || "1")
     const limit = parseInt(url.searchParams.get("limit") || "4")
 
-    // Calculate offset for pagination
     const offset = (page - 1) * limit
 
-    // Sanitize inputs
     const sanitizedQuery = query.replace(/[^\w\s]/gi, "").trim()
     const searchPattern = sanitizedQuery ? `%${sanitizedQuery}%` : null
 
-    // Use raw SQL for more complex query with proper joins
     const productsQuery = sql`
       WITH product_matches AS (
         SELECT 
@@ -147,12 +143,10 @@ export async function GET(request: NextRequest) {
 
     const products = (await db.execute(productsQuery)).rows
 
-    // Extract total count from the first row
     const totalCount =
       products.length > 0 ? parseInt(String(products[0].totalCount)) : 0
     const totalPages = Math.ceil(totalCount / limit)
 
-    // Transform the products to the expected format
     const transformedProducts: ProductSearchResult[] = products.map(
       (product: any) => ({
         id: product.id,
@@ -163,7 +157,6 @@ export async function GET(request: NextRequest) {
         form: product.form || "NONE",
         unit: product.unit || "NONE",
         tags: Array.isArray(product.tags) ? product.tags : [],
-        // Ensure variants have consistent data structure
         variants: Array.isArray(product.variants)
           ? product.variants.map((variant: any) => ({
               id: variant.id || "",

@@ -43,7 +43,6 @@ export default function LoginPage() {
 
       <LoginForm callbackUrl={callbackUrl} />
 
-      {/* Terms and conditions note */}
       <p className="text-xs text-muted-foreground text-center mt-8">
         By logging in, you agree to our{" "}
         <Link href="/terms" className="text-brand hover:underline">

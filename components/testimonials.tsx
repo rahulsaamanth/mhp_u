@@ -77,7 +77,6 @@ export default function Testimonials() {
 
   return (
     <section className="py-20">
-      {/* Minimal heading with brand colors */}
       <div className="flex items-center justify-center mb-8 pb-6">
         <div className="h-0.5 flex-1 bg-gradient-to-r from-transparent to-primary"></div>
         <h2 className="text-xl md:text-4xl text-center px-4">
@@ -88,7 +87,6 @@ export default function Testimonials() {
         <div className="h-0.5 flex-1 bg-gradient-to-l from-transparent to-primary"></div>
       </div>
       <div className="container mx-auto max-w-2/3 sm:px-4">
-        {/* Carousel with minimal styling */}
         <Carousel
           className="w-full"
           plugins={[plugin.current]}
@@ -116,7 +114,6 @@ export default function Testimonials() {
           </CarouselContent>
         </Carousel>
 
-        {/* Minimal pagination dots */}
         <div className="flex justify-center mt-8 space-x-1.5">
           {googleReviews.map((_, index) => (
             <button
@@ -132,7 +129,6 @@ export default function Testimonials() {
           ))}
         </div>
 
-        {/* Simple stats bar */}
         <div className="mt-12 flex justify-center flex-col items-center">
           <div className="bg-white shadow-sm border border-gray-100 rounded-lg py-5 px-8 inline-flex items-center">
             <div className="flex items-center">

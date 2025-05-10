@@ -15,7 +15,6 @@ export default function AuthError() {
   const searchParams = useSearchParams()
   const error = searchParams.get("error")
 
-  // Error information mapping
   const errorInfo = {
     default: {
       title: "Authentication Error",
@@ -70,7 +69,6 @@ export default function AuthError() {
     },
   }
 
-  // Get error details or use default
   const {
     title,
     description,

@@ -18,7 +18,6 @@ export default function CheckoutPage() {
   const [discountAmount, setDiscountAmount] = useState(0)
   const router = useRouter()
 
-  // Load cart items from the database
   useEffect(() => {
     async function loadCart() {
       setIsLoading(true)
@@ -26,7 +25,7 @@ export default function CheckoutPage() {
         const { items } = await getUserCart()
 
         if (!items || items.length === 0) {
-          router.push("/cart") // Redirect to cart if empty
+          router.push("/cart")
           return
         }
 
@@ -41,7 +40,6 @@ export default function CheckoutPage() {
     loadCart()
   }, [router])
 
-  // Calculate cart totals
   const subtotal = cartItems.reduce(
     (total, item) => total + item.price * item.quantity,
     0
@@ -49,7 +47,6 @@ export default function CheckoutPage() {
 
   const shippingFee = 50
 
-  // Calculate final total - always include shipping fee and apply any discount
   const total = subtotal + shippingFee - discountAmount
 
   if (isLoading) {
@@ -79,12 +76,10 @@ export default function CheckoutPage() {
       <h1 className="text-2xl font-bold mb-8">Checkout</h1>
       <RazorpayProvider>
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          {/* Main checkout form */}
           <div className="lg:col-span-2">
             <CheckoutForm cartItems={cartItems} appliedCoupon={appliedCoupon} />
           </div>
 
-          {/* Order summary */}
           <div className="lg:col-span-1">
             <OrderSummary
               cartItems={cartItems}

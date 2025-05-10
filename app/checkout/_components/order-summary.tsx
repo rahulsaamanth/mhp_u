@@ -116,7 +116,6 @@ export default function OrderSummary({
       </div>
 
       <div className="border-t pt-4">
-        {/* Coupon section */}
         <div className="mb-4">
           <h3 className="font-medium mb-2 flex items-center gap-1.5">
             <Tag className="h-4 w-4" />
@@ -174,7 +173,6 @@ export default function OrderSummary({
           )}
         </div>
 
-        {/* Price breakdown */}
         <div className="space-y-2 text-sm">
           <div className="flex justify-between">
             <span>Subtotal</span>

@@ -14,7 +14,6 @@ import { ChevronRight } from "lucide-react"
 import { usePathname } from "next/navigation"
 import { useEffect, useState } from "react"
 
-// Define category structure to match database
 interface CategoryItem {
   id: string
   name: string
@@ -45,7 +44,6 @@ export default function FilterSidebar({
   currentLetter,
   currentAilment,
 }: FilterSidebarProps) {
-  // Use pathname to determine active category
   const pathname = usePathname()
   const [activeAccordions, setActiveAccordions] = useState<string[]>([
     "categories",
@@ -53,22 +51,17 @@ export default function FilterSidebar({
     "alphabet",
   ])
 
-  // Store the full list of manufacturers to ensure it's always available
   const [allManufacturers, setAllManufacturers] =
     useState<string[]>(manufacturers)
 
-  // Update allManufacturers if the manufacturers prop changes
   useEffect(() => {
-    // If new manufacturers are provided and they're not empty, update our local state
     if (manufacturers.length > 0) {
       setAllManufacturers((prev) => {
-        // Merge the new manufacturers with existing ones and remove duplicates
         const combined = [...prev, ...manufacturers]
-        return [...new Set(combined)].sort() // Remove duplicates and sort
+        return [...new Set(combined)].sort()
       })
     }
 
-    // If currentManufacturer exists but isn't in our list, add it
     if (
       currentManufacturer &&
       !allManufacturers.includes(currentManufacturer)
@@ -77,13 +70,10 @@ export default function FilterSidebar({
     }
   }, [manufacturers, currentManufacturer])
 
-  // Process categories into hierarchical structure
   const organizeCategories = () => {
-    // If categories is just an array of strings, convert to a flat structure first
     let categoryItems: CategoryItem[] = []
 
     if (typeof categories[0] === "string") {
-      // This is the old format, just strings
       categoryItems = (categories as string[]).map((name) => ({
         id: name,
         name: name,
@@ -93,29 +83,23 @@ export default function FilterSidebar({
       }))
       return categoryItems
     } else {
-      // Already in the correct format
       return categories as CategoryItem[]
     }
   }
 
   const organizedCategories = organizeCategories()
 
-  // Get parent categories (depth 0)
   const parentCategories = organizedCategories.filter((cat) => cat.depth === 0)
 
-  // Get subcategories by parent ID
   const getSubcategories = (parentId: string) => {
     return organizedCategories.filter((cat) => cat.parentId === parentId)
   }
 
-  // Helper function to get the formatted category URL
   const getCategoryUrl = (category: CategoryItem) => {
     if (category.depth === 0) {
-      // Parent category
       const slug = category.name.toLowerCase().replace(/\s+/g, "-")
       return `/products/${slug}`
     } else {
-      // Subcategory - need parent category for URL
       const parentCategory = getParentCategory(category)
       const parentSlug = parentCategory
         ? parentCategory.name.toLowerCase().replace(/\s+/g, "-")
@@ -126,13 +110,11 @@ export default function FilterSidebar({
     }
   }
 
-  // Helper to get parent category
   const getParentCategory = (category: CategoryItem): CategoryItem | null => {
     if (!category.parentId) return null
     return organizedCategories.find((c) => c.id === category.parentId) || null
   }
 
-  // Helper function to build URLs with the correct parameters
   const getFilterUrl = (params: {
     manufacturer?: string
     letter?: string
@@ -140,7 +122,6 @@ export default function FilterSidebar({
   }) => {
     const searchParams = new URLSearchParams()
 
-    // Only add parameters that have values
     if (params.manufacturer)
       searchParams.set("manufacturer", params.manufacturer)
     if (params.letter) searchParams.set("letter", params.letter)
@@ -148,7 +129,6 @@ export default function FilterSidebar({
 
     const queryString = searchParams.toString()
 
-    // Use different base URL depending on if we're in a subcategory or not
     const baseUrl = currentSubcategory
       ? `/products/${currentCategory}/${currentSubcategory}`
       : `/products/${currentCategory}`
@@ -156,36 +136,25 @@ export default function FilterSidebar({
     return `${baseUrl}${queryString ? `?${queryString}` : ""}`
   }
 
-  // Check if a category is currently active based on pathname
   const isCategoryActive = (category: CategoryItem) => {
     const categoryUrl = getCategoryUrl(category)
 
-    // For parent categories: either exact match or starts with (for when in a subcategory)
     if (category.depth === 0) {
-      // We want to highlight the parent category even when a subcategory is selected
-      // Check 1: Exact match for parent category URL
       if (pathname === categoryUrl) return true
 
-      // Check 2: Check if we're in a subcategory of this parent
       if (pathname.startsWith(`${categoryUrl}/`)) return true
-    }
-    // For subcategories: exact match
-    else {
+    } else {
       return pathname === categoryUrl
     }
 
     return false
   }
 
-  // Check if a subcategory is active
   const isSubcategoryActive = (subcategory: CategoryItem) => {
     const subcategoryUrl = getCategoryUrl(subcategory)
 
-    // Direct URL match
     if (pathname === subcategoryUrl) return true
 
-    // Also check by name matching in the URL
-    // This handles cases where URL structure might be slightly different
     const subcatName = subcategory.name.toLowerCase().replace(/\s+/g, "-")
     const pathParts = pathname.split("/")
     const lastPathPart = pathParts[pathParts.length - 1]
@@ -193,15 +162,12 @@ export default function FilterSidebar({
     return lastPathPart === subcatName
   }
 
-  // Check if a parent has any active subcategory
   const hasActiveSubcategory = (parentId: string) => {
     const subcategories = getSubcategories(parentId)
     return subcategories.some((subcat) => isSubcategoryActive(subcat))
   }
 
-  // Automatically expand parent categories that have the active subcategory
   useEffect(() => {
-    // Make sure categories are expanded if we're on a subcategory page
     const pathParts = pathname.split("/")
     if (pathParts.length >= 4 && pathParts[1] === "products") {
       setActiveAccordions((prev) => {
@@ -223,7 +189,6 @@ export default function FilterSidebar({
         onValueChange={setActiveAccordions}
         className="space-y-4"
       >
-        {/* Categories Filter */}
         {organizedCategories.length > 0 && (
           <AccordionItem value="categories" className="border px-4 rounded-md">
             <AccordionTrigger className="py-2 hover:no-underline">
@@ -248,7 +213,6 @@ export default function FilterSidebar({
                     category.id
                   )
 
-                  // Always show subcategories if parent is active or has active subcategory
                   const showSubcategories =
                     subcategories.length > 0 &&
                     (isActive || parentHasActiveSubcategory)
@@ -294,7 +258,6 @@ export default function FilterSidebar({
           </AccordionItem>
         )}
 
-        {/* Manufacturer Filter */}
         <AccordionItem value="manufacturer" className="border px-4 rounded-md">
           <AccordionTrigger className="py-2 hover:no-underline">
             Manufacturer
@@ -333,7 +296,6 @@ export default function FilterSidebar({
           </AccordionContent>
         </AccordionItem>
 
-        {/* Alphabet Filter */}
         <AccordionItem
           value="alphabet"
           className="outline outline-gray-200 px-4 rounded-md"
@@ -387,7 +349,6 @@ export default function FilterSidebar({
         </AccordionItem>
       </Accordion>
 
-      {/* Show Applied Filters */}
       {(currentManufacturer || currentLetter || currentAilment) && (
         <div className="mt-4">
           <h3 className="text-sm font-medium mb-2">Applied Filters:</h3>

@@ -9,14 +9,12 @@ export async function POST(request: Request) {
     const { razorpay_payment_id, razorpay_order_id, razorpay_signature } =
       await request.json()
 
-    // Generate signature for verification
     const text = `${razorpay_order_id}|${razorpay_payment_id}`
     const signature = crypto
       .createHmac("sha256", process.env.RAZORPAY_KEY_SECRET!)
       .update(text)
       .digest("hex")
 
-    // Verify signature
     if (signature !== razorpay_signature) {
       return NextResponse.json(
         { success: false, message: "Invalid payment signature" },
@@ -24,12 +22,11 @@ export async function POST(request: Request) {
       )
     }
 
-    // Update payment status
     const [updatedPayment] = await db
       .update(payment)
       .set({
         status: "PAID",
-        paymentType: "UPI", // Use UPI as the default online payment type
+        paymentType: "UPI",
         gatewayPaymentId: razorpay_payment_id,
         updatedAt: new Date(),
       })
@@ -43,7 +40,6 @@ export async function POST(request: Request) {
       )
     }
 
-    // Get the order to find the user ID for cart clearing
     const [orderData] = await db
       .select()
       .from(order)
@@ -51,7 +47,6 @@ export async function POST(request: Request) {
       .limit(1)
 
     if (orderData?.userId) {
-      // Clear the user's cart
       await db.delete(cart).where(eq(cart.userId, orderData.userId))
     }
 
