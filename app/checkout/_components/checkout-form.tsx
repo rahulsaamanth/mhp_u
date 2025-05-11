@@ -415,10 +415,15 @@ export default function CheckoutForm({
             <Button
               variant="outline"
               onClick={() => setShowConfirmation(false)}
+              className="cursor-pointer"
             >
               Edit Order
             </Button>
-            <Button onClick={processOrder} disabled={isProcessing}>
+            <Button
+              onClick={processOrder}
+              disabled={isProcessing}
+              className="cursor-pointer"
+            >
               {isProcessing ? "Processing..." : "Confirm Order"}
             </Button>
           </DialogFooter>

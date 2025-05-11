@@ -5,6 +5,17 @@ import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Separator } from "@/components/ui/separator"
 import { CheckCircle2 } from "lucide-react"
+import { OrderConfirmationHeader } from "@/components/order-confirmation-header"
+
+const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms))
+
+const checkmarkAnimation = {
+  "@keyframes checkmark": {
+    "0%": { transform: "scale(0)", opacity: 0 },
+    "50%": { transform: "scale(1.2)" },
+    "100%": { transform: "scale(1)", opacity: 1 },
+  },
+}
 
 interface OrderDetails {
   id: string
@@ -49,6 +60,8 @@ export default async function OrderConfirmationPage({
   params: Promise<{ orderId: string }>
 }) {
   const { orderId } = await params
+
+  await delay(2000)
 
   const orderData = (await executeRawQuery<OrderDetails>(
     `
@@ -105,33 +118,16 @@ export default async function OrderConfirmationPage({
   }
 
   return (
-    <div className="min-h-[50vh] bg-gray-50">
-      <div className="bg-white py-8 shadow-sm">
-        <div className="container max-w-6xl mx-auto px-4">
-          <div className="text-center space-y-3">
-            <div className="flex justify-center">
-              <div className="w-16 h-16 rounded-full bg-green-100 flex items-center justify-center">
-                <CheckCircle2 className="w-8 h-8 text-green-600" />
-              </div>
-            </div>
-            <h1 className="text-3xl font-bold text-gray-900">
-              Order Confirmed!
-            </h1>
-            <p className="text-gray-600 max-w-xl mx-auto">
-              Thank you for your order. We'll send you a confirmation email
-              shortly.
-            </p>
-          </div>
-        </div>
-      </div>
+    <div className="min-h-[60vh] bg-gray-50">
+      <OrderConfirmationHeader invoiceNumber={order.invoiceNumber} />
 
-      <div className="container max-w-6xl mx-auto px-4 py-8">
-        <div className="bg-white rounded-lg shadow-sm p-8">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
-            <div className="space-y-6">
-              <div>
-                <h2 className="text-lg font-semibold text-gray-900 mb-4">
-                  Order Details
+      <div className="container max-w-6xl mx-auto px-4 py-12">
+        <div className="bg-white rounded-xl shadow-md p-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-12 mb-8">
+            <div className="space-y-8">
+              <div className="bg-gray-50 p-6 rounded-lg">
+                <h2 className="text-xl font-semibold text-gray-900 mb-4 flex items-center gap-2">
+                  Order Information
                 </h2>
                 <div className="grid grid-cols-2 gap-4 text-sm">
                   <div className="space-y-3">
@@ -165,79 +161,77 @@ export default async function OrderConfirmationPage({
                 </div>
               </div>
 
-              <div>
-                <h2 className="text-lg font-semibold text-gray-900 mb-4">
-                  Shipping Address
+              <div className="bg-gray-50 p-6 rounded-lg">
+                <h2 className="text-xl font-semibold text-gray-900 mb-4">
+                  Delivery Details
                 </h2>
-                <div className="text-sm space-y-1">
-                  <p className="font-medium">{order.customerName}</p>
-                  <p>{order.address?.street}</p>
-                  <p>
+                <div className="text-sm space-y-2">
+                  <p className="font-medium text-base">{order.customerName}</p>
+                  <p className="text-gray-600">{order.address?.street}</p>
+                  <p className="text-gray-600">
                     {order.address?.city}, {order.address?.state} -{" "}
                     {order.address?.postalCode}
                   </p>
-                  <p>Phone: {order.customerPhone}</p>
+                  <p className="text-gray-600">Phone: {order.customerPhone}</p>
                 </div>
               </div>
             </div>
 
-            <div>
-              <h2 className="text-lg font-semibold text-gray-900 mb-4">
+            <div className="bg-gray-50 p-6 rounded-lg h-fit">
+              <h2 className="text-xl font-semibold text-gray-900 mb-6">
                 Order Summary
               </h2>
-              <div className="bg-gray-50 rounded-lg p-4">
-                <div className="space-y-3">
-                  {order.orderDetails.map((item) => (
-                    <div
-                      key={item.id}
-                      className="flex justify-between text-sm py-2"
-                    >
-                      <div>
-                        <p className="font-medium">
-                          {item.variant.product.name}
-                        </p>
-                        <p className="text-gray-600">
-                          Qty: {item.quantity} x{" "}
-                          {formatCurrency(item.unitPrice)}
-                        </p>
-                      </div>
-                      <p className="font-medium">
-                        {formatCurrency(item.unitPrice * item.quantity)}
+              <div className="space-y-3">
+                {order.orderDetails.map((item) => (
+                  <div
+                    key={item.id}
+                    className="flex justify-between text-sm py-2"
+                  >
+                    <div>
+                      <p className="font-medium">{item.variant.product.name}</p>
+                      <p className="text-gray-600">
+                        Qty: {item.quantity} x {formatCurrency(item.unitPrice)}
                       </p>
                     </div>
-                  ))}
-
-                  <Separator className="my-4" />
-
-                  <div className="space-y-2 text-sm">
-                    <div className="flex justify-between">
-                      <span className="text-gray-600">Subtotal</span>
-                      <span>{formatCurrency(order.subtotal)}</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-gray-600">Shipping</span>
-                      <span>{formatCurrency(order.shippingCost)}</span>
-                    </div>
-                    {order.discount > 0 && (
-                      <div className="flex justify-between text-green-600">
-                        <span>Discount</span>
-                        <span>-{formatCurrency(order.discount)}</span>
-                      </div>
-                    )}
+                    <p className="font-medium">
+                      {formatCurrency(item.unitPrice * item.quantity)}
+                    </p>
                   </div>
+                ))}
 
-                  <Separator className="my-4" />
+                <Separator className="my-4" />
 
-                  <div className="flex justify-between font-semibold text-lg">
-                    <span>Total</span>
-                    <span>{formatCurrency(order.totalAmountPaid)}</span>
+                <div className="space-y-2 text-sm">
+                  <div className="flex justify-between">
+                    <span className="text-gray-600">Subtotal</span>
+                    <span>{formatCurrency(order.subtotal)}</span>
                   </div>
+                  <div className="flex justify-between">
+                    <span className="text-gray-600">Shipping</span>
+                    <span>{formatCurrency(order.shippingCost)}</span>
+                  </div>
+                  {order.discount > 0 && (
+                    <div className="flex justify-between text-green-600">
+                      <span>Discount</span>
+                      <span>-{formatCurrency(order.discount)}</span>
+                    </div>
+                  )}
+                </div>
+
+                <Separator className="my-4" />
+
+                <div className="flex justify-between font-semibold text-lg">
+                  <span>Total</span>
+                  <span>{formatCurrency(order.totalAmountPaid)}</span>
                 </div>
               </div>
             </div>
           </div>
 
-          <div className="flex justify-center mt-8">
+          <div className="flex justify-center gap-4 mt-12">
+            <Button asChild size="lg" variant="outline">
+              <Link href="/orders">View Orders</Link>
+            </Button>
             <Button asChild size="lg">
               <Link href="/">Continue Shopping</Link>
             </Button>

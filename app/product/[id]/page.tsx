@@ -5,6 +5,7 @@ import ProductCard, { ProductCardProps } from "@/components/product-card"
 import ProductVariantSelector from "../_components/product-variant-selector"
 import FeaturedProductsCarousel from "@/components/featured-products-carousel"
 import FeaturedProducts from "@/components/featured-products"
+import ScrollToTop from "../_components/scroll-to-top"
 
 interface ProductDetailsProps {
   id: string
@@ -223,159 +224,164 @@ export default async function ProductPage({
   )
 
   return (
-    <div>
-      <main className="container mx-auto px-4 py-20">
-        <div className="mb-10">
-          {sortedVariants.length > 0 && (
-            <ProductVariantSelector
-              productId={product.id}
-              productName={product.name}
-              variants={sortedVariants}
-              unit={product.unit}
-              category={product.categoryName}
-              manufacturer={product.manufacturer}
-            />
-          )}
-        </div>
-        <div className="grid grid-cols-1 md:grid-cols-5 gap-8 mb-10">
-          <div className="md:col-span-3 space-y-8">
-            <div className="space-y-4">
-              <h2 className="text-lg font-semibold">Description</h2>
-              <div className="text-gray-700 text-sm space-y-2">
-                {product.description ? (
-                  <p>{product.description}</p>
-                ) : (
-                  <p>No description available for this product.</p>
-                )}
+    <ScrollToTop>
+      <div>
+        <main className="container mx-auto px-4 py-20">
+          <div className="mb-10">
+            {sortedVariants.length > 0 && (
+              <ProductVariantSelector
+                productId={product.id}
+                productName={product.name}
+                variants={sortedVariants}
+                unit={product.unit}
+                category={product.categoryName}
+                manufacturer={product.manufacturer}
+              />
+            )}
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-5 gap-8 mb-10">
+            <div className="md:col-span-3 space-y-8">
+              <div className="space-y-4">
+                <h2 className="text-lg font-semibold">Description</h2>
+                <div className="text-gray-700 text-sm space-y-2">
+                  {product.description ? (
+                    <p>{product.description}</p>
+                  ) : (
+                    <p>No description available for this product.</p>
+                  )}
+                </div>
+              </div>
+              <div className="space-y-4">
+                <h2 className="text-lg font-semibold">Key Benefits</h2>
+                <ul className="list-disc pl-5 text-sm space-y-1">
+                  <li>High quality homeopathic preparation</li>
+                  <li>Manufactured according to homeopathic principles</li>
+                  <li>No side effects when taken as directed</li>
+                  {product.form === "LIQUID" ? (
+                    <li>Liquid formulation for easy administration</li>
+                  ) : (
+                    <li>Convenient tablet form for easy dosage</li>
+                  )}
+                  <li>Suitable for adults and children (as directed)</li>
+                </ul>
               </div>
             </div>
-            <div className="space-y-4">
-              <h2 className="text-lg font-semibold">Key Benefits</h2>
-              <ul className="list-disc pl-5 text-sm space-y-1">
-                <li>High quality homeopathic preparation</li>
-                <li>Manufactured according to homeopathic principles</li>
-                <li>No side effects when taken as directed</li>
-                {product.form === "LIQUID" ? (
-                  <li>Liquid formulation for easy administration</li>
-                ) : (
-                  <li>Convenient tablet form for easy dosage</li>
-                )}
-                <li>Suitable for adults and children (as directed)</li>
-              </ul>
+            <div className="md:col-span-2 space-y-4">
+              <h2 className="text-lg font-semibold">Recommended Dosage</h2>
+              <div className="text-gray-700 text-sm">
+                <p>As prescribed by your physician. The general dosage is:</p>
+                <ul className="list-disc pl-5 space-y-1 mt-2">
+                  <li>
+                    Adults: 2{" "}
+                    {product.unit
+                      .replace("(s)", "")
+                      .replace("TABLETS", "Pills")}{" "}
+                    3-4 times daily
+                  </li>
+                  <li>
+                    Children: 1{" "}
+                    {product.unit.replace("(s)", "").replace("TABLETS", "Pill")}{" "}
+                    3-4 times daily
+                  </li>
+                  <li>
+                    Acute conditions: 1{" "}
+                    {product.unit.replace("(s)", "").replace("TABLETS", "Pill")}{" "}
+                    every 30 minutes (up to 6 doses)
+                  </li>
+                </ul>
+              </div>
             </div>
           </div>
-          <div className="md:col-span-2 space-y-4">
-            <h2 className="text-lg font-semibold">Recommended Dosage</h2>
-            <div className="text-gray-700 text-sm">
-              <p>As prescribed by your physician. The general dosage is:</p>
-              <ul className="list-disc pl-5 space-y-1 mt-2">
-                <li>
-                  Adults: 2{" "}
-                  {product.unit.replace("(s)", "").replace("TABLETS", "Pills")}{" "}
-                  3-4 times daily
-                </li>
-                <li>
-                  Children: 1{" "}
-                  {product.unit.replace("(s)", "").replace("TABLETS", "Pill")}{" "}
-                  3-4 times daily
-                </li>
-                <li>
-                  Acute conditions: 1{" "}
-                  {product.unit.replace("(s)", "").replace("TABLETS", "Pill")}{" "}
-                  every 30 minutes (up to 6 doses)
-                </li>
-              </ul>
+          <div className="mb-12">
+            <h2 className="text-xl font-semibold mb-4">Product Information</h2>
+            <div className="border rounded overflow-hidden">
+              <table className="w-full divide-y">
+                <tbody className="divide-y">
+                  <tr className="bg-gray-50">
+                    <td className="px-6 py-3 text-sm font-medium text-gray-700 w-1/3">
+                      Product Form
+                    </td>
+                    <td className="px-6 py-3 text-sm text-gray-700">
+                      {product.form}
+                    </td>
+                  </tr>
+                  <tr>
+                    <td className="px-6 py-3 text-sm font-medium text-gray-700">
+                      Unit
+                    </td>
+                    <td className="px-6 py-3 text-sm text-gray-700">
+                      {product.unit}
+                    </td>
+                  </tr>
+                  <tr className="bg-gray-50">
+                    <td className="px-6 py-3 text-sm font-medium text-gray-700">
+                      Manufacturer
+                    </td>
+                    <td className="px-6 py-3 text-sm text-gray-700">
+                      {product.manufacturer}
+                    </td>
+                  </tr>
+                  <tr>
+                    <td className="px-6 py-3 text-sm font-medium text-gray-700">
+                      Category
+                    </td>
+                    <td className="px-6 py-3 text-sm text-gray-700">
+                      {product.categoryName}
+                    </td>
+                  </tr>
+                  <tr className="bg-gray-50">
+                    <td className="px-6 py-3 text-sm font-medium text-gray-700">
+                      Available Potencies
+                    </td>
+                    <td className="px-6 py-3 text-sm text-gray-700">
+                      {uniquePotencies.length > 0 &&
+                      uniquePotencies[0] !== "NONE"
+                        ? uniquePotencies.join(", ")
+                        : "N/A"}
+                    </td>
+                  </tr>
+                  <tr>
+                    <td className="px-6 py-3 text-sm font-medium text-gray-700">
+                      Available Pack Sizes
+                    </td>
+                    <td className="px-6 py-3 text-sm text-gray-700">
+                      {uniquePackSizes
+                        .map(
+                          (size) =>
+                            `${size} ${product.unit
+                              .replace("(s)", "")
+                              .replace("TABLETS", "Pills")}`
+                        )
+                        .join(", ")}
+                    </td>
+                  </tr>
+                  <tr className="bg-gray-50">
+                    <td className="px-6 py-3 text-sm font-medium text-gray-700">
+                      Storage Instructions
+                    </td>
+                    <td className="px-6 py-3 text-sm text-gray-700">
+                      Store in a cool, dry place away from direct sunlight. Keep
+                      out of reach of children.
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
             </div>
           </div>
+        </main>
+        <div className="py-8 mx-auto">
+          <h2 className="text-xl font-semibold mb-6 text-center">
+            {relatedProducts.length > 0 ? "You May Also Like" : ""}
+          </h2>
+          {relatedProducts.length > 0 ? (
+            <FeaturedProductsCarousel products={relatedProducts} />
+          ) : (
+            <Suspense>
+              <FeaturedProducts />
+            </Suspense>
+          )}
         </div>
-        <div className="mb-12">
-          <h2 className="text-xl font-semibold mb-4">Product Information</h2>
-          <div className="border rounded overflow-hidden">
-            <table className="w-full divide-y">
-              <tbody className="divide-y">
-                <tr className="bg-gray-50">
-                  <td className="px-6 py-3 text-sm font-medium text-gray-700 w-1/3">
-                    Product Form
-                  </td>
-                  <td className="px-6 py-3 text-sm text-gray-700">
-                    {product.form}
-                  </td>
-                </tr>
-                <tr>
-                  <td className="px-6 py-3 text-sm font-medium text-gray-700">
-                    Unit
-                  </td>
-                  <td className="px-6 py-3 text-sm text-gray-700">
-                    {product.unit}
-                  </td>
-                </tr>
-                <tr className="bg-gray-50">
-                  <td className="px-6 py-3 text-sm font-medium text-gray-700">
-                    Manufacturer
-                  </td>
-                  <td className="px-6 py-3 text-sm text-gray-700">
-                    {product.manufacturer}
-                  </td>
-                </tr>
-                <tr>
-                  <td className="px-6 py-3 text-sm font-medium text-gray-700">
-                    Category
-                  </td>
-                  <td className="px-6 py-3 text-sm text-gray-700">
-                    {product.categoryName}
-                  </td>
-                </tr>
-                <tr className="bg-gray-50">
-                  <td className="px-6 py-3 text-sm font-medium text-gray-700">
-                    Available Potencies
-                  </td>
-                  <td className="px-6 py-3 text-sm text-gray-700">
-                    {uniquePotencies.length > 0 && uniquePotencies[0] !== "NONE"
-                      ? uniquePotencies.join(", ")
-                      : "N/A"}
-                  </td>
-                </tr>
-                <tr>
-                  <td className="px-6 py-3 text-sm font-medium text-gray-700">
-                    Available Pack Sizes
-                  </td>
-                  <td className="px-6 py-3 text-sm text-gray-700">
-                    {uniquePackSizes
-                      .map(
-                        (size) =>
-                          `${size} ${product.unit
-                            .replace("(s)", "")
-                            .replace("TABLETS", "Pills")}`
-                      )
-                      .join(", ")}
-                  </td>
-                </tr>
-                <tr className="bg-gray-50">
-                  <td className="px-6 py-3 text-sm font-medium text-gray-700">
-                    Storage Instructions
-                  </td>
-                  <td className="px-6 py-3 text-sm text-gray-700">
-                    Store in a cool, dry place away from direct sunlight. Keep
-                    out of reach of children.
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </main>
-      <div className="py-8 mx-auto">
-        <h2 className="text-xl font-semibold mb-6 text-center">
-          {relatedProducts.length > 0 ? "You May Also Like" : ""}
-        </h2>
-        {relatedProducts.length > 0 ? (
-          <FeaturedProductsCarousel products={relatedProducts} />
-        ) : (
-          <Suspense>
-            <FeaturedProducts />
-          </Suspense>
-        )}
       </div>
-    </div>
+    </ScrollToTop>
   )
 }

@@ -16,7 +16,7 @@ export default function OrderConfirmationError({
   }, [error])
 
   return (
-    <div className="container mx-auto py-10 text-center space-y-4 min-h-[50vh]">
+    <div className="container mx-auto py-10 text-center space-y-4 min-h-[60vh]">
       <h2 className="text-2xl font-semibold">Something went wrong!</h2>
       <p className="text-gray-600 mb-4">Failed to load order details.</p>
       <div className="flex justify-center gap-4">
