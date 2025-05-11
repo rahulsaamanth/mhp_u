@@ -7,8 +7,6 @@ import { Separator } from "@/components/ui/separator"
 import { CheckCircle2 } from "lucide-react"
 import { OrderConfirmationHeader } from "@/components/order-confirmation-header"
 
-const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms))
-
 const checkmarkAnimation = {
   "@keyframes checkmark": {
     "0%": { transform: "scale(0)", opacity: 0 },
@@ -60,8 +58,6 @@ export default async function OrderConfirmationPage({
   params: Promise<{ orderId: string }>
 }) {
   const { orderId } = await params
-
-  await delay(2000)
 
   const orderData = (await executeRawQuery<OrderDetails>(
     `
