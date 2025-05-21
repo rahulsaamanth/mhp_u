@@ -190,7 +190,7 @@ export async function processCheckout(
         tax: tax,
         totalAmountPaid: totalAmount,
         discountCodeId: appliedCoupon?.id,
-        orderDate: new Date(),
+        // orderDate: new Date(),
         invoiceNumber: invoiceNumber,
       })
       .returning()
