@@ -40,6 +40,15 @@ export async function POST(request: Request) {
       )
     }
 
+    // Update the order payment status as well
+    await db
+      .update(order)
+      .set({
+        paymentStatus: "PAID",
+        // updatedAt: new Date(),
+      })
+      .where(eq(order.id, updatedPayment.orderId))
+
     const [orderData] = await db
       .select()
       .from(order)

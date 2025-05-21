@@ -54,8 +54,8 @@ importers:
         specifier: ^1.1.4
         version: 1.1.4(@types/react-dom@19.0.4(@types/react@19.0.10))(@types/react@19.0.10)(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
       '@rahulsaamanth/mhp-schema':
-        specifier: ^1.2.4
-        version: 1.2.4(@types/pg@8.11.6)(gel@2.0.1)(next@15.2.1(react-dom@19.0.0(react@19.0.0))(react@19.0.0))(react@19.0.0)
+        specifier: ^1.2.5
+        version: 1.2.5(@types/pg@8.11.6)(gel@2.0.1)(next@15.2.1(react-dom@19.0.0(react@19.0.0))(react@19.0.0))(react@19.0.0)
       '@tanstack/react-query':
         specifier: ^5.74.3
         version: 5.74.3(react@19.0.0)
@@ -197,6 +197,20 @@ packages:
 
   '@auth/core@0.38.0':
     resolution: {integrity: sha512-ClHl44x4cY3wfJmHLpW+XrYqED0fZIzbHmwbExltzroCjR5ts3DLTWzADRba8mJFYZ8JIEJDa+lXnGl0E9Bl7Q==}
+    peerDependencies:
+      '@simplewebauthn/browser': ^9.0.1
+      '@simplewebauthn/server': ^9.0.2
+      nodemailer: ^6.8.0
+    peerDependenciesMeta:
+      '@simplewebauthn/browser':
+        optional: true
+      '@simplewebauthn/server':
+        optional: true
+      nodemailer:
+        optional: true
+
+  '@auth/core@0.39.1':
+    resolution: {integrity: sha512-McD8slui0oOA1pjR5sPjLPl5Zm//nLP/8T3kr8hxIsvNLvsiudYvPHhDFPjh1KcZ2nFxCkZmP6bRxaaPd/AnLA==}
     peerDependencies:
       '@simplewebauthn/browser': ^9.0.1
       '@simplewebauthn/server': ^9.0.2
@@ -1329,8 +1343,8 @@ packages:
   '@radix-ui/rect@1.1.0':
     resolution: {integrity: sha512-A9+lCBZoaMJlVKcRBz2YByCG+Cp2t6nAnMnNba+XiWxnj6r4JUFqfsgwocMBZU9LPtdxC6wB56ySYpc7LQIoJg==}
 
-  '@rahulsaamanth/mhp-schema@1.2.4':
-    resolution: {integrity: sha512-N1HDcU4a7EBWkQnnWsMNuuVOwCVQwErvcgfoYnKzTwDeHjYwbPPDn3KumaqbRqyha4+9lcdgkNz35w1VQoUAhg==}
+  '@rahulsaamanth/mhp-schema@1.2.5':
+    resolution: {integrity: sha512-KVGXpCGdWVLlu8+NnvDWoFLLeN0tr+F2HSPTmVsms+gCs8IJnRTi2YVBf3I2MUT9aI+ZLhRVbKUBq/CQxFXltQ==}
 
   '@react-email/render@1.0.5':
     resolution: {integrity: sha512-CA69HYXPk21HhtAXATIr+9JJwpDNmAFCvdMUjWmeoD1+KhJ9NAxusMRxKNeibdZdslmq3edaeOKGbdQ9qjK8LQ==}
@@ -1793,8 +1807,8 @@ packages:
   domutils@3.2.2:
     resolution: {integrity: sha512-6kZKyUajlDuqlHKVX1w7gyslj9MPIXzIFiz/rGu35uC1wMi+kMhQwGhl4lt9unC9Vb9INnY9Z3/ZA3+FhASLaw==}
 
-  dotenv@16.4.7:
-    resolution: {integrity: sha512-47qPchRCykZC03FhkYAhrvwU4xDBFIj1QPqaarj6mdM/hgUzfPHcpkHJOn3mJAufFeeAxAzeGsr5X0M4k6fLZQ==}
+  dotenv@16.5.0:
+    resolution: {integrity: sha512-m/C+AwOAr9/W1UOIZUo232ejMNnJAJtYQjUbHoNTBNTJSvqzzDh7vnrei3o3r3m9blf6ZoDkvcw0VmozNRFJxg==}
     engines: {node: '>=12'}
 
   drizzle-kit@0.31.0:
@@ -3316,6 +3330,14 @@ snapshots:
       preact: 10.24.3
       preact-render-to-string: 6.5.11(preact@10.24.3)
 
+  '@auth/core@0.39.1':
+    dependencies:
+      '@panva/hkdf': 1.2.1
+      jose: 6.0.10
+      oauth4webapi: 3.3.2
+      preact: 10.24.3
+      preact-render-to-string: 6.5.11(preact@10.24.3)
+
   '@auth/drizzle-adapter@1.8.0':
     dependencies:
       '@auth/core': 0.38.0
@@ -4220,10 +4242,11 @@ snapshots:
 
   '@radix-ui/rect@1.1.0': {}
 
-  '@rahulsaamanth/mhp-schema@1.2.4(@types/pg@8.11.6)(gel@2.0.1)(next@15.2.1(react-dom@19.0.0(react@19.0.0))(react@19.0.0))(react@19.0.0)':
+  '@rahulsaamanth/mhp-schema@1.2.5(@types/pg@8.11.6)(gel@2.0.1)(next@15.2.1(react-dom@19.0.0(react@19.0.0))(react@19.0.0))(react@19.0.0)':
     dependencies:
+      '@auth/core': 0.39.1
       '@neondatabase/serverless': 1.0.0
-      dotenv: 16.4.7
+      dotenv: 16.5.0
       drizzle-orm: 0.42.0(@neondatabase/serverless@1.0.0)(@types/pg@8.11.6)(gel@2.0.1)(postgres@3.4.5)
       next-auth: 5.0.0-beta.25(next@15.2.1(react-dom@19.0.0(react@19.0.0))(react@19.0.0))(react@19.0.0)
       postgres: 3.4.5
@@ -4763,7 +4786,7 @@ snapshots:
       domelementtype: 2.3.0
       domhandler: 5.0.3
 
-  dotenv@16.4.7: {}
+  dotenv@16.5.0: {}
 
   drizzle-kit@0.31.0:
     dependencies:

@@ -21,7 +21,7 @@ interface OrderDetails {
   customerEmail: string
   customerPhone: string
   paymentStatus: string
-  orderDate: Date
+  createdAt: Date
   subtotal: number
   shippingCost: number
   discount: number
@@ -138,7 +138,7 @@ export default async function OrderConfirmationPage({
                     <div>
                       <p className="text-gray-500">Order Date</p>
                       <p className="font-medium">
-                        {order.orderDate.toLocaleDateString()}
+                        {order.createdAt.toLocaleDateString()}
                       </p>
                     </div>
                   </div>
