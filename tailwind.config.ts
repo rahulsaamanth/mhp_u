@@ -20,6 +20,7 @@ const config = {
       },
       animation: {
         "fade-in": "fadeIn 0.8s ease-out forwards",
+        "spin-reverse": "spin 1.5s linear infinite reverse",
       },
       keyframes: {
         fadeIn: {
