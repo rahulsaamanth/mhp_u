@@ -72,7 +72,7 @@ export default function Hero() {
         setApi={setApi}
       >
         <CarouselContent>
-          <CarouselItem className="h-[60vh]">
+          <CarouselItem className="h-[50vh]">
             <section className="h-full relative min-w-full w-full overflow-hidden">
               <div className="absolute inset-0 z-0 lg:hidden">
                 <Image
@@ -168,7 +168,7 @@ export default function Hero() {
             </section>
           </CarouselItem>
 
-          <CarouselItem className="h-[60vh]">
+          <CarouselItem className="h-[50vh]">
             <section className="h-full relative min-w-full w-full overflow-hidden">
               <div className="absolute inset-0 z-0 lg:hidden">
                 <Image
@@ -237,7 +237,7 @@ export default function Hero() {
                     ].map((brand, index) => (
                       <div
                         key={index}
-                        className={`bg-white/90 backdrop-blur-sm rounded-lg p-2 shadow-lg h-14 sm:h-16 md:h-16 lg:h-16 w-full flex items-center justify-center transition-all duration-300 hover:scale-105 hover:bg-white hover:shadow-xl
+                        className={`bg-white/90 backdrop-blur-sm rounded-lg p-1.5 xs:p-2 shadow-lg h-9 xs:h-12 sm:h-16 md:h-16 lg:h-16 w-full flex items-center justify-center transition-all duration-300 hover:scale-105 hover:bg-white hover:shadow-xl
                              ${index >= 4 && index < 6 ? "hidden md:flex" : ""} 
                              ${index >= 6 && index < 8 ? "hidden xl:flex" : ""}
                              ${index >= 8 ? "hidden xl:flex" : ""}
@@ -248,7 +248,7 @@ export default function Hero() {
                           alt={`${brand.split(".")[0]} brand logo`}
                           width={100}
                           height={50}
-                          className="max-h-full w-auto object-contain"
+                          className="max-h-full w-auto object-contain max-w-[75%]"
                         />
                       </div>
                     ))}
@@ -257,7 +257,7 @@ export default function Hero() {
                   <div>
                     <Link
                       href="/brands"
-                      className="inline-flex items-center justify-center cursor-pointer px-4 py-3 bg-transparent text-white hover:text-stone-900 border-2 hover:bg-white hover:shadow-lg font-bold transition-all duration-300 tracking-wide focus:bg-white focus:text-stone-900"
+                      className="inline-flex items-center justify-center cursor-pointer px-4 py-2 bg-transparent text-white hover:text-stone-900 border-2 hover:bg-white hover:shadow-lg font-bold transition-all duration-300 tracking-wide focus:bg-white focus:text-stone-900"
                     >
                       Explore All Brands
                     </Link>

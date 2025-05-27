@@ -51,11 +51,33 @@ export default function LoginModal() {
 
         <p className="text-xs text-muted-foreground text-center mt-6">
           By logging in, you agree to our{" "}
-          <Link href="/terms" className="text-brand hover:underline">
+          <Link
+            href="/terms"
+            className="text-brand hover:underline"
+            onClick={(e) => {
+              e.preventDefault()
+              // First go back to close the modal, then navigate to terms
+              router.back()
+              setTimeout(() => {
+                router.push("/terms")
+              }, 100)
+            }}
+          >
             Terms & Conditions
           </Link>{" "}
           and{" "}
-          <Link href="/privacy" className="text-brand hover:underline">
+          <Link
+            href="/privacy"
+            className="text-brand hover:underline"
+            onClick={(e) => {
+              e.preventDefault()
+              // First go back to close the modal, then navigate to privacy
+              router.back()
+              setTimeout(() => {
+                router.push("/privacy")
+              }, 100)
+            }}
+          >
             Privacy Policy
           </Link>
         </p>

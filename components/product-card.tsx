@@ -148,7 +148,7 @@ export default function ProductCard({
                 <p
                   className={cn(
                     "text-2xl font-semibold space-x-3",
-                    featured && "text-5xl"
+                    featured && "lg:text-5xl"
                   )}
                 >
                   {discount > 0 && (
