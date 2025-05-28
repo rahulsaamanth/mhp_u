@@ -165,7 +165,7 @@ export default function Footer() {
               <ul className="space-y-2 text-sm">
                 <li>
                   <Link
-                    href="/faqs"
+                    href="/faq"
                     className="transition-all duration-200 active:scale-95 active:text-gray-400 relative after:content-[''] after:absolute after:bottom-0 after:left-0 after:h-[1px] after:bg-current after:w-0 hover:after:w-full after:transition-all after:duration-300"
                   >
                     FAQs
@@ -202,34 +202,10 @@ export default function Footer() {
               <ul className="space-y-2 text-sm">
                 <li>
                   <Link
-                    href="/about-homeopathy"
+                    href="/contact-us"
                     className="transition-all duration-200 active:scale-95 active:text-gray-400 relative after:content-[''] after:absolute after:bottom-0 after:left-0 after:h-[1px] after:bg-current after:w-0 hover:after:w-full after:transition-all after:duration-300"
                   >
-                    About Us
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    href="/team"
-                    className="transition-all duration-200 active:scale-95 active:text-gray-400 relative after:content-[''] after:absolute after:bottom-0 after:left-0 after:h-[1px] after:bg-current after:w-0 hover:after:w-full after:transition-all after:duration-300"
-                  >
-                    Our Team
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    href="/careers"
-                    className="transition-all duration-200 active:scale-95 active:text-gray-400 relative after:content-[''] after:absolute after:bottom-0 after:left-0 after:h-[1px] after:bg-current after:w-0 hover:after:w-full after:transition-all after:duration-300"
-                  >
-                    Careers
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    href="/contact"
-                    className="transition-all duration-200 active:scale-95 active:text-gray-400 relative after:content-[''] after:absolute after:bottom-0 after:left-0 after:h-[1px] after:bg-current after:w-0 hover:after:w-full after:transition-all after:duration-300"
-                  >
-                    Contact
+                    Contact us
                   </Link>
                 </li>
               </ul>
