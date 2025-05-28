@@ -11,8 +11,14 @@ async function getFeaturedProductsByCategory(
       SELECT 
         pv."productId",
         jsonb_agg(DISTINCT pv."potency") FILTER (WHERE pv."potency" != 'NONE') AS potencies,
-        jsonb_agg(DISTINCT pv."packSize") AS packsizes,
-        MIN(pv."id") AS first_variant_id
+        jsonb_agg(DISTINCT pv."packSize" ORDER BY pv."packSize") AS packsizes,
+        (
+          SELECT pv2.id 
+          FROM "ProductVariant" pv2 
+          WHERE pv2."productId" = pv."productId" 
+          ORDER BY pv2."packSize" ASC 
+          LIMIT 1
+        ) AS first_variant_id
       FROM "ProductVariant" pv
       GROUP BY pv."productId"
     ),
@@ -22,8 +28,8 @@ async function getFeaturedProductsByCategory(
         pv."productId",
         pv."variantImage" AS image,
         pv."mrp",
-        pv."sellingPrice" AS sellingprice,
-        pv."discountType" AS discounttype,
+        pv."sellingPrice" AS "sellingPrice",
+        pv."discountType" AS "discountType",
         pv."discount"
       FROM "ProductVariant" pv
       JOIN ProductVariants pvs ON pv."id" = pvs.first_variant_id
@@ -37,8 +43,8 @@ async function getFeaturedProductsByCategory(
       fv.variantid AS "variantId",
       fv.image,
       fv.mrp,
-      fv.sellingprice AS "sellingPrice",
-      fv.discounttype AS "discountType",
+      fv."sellingPrice",
+      fv."discountType",
       fv.discount,
       CASE 
         WHEN pvs.potencies = '[null]' OR pvs.potencies IS NULL THEN NULL
@@ -66,6 +72,8 @@ export default async function FeaturedProducts() {
   const nutritionSupplements = await getFeaturedProductsByCategory(
     "nutrition-supplements"
   )
+
+  console.log(biocombinations)
 
   return (
     <section className="py-10">

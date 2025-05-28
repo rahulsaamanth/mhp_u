@@ -181,10 +181,10 @@ export default function Footer() {
                 </li>
                 <li>
                   <Link
-                    href="/return-policy"
+                    href="/refund-policy"
                     className="transition-all duration-200 active:scale-95 active:text-gray-400 relative after:content-[''] after:absolute after:bottom-0 after:left-0 after:h-[1px] after:bg-current after:w-0 hover:after:w-full after:transition-all after:duration-300"
                   >
-                    Return Policy
+                    Refund Policy
                   </Link>
                 </li>
                 <li>
