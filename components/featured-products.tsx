@@ -73,7 +73,7 @@ export default async function FeaturedProducts() {
     "nutrition-supplements"
   )
 
-  console.log(biocombinations)
+  // console.log(biocombinations)
 
   return (
     <section className="py-10">
