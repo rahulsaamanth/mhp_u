@@ -1,6 +1,7 @@
 "use client"
 
 import { Button } from "@/components/ui/button"
+import { useMagicLinkState } from "@/hooks/use-magic-link-state"
 import { LoginSchema } from "@/schemas"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { signIn } from "next-auth/react"
@@ -20,6 +21,7 @@ interface LoginFormProps {
 export function LoginForm({ callbackUrl }: LoginFormProps) {
   const [_error, setError] = React.useState<string | undefined>("")
   const [_success, setSuccess] = React.useState<string | undefined>("")
+  const { startMagicLinkFlow } = useMagicLinkState()
 
   const [isPending, startTransition] = React.useTransition()
 
@@ -34,6 +36,9 @@ export function LoginForm({ callbackUrl }: LoginFormProps) {
   const onSubmit = (values: z.infer<typeof LoginSchema>) => {
     startTransition(async () => {
       try {
+        // Store the email and timestamp for the magic link flow
+        startMagicLinkFlow(values.email)
+
         await signIn("resend", {
           email: values.email,
           redirectTo: callbackUrl,

@@ -1,5 +1,6 @@
 import { auth as Auth } from "@/auth"
 import Advert from "@/components/advert"
+import { AuthListener } from "@/components/auth/auth-listener"
 import { CartMergeHandler } from "@/components/cart-merge-handler"
 import Footer from "@/components/footer"
 import Header from "@/components/header"
@@ -36,6 +37,7 @@ export default async function RootLayout({
             <Providers>
               <CartProvider>
                 <CartMergeHandler />
+                <AuthListener />
                 <Advert />
                 <Header />
                 {children}

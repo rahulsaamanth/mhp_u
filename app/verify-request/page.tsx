@@ -4,27 +4,84 @@ import Link from "next/link"
 import { ArrowLeft, Mail, Clock, AlertCircle } from "lucide-react"
 import { motion } from "framer-motion"
 import { useEffect, useState } from "react"
+import { useRouter } from "next/navigation"
+import { useSession } from "next-auth/react"
 
 export default function VerifyRequest() {
+  const router = useRouter()
+  const { data: session, status } = useSession()
   const [minutes, setMinutes] = useState(10)
   const [seconds, setSeconds] = useState(0)
 
+  // 1. Store verification timestamp in localStorage when component mounts
   useEffect(() => {
+    if (!localStorage.getItem("magic_link_requested")) {
+      localStorage.setItem("magic_link_requested", Date.now().toString())
+    }
+  }, [])
+
+  // 2. Use the stored timestamp for accurate timer display
+  useEffect(() => {
+    const requestTime = parseInt(
+      localStorage.getItem("magic_link_requested") || Date.now().toString()
+    )
+    const expiryTime = requestTime + 10 * 60 * 1000 // 10 minutes in milliseconds
+
     const timer = setInterval(() => {
-      if (seconds > 0) {
-        setSeconds(seconds - 1)
-      }
-      if (seconds === 0) {
-        if (minutes === 0) {
-          clearInterval(timer)
-        } else {
-          setMinutes(minutes - 1)
-          setSeconds(59)
-        }
+      const now = Date.now()
+      const remaining = Math.max(0, expiryTime - now)
+
+      if (remaining <= 0) {
+        setMinutes(0)
+        setSeconds(0)
+        clearInterval(timer)
+      } else {
+        setMinutes(Math.floor(remaining / (60 * 1000)))
+        setSeconds(Math.floor((remaining % (60 * 1000)) / 1000))
       }
     }, 1000)
     return () => clearInterval(timer)
-  }, [minutes, seconds])
+  }, [])
+
+  // 3. Poll for session status and redirect when authenticated
+  useEffect(() => {
+    if (status === "authenticated" && session) {
+      localStorage.removeItem("magic_link_requested")
+      router.push("/") // Redirect to home or dashboard
+    }
+
+    // Check every 2 seconds for auth changes
+    const interval = setInterval(() => {
+      // Force session refresh
+      const event = new Event("visibilitychange")
+      document.dispatchEvent(event)
+    }, 2000)
+
+    // Listen for auth events from other tabs
+    const handleStorageChange = (e: StorageEvent) => {
+      if (e.key === "auth_completed") {
+        router.push("/")
+      }
+    }
+
+    window.addEventListener("storage", handleStorageChange)
+
+    return () => {
+      clearInterval(interval)
+      window.removeEventListener("storage", handleStorageChange)
+    }
+  }, [status, session, router])
+
+  // Get email from localStorage
+  const [userEmail, setUserEmail] = useState<string>("")
+
+  useEffect(() => {
+    // Get the email address from localStorage
+    const email = localStorage.getItem("magic_link_email")
+    if (email) {
+      setUserEmail(email)
+    }
+  }, [])
 
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col items-center justify-center p-4">
@@ -50,7 +107,8 @@ export default function VerifyRequest() {
           </motion.div>
           <h1 className="text-2xl font-bold">Check Your Email</h1>
           <p className="mt-2 text-white/80">
-            We&apos;ve sent a magic link to your email address
+            We&apos;ve sent a magic link to{" "}
+            {userEmail ? <strong>{userEmail}</strong> : "your email address"}
           </p>
         </div>
 

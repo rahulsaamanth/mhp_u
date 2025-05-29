@@ -39,13 +39,13 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           body: JSON.stringify({
             from: from,
             to,
-            subject: `Sign in to ${host} your App`,
+            subject: `Sign in to Homeo South`,
             html: html({
               url,
               host,
               theme: {
-                brandColor: "green",
-                buttonText: "black",
+                brandColor: "#139A43", // Homeo South brand color
+                buttonText: "white",
               },
             }),
             text: text({ url, host }),
