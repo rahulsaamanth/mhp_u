@@ -3,8 +3,8 @@
 import { AddToCartButton } from "@/components/add-cart"
 import { Button } from "@/components/ui/button"
 import { QuantitySelector } from "@/components/ui/quantity-selector"
-import Image from "next/image"
 import { useEffect, useState, useMemo } from "react"
+import FallbackImage from "@/components/ui/fallback-image"
 
 import {
   Carousel,
@@ -142,13 +142,15 @@ export default function ProductVariantSelector({
                 {selectedVariant.variantImage.map((img, idx) => (
                   <CarouselItem key={idx}>
                     <div className="aspect-square relative border rounded-lg overflow-hidden bg-white flex items-center justify-center p-4">
-                      <Image
-                        src={"/placeholder.png"}
+                      <FallbackImage
+                        src={img}
+                        fallbackSrc="/placeholder.png"
                         alt={`${productName} - view ${idx + 1}`}
                         width={320}
                         height={320}
                         className="object-contain max-h-full max-w-full"
                         priority={idx === 0}
+                        unoptimized={true}
                       />
                     </div>
                   </CarouselItem>
@@ -160,13 +162,15 @@ export default function ProductVariantSelector({
           </div>
         ) : (
           <div className="aspect-square relative border rounded-lg overflow-hidden bg-white max-w-md mx-auto">
-            <Image
+            <FallbackImage
               src="/assets/hero1.webp"
+              fallbackSrc="/placeholder.png"
               alt={productName}
               width={320}
               height={320}
               className="object-contain p-4 size-full"
               priority
+              unoptimized={true}
             />
           </div>
         )}

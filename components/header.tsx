@@ -269,7 +269,7 @@ export default function Header() {
           >
             <Input
               className="rounded-none focus-visible:ring-offset-0 focus-visible:ring-0 border-r-0"
-              placeholder="Search products by ailment, brand, category, potency..."
+              placeholder="Search products by name, brand, category, potency..."
               value={searchQuery}
               onChange={handleInputChange}
               onFocus={() => {

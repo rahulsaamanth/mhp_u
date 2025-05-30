@@ -2,8 +2,8 @@ import { discountType } from "@rahulsaamanth/mhp-schema"
 import { cn } from "@/lib/utils"
 import { Card, CardContent } from "./ui/card"
 import { Button } from "./ui/button"
-import Image from "next/image"
 import Link from "next/link"
+import FallbackImage from "./ui/fallback-image"
 
 export interface ProductCardProps {
   id: string
@@ -66,15 +66,14 @@ export default function ProductCard({
                 featured ? "h-[240px] md:h-[360px] 2xl:h-[540px]" : "h-48"
               )}
             >
-              <Image
-                src={
-                  // image[0] ||
-                  "/placeholder.png"
-                }
+              <FallbackImage
+                src={image && image.length > 0 ? image[0] : "/placeholder.png"}
+                fallbackSrc="/placeholder.png"
                 alt={name}
                 width={500}
                 height={500}
                 className="w-full h-full object-contain rounded-lg p-4 my-2 group-hover:scale-105 transition-all duration-400 ease-out"
+                unoptimized={true}
               />
             </div>
             <div className="flex flex-col p-4 flex-grow">
