@@ -63,7 +63,7 @@ export async function getUserCart() {
           productId: item.productId,
           variantId: item.variantId,
           name: productData?.name || "Unknown Product",
-          image: variantData?.variantImage?.[0] || "",
+          image: variantData?.variantImage || "",
           price: variantData?.sellingPrice || 0,
           quantity: item.quantity,
           potency: item.potency || undefined,

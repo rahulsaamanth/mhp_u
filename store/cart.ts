@@ -7,7 +7,7 @@ export interface CartItem {
   productId: string
   variantId: string
   name: string // Changed from productName for compatibility
-  image: string // Changed from image array to single string
+  image: string | string[] // Support both single string and array of strings
   price: number
   quantity: number
   potency?: string // Made optional
@@ -157,7 +157,7 @@ export const useCartStore = create<CartState>()(
 
           // If there are no items in local cart, no need to call the API
           if (localCart.length === 0) {
-            console.log('No local cart items to merge')
+            console.log("No local cart items to merge")
             return {
               success: true,
               message: "No items to merge",
@@ -192,14 +192,17 @@ export const useCartStore = create<CartState>()(
             console.log("Cart merge successful, clearing local cart")
             // Clear local cart after successful merge
             set({ items: [] })
-            
+
             // Force localStorage update
             try {
-              if (typeof window !== 'undefined') {
-                localStorage.setItem('cart-storage', JSON.stringify({ state: { items: [] }, version: 0 }))
+              if (typeof window !== "undefined") {
+                localStorage.setItem(
+                  "cart-storage",
+                  JSON.stringify({ state: { items: [] }, version: 0 })
+                )
               }
             } catch (e) {
-              console.error('Failed to clear localStorage cart after merge:', e)
+              console.error("Failed to clear localStorage cart after merge:", e)
             }
           }
 
@@ -215,16 +218,19 @@ export const useCartStore = create<CartState>()(
 
       // Function to clear cart when user logs out
       clearCartOnLogout: () => {
-        console.log('Clearing local cart on logout')
+        console.log("Clearing local cart on logout")
         // Clear cart items and ensure it's persisted
         set({ items: [] })
         // Force localStorage update
         try {
-          if (typeof window !== 'undefined') {
-            localStorage.setItem('cart-storage', JSON.stringify({ state: { items: [] }, version: 0 }))
+          if (typeof window !== "undefined") {
+            localStorage.setItem(
+              "cart-storage",
+              JSON.stringify({ state: { items: [] }, version: 0 })
+            )
           }
         } catch (e) {
-          console.error('Failed to clear localStorage cart:', e)
+          console.error("Failed to clear localStorage cart:", e)
         }
       },
     }),

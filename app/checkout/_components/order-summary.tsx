@@ -92,8 +92,13 @@ export default function OrderSummary({
             <div className="w-16 h-16 relative flex-shrink-0 border rounded-md overflow-hidden">
               <Image
                 src={
-                  // item.image ||
-                  "/placeholder.png"
+                  Array.isArray(item.image) && item.image.length > 0
+                    ? item.image[0]
+                    : typeof item.image === "string" &&
+                      item.image &&
+                      item.image !== "null"
+                    ? item.image
+                    : "/placeholder.png"
                 }
                 alt={item.name}
                 fill

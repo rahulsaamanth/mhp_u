@@ -49,7 +49,15 @@ const CartItemComponent = memo(
       <div className="flex border-b py-4">
         <div className="w-24 h-24 relative flex-shrink-0">
           <Image
-            src={"/placeholder.png"}
+            src={
+              Array.isArray(item.image) && item.image.length > 0
+                ? item.image[0]
+                : typeof item.image === "string" &&
+                  item.image &&
+                  item.image !== "null"
+                ? item.image
+                : "/placeholder.png"
+            }
             alt={item.name}
             fill
             className="object-contain"
