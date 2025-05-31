@@ -13,6 +13,33 @@ export default async function PopularProducts() {
       GROUP BY p."id"
       ORDER BY "sales" DESC
       LIMIT 5
+    ),
+    ProductVariants AS (
+      SELECT 
+        pv."productId",
+        jsonb_agg(DISTINCT pv."potency") FILTER (WHERE pv."potency" != 'NONE') AS potencies,
+        jsonb_agg(DISTINCT pv."packSize" ORDER BY pv."packSize") AS packsizes,
+        (
+          SELECT pv2.id 
+          FROM "ProductVariant" pv2 
+          WHERE pv2."productId" = pv."productId" 
+          ORDER BY pv2."packSize" ASC 
+          LIMIT 1
+        ) AS first_variant_id
+      FROM "ProductVariant" pv
+      GROUP BY pv."productId"
+    ),
+    FirstVariant AS (
+      SELECT 
+        pv."id" AS variantid,
+        pv."productId",
+        pv."variantImage" AS image,
+        pv."mrp",
+        pv."sellingPrice" AS "sellingPrice",
+        pv."discountType" AS "discountType",
+        pv."discount"
+      FROM "ProductVariant" pv
+      JOIN ProductVariants pvs ON pv."id" = pvs.first_variant_id
     )
     SELECT 
       p."id",
@@ -21,30 +48,22 @@ export default async function PopularProducts() {
       p."unit",
       sr."sales",
       m."name" as "manufacturer",
-      (SELECT pv."id" FROM "ProductVariant" pv WHERE pv."productId" = p."id" LIMIT 1) as "variantId",
-      (SELECT pv."variantImage" FROM "ProductVariant" pv WHERE pv."productId" = p."id" LIMIT 1) as "image",
-      (SELECT pv."mrp" FROM "ProductVariant" pv WHERE pv."productId" = p."id" LIMIT 1) as "mrp",
-      (SELECT pv."sellingPrice" FROM "ProductVariant" pv WHERE pv."productId" = p."id" LIMIT 1) as "sellingPrice",
-      (SELECT pv."discountType" FROM "ProductVariant" pv WHERE pv."productId" = p."id" LIMIT 1) as "discountType",
-      (SELECT pv."discount" FROM "ProductVariant" pv WHERE pv."productId" = p."id" LIMIT 1) as "discount",
-      (SELECT jsonb_agg(DISTINCT pv."packSize") FROM "ProductVariant" pv WHERE pv."productId" = p."id") as "packSizes",
-      (
-        CASE 
-          WHEN (
-            SELECT COUNT(DISTINCT pv."potency") = 1 AND MAX(pv."potency") = 'NONE'  
-            FROM "ProductVariant" pv
-            WHERE pv."productId" = p."id"
-          ) THEN NULL
-          ELSE (
-            SELECT jsonb_agg(DISTINCT pv."potency")
-            FROM "ProductVariant" pv
-            WHERE pv."productId" = p."id"
-          )
-        END
-      ) as "potencies"
+      fv.variantid AS "variantId",
+      fv.image,
+      fv.mrp,
+      fv."sellingPrice",
+      fv."discountType",
+      fv.discount,
+      CASE 
+        WHEN pvs.potencies = '[null]' OR pvs.potencies IS NULL THEN NULL
+        ELSE pvs.potencies
+      END AS potencies,
+      pvs.packsizes AS "packSizes"
     FROM "Product" p
     JOIN SalesRanking sr ON p."id" = sr."id"
     LEFT JOIN "Manufacturer" m ON p."manufacturerId" = m."id"
+    JOIN ProductVariants pvs ON pvs."productId" = p."id"
+    JOIN FirstVariant fv ON fv."productId" = p."id"
     ORDER BY sr."sales" DESC
   `)
 
