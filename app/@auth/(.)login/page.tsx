@@ -59,7 +59,7 @@ export default function LoginModal() {
               // First go back to close the modal, then navigate to terms
               router.back()
               setTimeout(() => {
-                router.push("/terms")
+                router.push("/terms-conditions")
               }, 100)
             }}
           >

@@ -45,7 +45,7 @@ export default function LoginPage() {
 
       <p className="text-xs text-muted-foreground text-center mt-8">
         By logging in, you agree to our{" "}
-        <Link href="/terms" className="text-brand hover:underline">
+        <Link href="/terms-conditions" className="text-brand hover:underline">
           Terms & Conditions
         </Link>{" "}
         and{" "}
