@@ -65,6 +65,21 @@ export default function ProductVariantSelector({
   const [selectedVariant, setSelectedVariant] = useState<Variant | null>(
     firstVariant
   )
+
+  // Find any valid images across all variants for fallback
+  const allVariantImages = useMemo(() => {
+    const allImages: string[] = []
+    safeVariants.forEach((variant) => {
+      if (variant.variantImage && Array.isArray(variant.variantImage)) {
+        variant.variantImage.forEach((img) => {
+          if (img && typeof img === "string" && img !== "null") {
+            allImages.push(img)
+          }
+        })
+      }
+    })
+    return allImages
+  }, [safeVariants])
   const [quantity, setQuantity] = useState<number>(1)
 
   const allUniquePotencies = Array.from(
@@ -134,27 +149,53 @@ export default function ProductVariantSelector({
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
       <div className="flex flex-col">
-        {selectedVariant?.variantImage &&
-        selectedVariant.variantImage.length > 0 ? (
+        {/* Use selected variant images, or fallback to any valid images from other variants */}
+        {selectedVariant?.variantImage?.some((img) => img && img !== "null") ||
+        allVariantImages.length > 0 ? (
           <div className="w-full max-w-md mx-auto">
             <Carousel className="w-full">
               <CarouselContent>
-                {selectedVariant.variantImage.map((img, idx) => (
-                  <CarouselItem key={idx}>
-                    <div className="aspect-square relative border rounded-lg overflow-hidden bg-white flex items-center justify-center p-4">
-                      <FallbackImage
-                        src={img}
-                        fallbackSrc="/placeholder.png"
-                        alt={`${productName} - view ${idx + 1}`}
-                        width={320}
-                        height={320}
-                        className="object-contain max-h-full max-w-full"
-                        priority={idx === 0}
-                        unoptimized={true}
-                      />
-                    </div>
-                  </CarouselItem>
-                ))}
+                {/* If current variant has valid images, use them */}
+                {selectedVariant?.variantImage &&
+                Array.isArray(selectedVariant.variantImage) &&
+                selectedVariant.variantImage.filter(
+                  (img) => img && img !== "null"
+                ).length > 0
+                  ? selectedVariant.variantImage
+                      .filter((img) => img && img !== "null")
+                      .map((img, idx) => (
+                        <CarouselItem key={idx}>
+                          <div className="aspect-square relative border rounded-lg overflow-hidden bg-white flex items-center justify-center p-4">
+                            <FallbackImage
+                              src={img}
+                              fallbackSrc="/placeholder.png"
+                              alt={`${productName} - view ${idx + 1}`}
+                              width={320}
+                              height={320}
+                              className="object-contain max-h-full max-w-full"
+                              priority={idx === 0}
+                              unoptimized={true}
+                            />
+                          </div>
+                        </CarouselItem>
+                      ))
+                  : /* Otherwise use images collected from other variants */
+                    allVariantImages.map((img, idx) => (
+                      <CarouselItem key={idx}>
+                        <div className="aspect-square relative border rounded-lg overflow-hidden bg-white flex items-center justify-center p-4">
+                          <FallbackImage
+                            src={img}
+                            fallbackSrc="/placeholder.png"
+                            alt={`${productName} - view ${idx + 1}`}
+                            width={320}
+                            height={320}
+                            className="object-contain max-h-full max-w-full"
+                            priority={idx === 0}
+                            unoptimized={true}
+                          />
+                        </div>
+                      </CarouselItem>
+                    ))}
               </CarouselContent>
               <CarouselPrevious className="left-2" />
               <CarouselNext className="right-2" />
@@ -163,7 +204,7 @@ export default function ProductVariantSelector({
         ) : (
           <div className="aspect-square relative border rounded-lg overflow-hidden bg-white max-w-md mx-auto">
             <FallbackImage
-              src="/assets/hero1.webp"
+              src="/placeholder.png"
               fallbackSrc="/placeholder.png"
               alt={productName}
               width={320}
@@ -334,7 +375,14 @@ export default function ProductVariantSelector({
                 productId={productId}
                 variantId={selectedVariant.id}
                 name={productName}
-                image={selectedVariant.variantImage[0]}
+                image={
+                  // Try to find a valid image from the selected variant
+                  selectedVariant.variantImage?.find(
+                    (img) => img && img !== "null"
+                  ) ||
+                  // Otherwise use any valid image from other variants
+                  (allVariantImages.length > 0 ? allVariantImages[0] : "")
+                }
                 price={selectedVariant.sellingPrice}
                 potency={
                   selectedVariant.potency !== "NONE"
@@ -350,7 +398,14 @@ export default function ProductVariantSelector({
                 productId={productId}
                 variantId={selectedVariant.id}
                 name={productName}
-                image={selectedVariant.variantImage[0]}
+                image={
+                  // Try to find a valid image from the selected variant
+                  selectedVariant.variantImage?.find(
+                    (img) => img && img !== "null"
+                  ) ||
+                  // Otherwise use any valid image from other variants
+                  (allVariantImages.length > 0 ? allVariantImages[0] : "")
+                }
                 price={selectedVariant.sellingPrice}
                 potency={
                   selectedVariant.potency !== "NONE"

@@ -3,18 +3,24 @@ import React from "react"
 const TermsAndConditionsPage = () => {
   return (
     <div className="container mx-auto px-4 py-8">
-      <h1 className="text-3xl font-bold mb-6">
-        HOMEOSOUTH - Terms and Conditions
-      </h1>
+      <h1 className="text-3xl font-bold mb-6">Terms and Conditions</h1>
+
+      <div className="bg-green-50 border-l-4 border-brand p-4 mb-6">
+        <p className="text-sm">
+          <span className="font-semibold">Important:</span> "Mangalore
+          Homeopathic Pharmacy" is our registered business name. "HomeoSouth" is
+          the digital brand representing our online presence at homeosouth.com.
+        </p>
+      </div>
 
       <div className="space-y-6">
         <h2 className="text-2xl font-bold">General Agreement</h2>
         <p>
-          These Terms and Conditions govern the use of HOMEOSOUTH's website and
-          the purchase of homeopathic products offered by HOMEOSOUTH, a business
-          operating under{" "}
-          <span className="uppercase bg-brand/10 p-1">HOMEOSOUTH.COM</span>{" "}
-          (hereinafter referred to as "HOMEOSOUTH", "we", "us", or "our").
+          These Terms and Conditions govern the use of our website and the
+          purchase of homeopathic products offered by Mangalore Homeopathic
+          Pharmacy, a business operating under the brand name{" "}
+          <span className="uppercase bg-brand/10 p-1">HOMEOSOUTH</span> at
+          homeosouth.com (hereinafter referred to as "we", "us", or "our").
         </p>
 
         <p>

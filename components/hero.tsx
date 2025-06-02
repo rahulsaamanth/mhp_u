@@ -76,6 +76,105 @@ export default function Hero() {
             <section className="h-full relative min-w-full w-full overflow-hidden">
               <div className="absolute inset-0 z-0 lg:hidden">
                 <Image
+                  src="/assets/hero2.jpg"
+                  alt="Background image"
+                  fill
+                  className="object-cover object-center"
+                  priority
+                />
+                <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/60 to-black/40 z-10" />
+              </div>
+
+              <div className="hidden lg:block absolute inset-0 z-0">
+                <div className="absolute top-0 left-0 bottom-0 w-1/2 bg-brand-foreground">
+                  <div className="absolute inset-0 bg-pattern opacity-10"></div>
+                </div>
+                <div className="absolute top-0 right-0 bottom-0 w-1/2">
+                  <Image
+                    src="/assets/hero2.jpg"
+                    alt="Background image"
+                    fill
+                    className="object-cover object-center"
+                    priority
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-l from-transparent via-transparent to-stone-900 opacity-100" />
+                </div>
+              </div>
+
+              <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-20 h-full">
+                <div className="max-w-xl @max-xs:space-y-4 space-y-6 sm:space-y-8 xl:space-y-10 z-10 h-full grid place-content-center">
+                  <div className="space-y-3">
+                    <h2
+                      className="text-3xl sm:text-4xl lg:text-5xl font-bold leading-tight tracking-tight text-white"
+                      style={{
+                        textShadow: "0 2px 4px rgba(0, 0, 0, 0.3)",
+                      }}
+                    >
+                      Trusted Brands, One Destination
+                    </h2>
+
+                    <span
+                      className="text-base sm:text-xl text-gray-200 max-w-lg hidden xl:inline-block italic"
+                      style={{
+                        textShadow: "0 1px 2px rgba(0, 0, 0, 0.5)",
+                      }}
+                    >
+                      Discover premium homeopathic products from leading
+                      manufacturers all in one place
+                    </span>
+                  </div>
+
+                  <div className="grid grid-cols-2 xs:grid-cols-3 sm:grid-cols-3 lg:grid-cols-6 gap-2 sm:gap-3">
+                    {[
+                      "sbl.png",
+                      "Reckeweg.png",
+                      "adel.png",
+                      "bakson.png",
+                      "allen.png",
+                      "schwabe.png",
+                      "medisynth.png",
+                      "st-georges.png",
+                      "fathermuller-logo.png",
+                      "wheezal.png",
+                      "bahola.webp",
+                      "allenlab.png",
+                    ].map((brand, index) => (
+                      <div
+                        key={index}
+                        className={`bg-white/90 backdrop-blur-sm rounded-lg p-1.5 xs:p-2 shadow-lg h-9 xs:h-12 sm:h-16 md:h-16 lg:h-16 w-full flex items-center justify-center transition-all duration-300 hover:scale-105 hover:bg-white hover:shadow-xl
+                 ${index >= 4 && index < 6 ? "hidden md:flex" : ""} 
+                 ${index >= 6 && index < 8 ? "hidden xl:flex" : ""}
+                 ${index >= 8 ? "hidden xl:flex" : ""}
+              `}
+                      >
+                        <Image
+                          src={`/assets/brands/${brand}`}
+                          alt={`${brand.split(".")[0]} brand logo`}
+                          width={100}
+                          height={50}
+                          className="max-h-full w-auto object-contain max-w-[75%]"
+                        />
+                      </div>
+                    ))}
+                  </div>
+
+                  <div>
+                    <Link
+                      href="/brands"
+                      className="inline-flex items-center justify-center cursor-pointer px-4 py-2 bg-transparent text-white hover:text-stone-900 border-2 hover:bg-white hover:shadow-lg font-bold transition-all duration-300 tracking-wide focus:bg-white focus:text-stone-900"
+                    >
+                      Explore All Brands
+                    </Link>
+                  </div>
+                </div>
+              </div>
+            </section>
+          </CarouselItem>
+
+          <CarouselItem className="h-[60vh]">
+            <section className="h-full relative min-w-full w-full overflow-hidden">
+              <div className="absolute inset-0 z-0 lg:hidden">
+                <Image
                   src="/assets/hero.jpg"
                   alt="Background image"
                   fill
@@ -161,105 +260,6 @@ export default function Hero() {
                       className="inline-flex items-center justify-center cursor-pointer px-4 py-3 bg-transparent text-white hover:text-brand border-2 hover:bg-white hover:shadow-lg font-bold transition-all duration-300 tracking-wide focus:bg-white focus:text-brand"
                     >
                       Shop & Save Now
-                    </Link>
-                  </div>
-                </div>
-              </div>
-            </section>
-          </CarouselItem>
-
-          <CarouselItem className="h-[60vh]">
-            <section className="h-full relative min-w-full w-full overflow-hidden">
-              <div className="absolute inset-0 z-0 lg:hidden">
-                <Image
-                  src="/assets/hero2.jpg"
-                  alt="Background image"
-                  fill
-                  className="object-cover object-center"
-                  priority
-                />
-                <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/60 to-black/40 z-10" />
-              </div>
-
-              <div className="hidden lg:block absolute inset-0 z-0">
-                <div className="absolute top-0 left-0 bottom-0 w-1/2 bg-brand-foreground">
-                  <div className="absolute inset-0 bg-pattern opacity-10"></div>
-                </div>
-                <div className="absolute top-0 right-0 bottom-0 w-1/2">
-                  <Image
-                    src="/assets/hero2.jpg"
-                    alt="Background image"
-                    fill
-                    className="object-cover object-center"
-                    priority
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-l from-transparent via-transparent to-stone-900 opacity-100" />
-                </div>
-              </div>
-
-              <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-20 h-full">
-                <div className="max-w-xl @max-xs:space-y-4 space-y-6 sm:space-y-8 xl:space-y-10 z-10 h-full grid place-content-center">
-                  <div className="space-y-3">
-                    <h2
-                      className="text-3xl sm:text-4xl lg:text-5xl font-bold leading-tight tracking-tight text-white"
-                      style={{
-                        textShadow: "0 2px 4px rgba(0, 0, 0, 0.3)",
-                      }}
-                    >
-                      Trusted Brands, One Destination
-                    </h2>
-
-                    <span
-                      className="text-base sm:text-xl text-gray-200 max-w-lg hidden xl:inline-block italic"
-                      style={{
-                        textShadow: "0 1px 2px rgba(0, 0, 0, 0.5)",
-                      }}
-                    >
-                      Discover premium homeopathic products from leading
-                      manufacturers all in one place
-                    </span>
-                  </div>
-
-                  <div className="grid grid-cols-2 xs:grid-cols-3 sm:grid-cols-3 lg:grid-cols-6 gap-2 sm:gap-3">
-                    {[
-                      "sbl.png",
-                      "Reckeweg.png",
-                      "adel.png",
-                      "bakson.png",
-                      "allen.png",
-                      "schwabe.png",
-                      "medisynth.png",
-                      "st-georges.png",
-                      "fathermuller-logo.png",
-                      "wheezal.png",
-                      "bahola.webp",
-                      "allenlab.png",
-                    ].map((brand, index) => (
-                      <div
-                        key={index}
-                        className={`bg-white/90 backdrop-blur-sm rounded-lg p-1.5 xs:p-2 shadow-lg h-9 xs:h-12 sm:h-16 md:h-16 lg:h-16 w-full flex items-center justify-center transition-all duration-300 hover:scale-105 hover:bg-white hover:shadow-xl
-                             ${index >= 4 && index < 6 ? "hidden md:flex" : ""} 
-                             ${index >= 6 && index < 8 ? "hidden xl:flex" : ""}
-                             ${index >= 8 ? "hidden xl:flex" : ""}
-                          `}
-                      >
-                        <Image
-                          src={`/assets/brands/${brand}`}
-                          alt={`${brand.split(".")[0]} brand logo`}
-                          width={100}
-                          height={50}
-                          className="max-h-full w-auto object-contain max-w-[75%]"
-                        />
-                      </div>
-                    ))}
-                  </div>
-
-                  <div>
-                    <Link
-                      href="/brands"
-                      className="inline-flex items-center justify-center cursor-pointer px-4 py-2 bg-transparent text-white hover:text-stone-900 border-2 hover:bg-white hover:shadow-lg font-bold transition-all duration-300 tracking-wide focus:bg-white focus:text-stone-900"
-                    >
-                      Explore All Brands
                     </Link>
                   </div>
                 </div>

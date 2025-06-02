@@ -14,6 +14,15 @@ const FAQPage = () => {
       <h1 className="text-3xl font-bold mb-6">Frequently Asked Questions</h1>
 
       <div className="space-y-8 mb-8">
+        <div className="bg-green-50 border-l-4 border-brand p-4 mb-6">
+          <p className="text-sm">
+            <span className="font-semibold">Important Note:</span> Mangalore
+            Homeopathic Pharmacy is our registered business name and physical
+            store. HomeoSouth is the digital brand representing our online
+            presence.
+          </p>
+        </div>
+
         <p className="mb-4">
           Welcome to our FAQ section. Here you'll find answers to the most
           common questions about our products, services, ordering process, and
@@ -26,6 +35,23 @@ const FAQPage = () => {
       <div className="mb-10">
         <h2 className="text-2xl font-bold mb-4">General Questions</h2>
         <Accordion type="single" collapsible className="w-full">
+          <AccordionItem value="about-our-business">
+            <AccordionTrigger className="text-lg">
+              What is the relationship between Mangalore Homeopathic Pharmacy
+              and HomeoSouth?
+            </AccordionTrigger>
+            <AccordionContent>
+              <p>
+                Mangalore Homeopathic Pharmacy is our registered business name
+                and physical store located in Mangalore. HomeoSouth is the
+                digital brand name representing our online presence at
+                homeosouth.com. Both entities are the same business, with
+                HomeoSouth being the consumer-facing digital brand of our
+                established Mangalore Homeopathic Pharmacy business.
+              </p>
+            </AccordionContent>
+          </AccordionItem>
+
           <AccordionItem value="what-is-homeopathy">
             <AccordionTrigger className="text-lg">
               What is Homeopathy?

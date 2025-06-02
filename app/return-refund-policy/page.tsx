@@ -4,8 +4,16 @@ const RefundPolicyPage = () => {
   return (
     <div className="container mx-auto px-4 py-8">
       <h1 className="text-3xl font-bold mb-6">
-        HOMEOSOUTH - Cancellation and Refund Policy
+        Cancellation and Refund Policy
       </h1>
+
+      <div className="bg-green-50 border-l-4 border-brand p-4 mb-6">
+        <p className="text-sm">
+          <span className="font-semibold">Note:</span> Mangalore Homeopathic
+          Pharmacy is our registered business name. HomeoSouth is the digital
+          brand representing our online presence.
+        </p>
+      </div>
 
       <div className="space-y-6">
         <div className="bg-amber-50 border-l-4 border-amber-500 p-4 mb-6">
@@ -39,13 +47,12 @@ const RefundPolicyPage = () => {
           </div>
 
           <div>
-            <h3 className="text-xl font-semibold">
-              2. HOMEOSOUTH's Right to Cancel
-            </h3>
+            <h3 className="text-xl font-semibold">2. Our Right to Cancel</h3>
             <ul className="list-disc pl-8">
               <li>
-                HOMEOSOUTH reserves the right to cancel any order without
-                assigning any reason or ground
+                Mangalore Homeopathic Pharmacy (operating as HomeoSouth)
+                reserves the right to cancel any order without assigning any
+                reason or ground
               </li>
               <li>
                 In such cases, any amount collected will be refunded within 72
@@ -86,8 +93,8 @@ const RefundPolicyPage = () => {
                 hours from receipt of complaint
               </li>
               <li>
-                Once verified as genuine, HOMEOSOUTH will either replace the
-                product(s) or refund the amount at our discretion
+                Once verified as genuine, we will either replace the product(s)
+                or refund the amount at our discretion
               </li>
             </ul>
           </div>

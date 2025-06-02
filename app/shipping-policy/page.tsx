@@ -3,7 +3,15 @@ import React from "react"
 const ShippingPolicyPage = () => {
   return (
     <div className="container mx-auto px-4 py-8">
-      <h1 className="text-3xl font-bold mb-6">HOMEOSOUTH - Shipping Policy</h1>
+      <h1 className="text-3xl font-bold mb-6">Shipping Policy</h1>
+
+      <div className="bg-green-50 border-l-4 border-brand p-4 mb-6">
+        <p className="text-sm">
+          <span className="font-semibold">Note:</span> Mangalore Homeopathic
+          Pharmacy is our registered business name. HomeoSouth is the digital
+          brand representing our online presence.
+        </p>
+      </div>
 
       <div className="space-y-6">
         <h2 className="text-2xl font-bold">Delivery Information</h2>
@@ -49,8 +57,9 @@ const ShippingPolicyPage = () => {
                 respective delivery policies apply
               </li>
               <li>
-                HOMEOSOUTH reserves the right to charge for orders rejected by
-                recipients for any reason
+                Mangalore Homeopathic Pharmacy (operating as HomeoSouth)
+                reserves the right to charge for orders rejected by recipients
+                for any reason
               </li>
             </ul>
           </div>
@@ -58,16 +67,14 @@ const ShippingPolicyPage = () => {
           <div>
             <h3 className="text-xl font-semibold">3. Delivery Timeframe</h3>
             <ul className="list-disc pl-8">
-              <li>
-                HOMEOSOUTH strives to ensure prompt delivery of all orders
-              </li>
+              <li>We strive to ensure prompt delivery of all orders</li>
               <li>
                 Delayed or early deliveries, regardless of reason, do not
                 entitle customers to damages or compensation
               </li>
               <li>
-                HOMEOSOUTH reserves the right to decline service to any customer
-                without explanation
+                Mangalore Homeopathic Pharmacy reserves the right to decline
+                service to any customer without explanation
               </li>
               <li>
                 Maximum delivery time will be 7 days from order confirmation

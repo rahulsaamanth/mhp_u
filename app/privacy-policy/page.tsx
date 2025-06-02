@@ -3,22 +3,30 @@ import React from "react"
 const PrivacyPolicyPage = () => {
   return (
     <div className="container mx-auto px-4 py-8">
-      <h1 className="text-3xl font-bold mb-6">HOMEOSOUTH - Privacy Policy</h1>
+      <h1 className="text-3xl font-bold mb-6">Privacy Policy</h1>
+
+      <div className="bg-green-50 border-l-4 border-brand p-4 mb-6">
+        <p className="text-sm">
+          <span className="font-semibold">Note:</span> Mangalore Homeopathic
+          Pharmacy is our registered business name. HomeoSouth is the digital
+          brand representing our online presence.
+        </p>
+      </div>
 
       <div className="space-y-6">
         <p className="mb-4">
-          "Homeo South" is the owner and operator of website www.homeosouth.com
-          and follows the regulations of data protection law and takes the
-          protection of your personal data seriously.
+          "Mangalore Homeopathic Pharmacy" trading as "HomeoSouth" is the owner
+          and operator of website www.homeosouth.com and follows the regulations
+          of data protection law and takes the protection of your personal data
+          seriously.
         </p>
 
         <p className="mb-4">
-          Homeo South is committed to safeguarding your privacy and uses
-          appropriate technical and organizational security measures to protect
-          your data against accidental or intentional manipulation, partial or
-          complete loss, destruction or against unauthorized access by third
-          parties. Our security measures are regularly updated as per new
-          technology.
+          We are committed to safeguarding your privacy and use appropriate
+          technical and organizational security measures to protect your data
+          against accidental or intentional manipulation, partial or complete
+          loss, destruction or against unauthorized access by third parties. Our
+          security measures are regularly updated as per new technology.
         </p>
 
         <h2 className="text-2xl font-bold mt-8">Collection of Data</h2>

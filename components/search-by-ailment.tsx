@@ -17,27 +17,27 @@ export default function SearchByAilment() {
   const ailments = [
     {
       id: "skin-care",
-      imagePath: "/assets/ailments/skin-care.jpg",
+      imagePath: "/assets/ailments/skin-care.png",
       displayName: "Skin Care",
     },
     {
       id: "mind-care",
-      imagePath: "/assets/ailments/mind-care.jpg",
+      imagePath: "/assets/ailments/mind-care.png",
       displayName: "Mental Wellness",
     },
     {
       id: "stomach-care",
-      imagePath: "/assets/ailments/stomach-care.jpg",
+      imagePath: "/assets/ailments/stomach-care.png",
       displayName: "Digestive Health",
     },
     {
       id: "women-care",
-      imagePath: "/assets/ailments/women-care.jpg",
+      imagePath: "/assets/ailments/women-care.png",
       displayName: "Women Care",
     },
     {
       id: "respiratory-care",
-      imagePath: "/assets/ailments/respiratory-care.jpg",
+      imagePath: "/assets/ailments/respiratory-care.png",
       displayName: "Respiratory Health",
     },
     {
@@ -47,7 +47,7 @@ export default function SearchByAilment() {
     },
     {
       id: "diabetes",
-      imagePath: "/assets/ailments/diabetes.jpg",
+      imagePath: "/assets/ailments/diabetes.png",
       displayName: "Diabetes Management",
     },
     {
@@ -97,22 +97,22 @@ export default function SearchByAilment() {
     },
     {
       id: "hair-care",
-      imagePath: "/assets/ailments/hair-care.jpg",
+      imagePath: "/assets/ailments/hair-care.png",
       displayName: "Hair Health",
     },
     {
       id: "hygeine-care",
-      imagePath: "/assets/ailments/personal-hygeine.jpg",
+      imagePath: "/assets/ailments/personal-hygeine.png",
       displayName: "Personal Hygiene",
     },
     {
       id: "oral-care",
-      imagePath: "/assets/ailments/oral-care.jpg",
+      imagePath: "/assets/ailments/oral-care.png",
       displayName: "Dental Health",
     },
     {
       id: "baby-care",
-      imagePath: "/assets/ailments/baby-care.jpg",
+      imagePath: "/assets/ailments/baby-care.png",
       displayName: "Baby Care",
     },
   ]

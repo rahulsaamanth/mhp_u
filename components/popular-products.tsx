@@ -80,7 +80,7 @@ export default async function PopularProducts() {
         {popularProducts.length > 0 && (
           <div className="grid grid-cols-1 2xl:grid-cols-2 gap-8 px-4">
             {/* Left side - featured product (full height) */}
-            <div className="h-full flex lg:w-2/3 lg:mx-auto 2xl:w-auto 2xl:mx-0">
+            <div className="h-full flex lg:w-2/3 lg:mx-auto 2xl:w-auto 2xl:mx-0 items-center justify-center">
               <ProductCard
                 key={popularProducts[0].id}
                 product={popularProducts[0]}

@@ -50,7 +50,7 @@ export default function ProductCard({
   return (
     <Link
       href={`/product/${id}`}
-      className="w-full p-0 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand/40 rounded-sm"
+      className="w-full h-fit p-0 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand/40 rounded-sm"
     >
       <Card className="group w-full h-fit flex flex-col cursor-pointer rounded-none active:scale-[0.98] outline-1 outline-primary-foreground border-transparent hover:border-brand focus:border-brand active:border-brand border-2 hover:border-dashed focus:border-dashed active:border-dashed -outline-offset-2 ring-1 ring-stone-200 hover:ring-0 focus:ring-0 active:ring-0 transition-all duration-300 ease-out shadow-md hover:shadow-none focus:shadow-none active:shadow-none">
         <CardContent className="p-0 flex flex-col">
