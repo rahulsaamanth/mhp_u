@@ -72,7 +72,7 @@ export default function Hero() {
         setApi={setApi}
       >
         <CarouselContent>
-          <CarouselItem className="h-[50vh]">
+          <CarouselItem className="h-[60vh]">
             <section className="h-full relative min-w-full w-full overflow-hidden">
               <div className="absolute inset-0 z-0 lg:hidden">
                 <Image
@@ -168,7 +168,7 @@ export default function Hero() {
             </section>
           </CarouselItem>
 
-          <CarouselItem className="h-[50vh]">
+          <CarouselItem className="h-[60vh]">
             <section className="h-full relative min-w-full w-full overflow-hidden">
               <div className="absolute inset-0 z-0 lg:hidden">
                 <Image
