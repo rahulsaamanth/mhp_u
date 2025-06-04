@@ -5,3 +5,9 @@ export const LoginSchema = z.object({
     message: "Email is requried",
   }),
 })
+
+// Export other schemas
+export * from "./address"
+
+// Use the same prefix as in the server actions
+export const ENTITY_PREFIX = "mhp"

@@ -1,7 +1,7 @@
 "use client"
 
 import { useCurrentUser } from "@/hooks/use-current-user"
-import { LogOut, User } from "lucide-react"
+import { LogOut, MapPin, ShoppingBag, User } from "lucide-react"
 import { usePathname, useRouter } from "next/navigation"
 import { LogoutButton } from "./auth/logout-button"
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar"
@@ -49,13 +49,36 @@ export default function UserButton() {
             </AvatarFallback>
           </Avatar>
         </DropdownMenuTrigger>
-        <DropdownMenuContent className="w-fit" align="end">
+        <DropdownMenuContent className="w-56" align="end">
           <DropdownMenuItem className="cursor-default pb-2 hover:bg-none">
-            <span className="text-xs">{user?.name || "User"}</span>
+            <div className="flex flex-col">
+              <span className="font-semibold">{user?.name || "User"}</span>
+              <span className="text-xs text-gray-500">{user?.email}</span>
+            </div>
           </DropdownMenuItem>
-          <hr />
+
+          <hr className="my-1" />
+
+          <DropdownMenuItem
+            className="cursor-pointer gap-2"
+            onClick={() => router.push("/profile/my-addresses")}
+          >
+            <MapPin className="size-4" />
+            <span>My Addresses</span>
+          </DropdownMenuItem>
+
+          <DropdownMenuItem
+            className="cursor-pointer gap-2"
+            onClick={() => router.push("/profile/my-orders")}
+          >
+            <ShoppingBag className="size-4" />
+            <span>My Orders</span>
+          </DropdownMenuItem>
+
+          <hr className="my-1" />
+
           <LogoutButton>
-            <DropdownMenuItem className="cursor-pointer space-x-2">
+            <DropdownMenuItem className="cursor-pointer gap-2 text-red-500">
               <LogOut className="size-4" />
               <span>Logout</span>
             </DropdownMenuItem>
