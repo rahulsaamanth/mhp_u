@@ -1,4 +1,9 @@
-import { getAllProducts, getAllCategories, getAllBrands, getAllAilments } from "@/actions/products"
+import {
+  getAllProducts,
+  getAllCategories,
+  getAllBrands,
+  getAllAilments,
+} from "@/actions/products"
 import { getServerSideSitemap, ISitemapField } from "next-sitemap"
 import { MetadataRoute } from "next"
 

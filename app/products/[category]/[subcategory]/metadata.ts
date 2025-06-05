@@ -8,10 +8,7 @@ type Props = {
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   // Get subcategory information
   const { category: categorySlug, subcategory: subcategorySlug } = params
-  const subcategoryData = await getSubcategory(
-    categorySlug,
-    subcategorySlug
-  )
+  const subcategoryData = await getSubcategory(categorySlug, subcategorySlug)
 
   // Format the category and subcategory names for better readability
   const categoryName = categorySlug

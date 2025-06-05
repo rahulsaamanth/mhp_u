@@ -1,13 +1,15 @@
-# Allow all web crawlers access to all content
+# *
 User-agent: *
 Allow: /
-
-# Disallow crawling of private or sensitive pages
 Disallow: /login
 Disallow: /checkout
 Disallow: /profile
 Disallow: /verify-request
 Disallow: /api/
 
-# Sitemap location
+# Host
+Host: https://homeosouth.com
+
+# Sitemaps
 Sitemap: https://homeosouth.com/sitemap.xml
+Sitemap: https://homeosouth.com/server-sitemap.xml

@@ -12,7 +12,7 @@ export const contentType = "image/png"
 
 export default async function Image({ params }: { params: { id: string } }) {
   try {
-    const product = await products.get(params.id)
+    const product = await getProduct(params.id)
 
     if (!product) {
       return new ImageResponse(
