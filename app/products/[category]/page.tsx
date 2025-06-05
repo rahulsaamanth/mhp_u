@@ -1,7 +1,9 @@
 import { executeRawQuery } from "@/db/db"
 import { ProductCardProps } from "@/components/product-card"
+import JsonLd from "@/components/json-ld"
 import ProductList from "../_components/product-list"
 import FilterSidebar from "../_components/filter-sidebar"
+import { generateBreadcrumbSchema } from "@/lib/schema"
 import { redirect } from "next/navigation"
 import Link from "next/link"
 
@@ -364,8 +366,16 @@ export default async function ProductsOfCategoryPage({
       ? categories.filter((cat) => cat.parentId === currentCategoryInfo.id)
       : []
 
+  // Generate breadcrumb schema
+  const breadcrumbSchema = generateBreadcrumbSchema([
+    { name: "Home", item: "/" },
+    { name: "Products", item: "/products/all" },
+    { name: formattedCategory, item: `/products/${category}` },
+  ])
+
   return (
     <div className="container mx-auto px-4 py-10">
+      <JsonLd data={breadcrumbSchema} />
       {/* Breadcrumbs navigation */}
       <div className="mb-4 flex items-center text-sm text-gray-500">
         <Link href="/products/all" className="hover:text-brand">

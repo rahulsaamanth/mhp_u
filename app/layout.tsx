@@ -4,8 +4,10 @@ import { AuthListener } from "@/components/auth/auth-listener"
 import { CartMergeHandler } from "@/components/cart-merge-handler"
 import Footer from "@/components/footer"
 import Header from "@/components/header"
+import JsonLd from "@/components/json-ld"
 import { Toaster } from "@/components/ui/sonner"
 import { Providers } from "@/lib/providers"
+import { generateOrganizationSchema } from "@/lib/schema"
 import type { Metadata } from "next"
 import { SessionProvider } from "next-auth/react"
 import { DM_Sans } from "next/font/google"
@@ -29,9 +31,14 @@ export default async function RootLayout({
 }>) {
   const session = await Auth()
 
+  const orgSchema = generateOrganizationSchema()
+
   return (
     <SessionProvider session={session}>
       <html lang="en">
+        <head>
+          <JsonLd data={orgSchema} />
+        </head>
         <body className={`${dmSans.className} antialiased`}>
           <NuqsAdapter>
             <Providers>

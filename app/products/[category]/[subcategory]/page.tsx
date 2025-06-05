@@ -1,5 +1,7 @@
 import { executeRawQuery } from "@/db/db"
 import { ProductCardProps } from "@/components/product-card"
+import JsonLd from "@/components/json-ld"
+import { generateBreadcrumbSchema } from "@/lib/schema"
 import ProductList from "../../_components/product-list"
 import FilterSidebar from "../../_components/filter-sidebar"
 import Link from "next/link"
@@ -207,8 +209,20 @@ export default async function ProductsOfSubcategoryPage({
     String.fromCharCode(65 + i)
   )
 
+  // Generate breadcrumb schema
+  const breadcrumbSchema = generateBreadcrumbSchema([
+    { name: "Home", item: "/" },
+    { name: "Products", item: "/products/all" },
+    { name: parentCategory?.name || category, item: `/products/${category}` },
+    {
+      name: formattedSubcategory,
+      item: `/products/${category}/${subcategory}`,
+    },
+  ])
+
   return (
     <div className="container mx-auto px-4 py-10">
+      <JsonLd data={breadcrumbSchema} />
       <div className="mb-4 flex items-center text-sm text-gray-500">
         <Link href="/products/all" className="hover:text-brand">
           All Products

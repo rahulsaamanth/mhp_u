@@ -4,9 +4,13 @@
   "private": true,
   "scripts": {
     "dev": "next dev --turbopack",
-    "build": "next build",
+    "build": "next build && next-sitemap",
+    "postbuild": "next-sitemap",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "sitemap": "next-sitemap",
+    "check:metadata": "node scripts/verify-metadata.js",
+    "seo:audit": "npm run check:metadata && npm run sitemap"
   },
   "dependencies": {
     "@auth/core": "^0.38.0",
@@ -64,6 +68,7 @@
     "drizzle-kit": "^0.31.0",
     "eslint": "^9",
     "eslint-config-next": "15.2.1",
+    "next-sitemap": "^4.2.3",
     "tailwindcss": "^4",
     "typescript": "^5"
   },

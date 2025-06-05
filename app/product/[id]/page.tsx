@@ -1,11 +1,13 @@
 import { executeRawQuery } from "@/db/db"
 import { Suspense } from "react"
 import { notFound } from "next/navigation"
+import JsonLd from "@/components/json-ld"
 import ProductCard, { ProductCardProps } from "@/components/product-card"
 import ProductVariantSelector from "../_components/product-variant-selector"
 import FeaturedProductsCarousel from "@/components/featured-products-carousel"
 import FeaturedProducts from "@/components/featured-products"
 import ScrollToTop from "../_components/scroll-to-top"
+import { generateBreadcrumbSchema, generateProductSchema } from "@/lib/schema"
 
 interface ProductDetailsProps {
   id: string
@@ -200,6 +202,16 @@ export default async function ProductPage({
     notFound()
   }
 
+  // Generate product schema for SEO
+  const productSchema = await generateProductSchema(id)
+
+  // Generate breadcrumb schema
+  const breadcrumbSchema = generateBreadcrumbSchema([
+    { name: "Home", item: "/" },
+    { name: product.categoryName, item: `/products/${product.categoryId}` },
+    { name: product.name, item: `/product/${product.id}` },
+  ])
+
   // Fetch related products
   const relatedProducts = await getRelatedProducts(
     product.id,
@@ -225,6 +237,8 @@ export default async function ProductPage({
 
   return (
     <ScrollToTop>
+      {productSchema && <JsonLd data={productSchema} />}
+      <JsonLd data={breadcrumbSchema} />
       <div>
         <main className="container mx-auto px-4 py-20">
           <div className="mb-10">
