@@ -49,7 +49,7 @@ export async function getProduct(id: string): Promise<Product | null> {
         p.id,
         p.name,
         p.description,
-        (SELECT pv.variantImage[1] FROM "ProductVariant" pv WHERE pv."productId" = p.id LIMIT 1) as image_url,
+        (SELECT pv.variantImage[1] FROM "ProductVariant" pv WHERE pv."productId" = p.id AND pv.variantImage IS NOT NULL AND pv.variantImage != '{}' AND array_length(pv.variantImage, 1) > 0 ORDER BY pv.id ASC LIMIT 1) as image_url,
         (EXISTS (SELECT 1 FROM "ProductVariant" pv WHERE pv."productId" = p.id AND pv."stock" > 0)) as in_stock,
         (SELECT pv.mrp FROM "ProductVariant" pv WHERE pv."productId" = p.id LIMIT 1) as price,
         (SELECT pv."sellingPrice" FROM "ProductVariant" pv WHERE pv."productId" = p.id LIMIT 1) as sale_price,
@@ -84,7 +84,7 @@ export async function getAllProducts(): Promise<Product[]> {
       SELECT 
         p.id,
         p.name,
-        (SELECT pv.variantImage[1] FROM "ProductVariant" pv WHERE pv."productId" = p.id LIMIT 1) as image_url
+        (SELECT pv.variantImage[1] FROM "ProductVariant" pv WHERE pv."productId" = p.id AND pv.variantImage IS NOT NULL AND pv.variantImage != '{}' AND array_length(pv.variantImage, 1) > 0 ORDER BY pv.id ASC LIMIT 1) as image_url
       FROM "Product" p
       WHERE p.status = 'ACTIVE'
       LIMIT 1000

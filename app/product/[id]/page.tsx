@@ -113,14 +113,13 @@ async function getRelatedProducts(
       WITH ProductVariants AS (
         SELECT 
           pv."productId",
-          MIN(pv."id") AS first_variant_id,
           jsonb_agg(DISTINCT pv."potency") FILTER (WHERE pv."potency" != 'NONE') AS potencies,
           jsonb_agg(DISTINCT pv."packSize") AS "packSizes"
         FROM "ProductVariant" pv
         GROUP BY pv."productId"
       ),
-      FirstVariant AS (
-        SELECT 
+      FirstVariantWithImage AS (
+        SELECT DISTINCT ON (pv."productId")
           pv."id" AS "variantId",
           pv."productId",
           pv."variantImage" AS "image",
@@ -129,7 +128,10 @@ async function getRelatedProducts(
           pv."discountType",
           pv."discount"
         FROM "ProductVariant" pv
-        JOIN ProductVariants pvs ON pv."id" = pvs.first_variant_id
+        WHERE pv."variantImage" IS NOT NULL 
+          AND pv."variantImage" != '{}' 
+          AND array_length(pv."variantImage", 1) > 0
+        ORDER BY pv."productId", pv."id" ASC
       ),
       RelatedProducts AS (
         (
@@ -177,7 +179,7 @@ async function getRelatedProducts(
       JOIN "Category" c ON p."categoryId" = c."id"
       JOIN "Manufacturer" m ON p."manufacturerId" = m."id"
       JOIN ProductVariants pvs ON pvs."productId" = p."id"
-      JOIN FirstVariant fv ON fv."productId" = p."id"
+      JOIN FirstVariantWithImage fv ON fv."productId" = p."id"
       ORDER BY p."id", priority ASC
       LIMIT 12
       `,

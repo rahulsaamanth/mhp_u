@@ -63,7 +63,17 @@ export async function getUserCart() {
           productId: item.productId,
           variantId: item.variantId,
           name: productData?.name || "Unknown Product",
-          image: variantData?.variantImage || "",
+          image: (() => {
+            const variantImage = variantData?.variantImage
+            if (Array.isArray(variantImage) && variantImage.length > 0) {
+              // Find the first valid image in the array
+              const validImage = variantImage.find(
+                (img) => img && img !== "null" && img.trim() !== ""
+              )
+              return validImage || ""
+            }
+            return ""
+          })(),
           price: variantData?.sellingPrice || 0,
           quantity: item.quantity,
           potency: item.potency || undefined,

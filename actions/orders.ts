@@ -76,7 +76,13 @@ export async function getUserOrders() {
               'name', prod.name,
               'price', od."unitPrice",
               'quantity', od.quantity,
-              'image', pv."variantImage"
+              'image', CASE 
+                WHEN pv."variantImage" IS NOT NULL 
+                  AND pv."variantImage" != '{}' 
+                  AND array_length(pv."variantImage", 1) > 0 
+                THEN pv."variantImage"
+                ELSE '{}'::text[]
+              END
             )
           )
           FROM "OrderDetails" od

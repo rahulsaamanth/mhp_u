@@ -79,9 +79,20 @@ export default function MyOrdersPage() {
   const getImageUrl = (image: string | string[]): string => {
     if (!image) return "/placeholder.png"
     if (Array.isArray(image)) {
-      return image[0] || "/placeholder.png"
+      const validImage = image.find(
+        (img) => img && img !== "null" && img.trim() !== ""
+      )
+      return validImage || "/placeholder.png"
     }
-    return image
+    if (
+      typeof image === "string" &&
+      image &&
+      image !== "null" &&
+      image.trim() !== ""
+    ) {
+      return image
+    }
+    return "/placeholder.png"
   }
 
   return (

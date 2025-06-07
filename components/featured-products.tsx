@@ -11,19 +11,12 @@ async function getFeaturedProductsByCategory(
       SELECT 
         pv."productId",
         jsonb_agg(DISTINCT pv."potency") FILTER (WHERE pv."potency" != 'NONE') AS potencies,
-        jsonb_agg(DISTINCT pv."packSize" ORDER BY pv."packSize") AS packsizes,
-        (
-          SELECT pv2.id 
-          FROM "ProductVariant" pv2 
-          WHERE pv2."productId" = pv."productId" 
-          ORDER BY pv2."packSize" ASC 
-          LIMIT 1
-        ) AS first_variant_id
+        jsonb_agg(DISTINCT pv."packSize" ORDER BY pv."packSize") AS packsizes
       FROM "ProductVariant" pv
       GROUP BY pv."productId"
     ),
-    FirstVariant AS (
-      SELECT 
+    FirstVariantWithImage AS (
+      SELECT DISTINCT ON (pv."productId")
         pv."id" AS variantid,
         pv."productId",
         pv."variantImage" AS image,
@@ -32,7 +25,10 @@ async function getFeaturedProductsByCategory(
         pv."discountType" AS "discountType",
         pv."discount"
       FROM "ProductVariant" pv
-      JOIN ProductVariants pvs ON pv."id" = pvs.first_variant_id
+      WHERE pv."variantImage" IS NOT NULL 
+        AND pv."variantImage" != '{}' 
+        AND array_length(pv."variantImage", 1) > 0
+      ORDER BY pv."productId", pv."packSize" ASC, pv."id" ASC
     )
     SELECT
       p."id",
@@ -55,7 +51,7 @@ async function getFeaturedProductsByCategory(
     JOIN "Category" c ON p."categoryId" = c."id"
     JOIN "Manufacturer" m ON p."manufacturerId" = m."id"
     JOIN ProductVariants pvs ON pvs."productId" = p."id"
-    JOIN FirstVariant fv ON fv."productId" = p."id"
+    JOIN FirstVariantWithImage fv ON fv."productId" = p."id"
     WHERE 
       p."isFeatured" = true AND
       c."name" ILIKE $1

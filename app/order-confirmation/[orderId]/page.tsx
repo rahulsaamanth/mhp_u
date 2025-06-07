@@ -2,6 +2,7 @@ import { executeRawQuery } from "@/db/db"
 import { notFound } from "next/navigation"
 import { formatCurrency } from "@/lib/formatters"
 import Link from "next/link"
+import Image from "next/image"
 import { Button } from "@/components/ui/button"
 import { Separator } from "@/components/ui/separator"
 import { CheckCircle2 } from "lucide-react"
@@ -45,6 +46,7 @@ interface OrderDetails {
     discountAmount: number
     taxAmount: number
     variant: {
+      variantImage: string[]
       product: {
         name: string
       }
@@ -87,6 +89,13 @@ export default async function OrderConfirmationPage({
             'discountAmount', od."discountAmount",
             'taxAmount', od."taxAmount",
             'variant', jsonb_build_object(
+              'variantImage', CASE 
+                WHEN pv."variantImage" IS NOT NULL 
+                  AND pv."variantImage" != '{}' 
+                  AND array_length(pv."variantImage", 1) > 0 
+                THEN pv."variantImage"
+                ELSE '{}'::text[]
+              END,
               'product', jsonb_build_object(
                 'name', prod.name
               )
@@ -177,19 +186,42 @@ export default async function OrderConfirmationPage({
               <h2 className="text-xl font-semibold text-gray-900 mb-6">
                 Order Summary
               </h2>
-              <div className="space-y-3">
+              <div className="space-y-4">
                 {order.orderDetails.map((item) => (
                   <div
                     key={item.id}
-                    className="flex justify-between text-sm py-2"
+                    className="flex items-center gap-3 py-3 border-b last:border-b-0"
                   >
-                    <div>
-                      <p className="font-medium">{item.variant.product.name}</p>
-                      <p className="text-gray-600">
+                    <div className="w-16 h-16 relative flex-shrink-0 border rounded-md overflow-hidden">
+                      <Image
+                        src={
+                          Array.isArray(item.variant.variantImage) &&
+                          item.variant.variantImage.length > 0
+                            ? item.variant.variantImage.find(
+                                (img) =>
+                                  img && img !== "null" && img.trim() !== ""
+                              ) || "/placeholder.png"
+                            : "/placeholder.png"
+                        }
+                        alt={item.variant.product.name}
+                        fill
+                        className="object-contain p-1"
+                        onError={(
+                          e: React.SyntheticEvent<HTMLImageElement>
+                        ) => {
+                          e.currentTarget.src = "/placeholder.png"
+                        }}
+                      />
+                    </div>
+                    <div className="flex-grow">
+                      <p className="font-medium text-sm">
+                        {item.variant.product.name}
+                      </p>
+                      <p className="text-gray-600 text-xs">
                         Qty: {item.quantity} x {formatCurrency(item.unitPrice)}
                       </p>
                     </div>
-                    <p className="font-medium">
+                    <p className="font-medium text-sm">
                       {formatCurrency(item.unitPrice * item.quantity)}
                     </p>
                   </div>

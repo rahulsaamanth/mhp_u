@@ -91,18 +91,40 @@ export default function OrderSummary({
           <div key={item.id} className="flex items-center gap-3">
             <div className="w-16 h-16 relative flex-shrink-0 border rounded-md overflow-hidden">
               <Image
-                src={
-                  Array.isArray(item.image) && item.image.length > 0
-                    ? item.image[0]
-                    : typeof item.image === "string" &&
-                      item.image &&
-                      item.image !== "null"
-                    ? item.image
-                    : "/placeholder.png"
-                }
+                src={(() => {
+                  // Enhanced image validation logic
+                  if (Array.isArray(item.image) && item.image.length > 0) {
+                    // Find the first valid image in the array
+                    const validImage = item.image.find(
+                      (img) =>
+                        img &&
+                        img !== "null" &&
+                        img.trim() !== "" &&
+                        img !== "{}" &&
+                        !img.includes("null")
+                    )
+                    return validImage || "/placeholder.png"
+                  }
+
+                  if (
+                    typeof item.image === "string" &&
+                    item.image &&
+                    item.image !== "null" &&
+                    item.image.trim() !== "" &&
+                    item.image !== "{}" &&
+                    !item.image.includes("null")
+                  ) {
+                    return item.image
+                  }
+
+                  return "/placeholder.png"
+                })()}
                 alt={item.name}
                 fill
                 className="object-contain p-1"
+                onError={(e: React.SyntheticEvent<HTMLImageElement>) => {
+                  e.currentTarget.src = "/placeholder.png"
+                }}
               />
             </div>
             <div className="flex-grow">

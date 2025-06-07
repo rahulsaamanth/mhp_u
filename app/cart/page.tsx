@@ -49,15 +49,34 @@ const CartItemComponent = memo(
       <div className="flex border-b py-4">
         <div className="w-24 h-24 relative flex-shrink-0">
           <Image
-            src={
-              Array.isArray(item.image) && item.image.length > 0
-                ? item.image[0]
-                : typeof item.image === "string" &&
-                  item.image &&
-                  item.image !== "null"
-                ? item.image
-                : "/placeholder.png"
-            }
+            src={(() => {
+              // Enhanced image validation logic
+              if (Array.isArray(item.image) && item.image.length > 0) {
+                // Find the first valid image in the array
+                const validImage = item.image.find(
+                  (img) =>
+                    img &&
+                    img !== "null" &&
+                    img.trim() !== "" &&
+                    img !== "{}" &&
+                    !img.includes("null")
+                )
+                return validImage || "/placeholder.png"
+              }
+
+              if (
+                typeof item.image === "string" &&
+                item.image &&
+                item.image !== "null" &&
+                item.image.trim() !== "" &&
+                item.image !== "{}" &&
+                !item.image.includes("null")
+              ) {
+                return item.image
+              }
+
+              return "/placeholder.png"
+            })()}
             alt={item.name}
             fill
             className="object-contain"
