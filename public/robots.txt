@@ -8,8 +8,8 @@ Disallow: /verify-request
 Disallow: /api/
 
 # Host
-Host: https://homeosouth.com
+Host: localhost:3000
 
 # Sitemaps
-Sitemap: https://homeosouth.com/sitemap.xml
-Sitemap: https://homeosouth.com/server-sitemap.xml
+Sitemap: localhost:3000/sitemap.xml
+Sitemap: localhost:3000/server-sitemap.xml
