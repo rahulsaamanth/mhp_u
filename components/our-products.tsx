@@ -41,7 +41,7 @@ export default function OurProducts() {
       <div className="p-8 w-full flex items-center justify-center gap-4 sm:gap-8 xl:gap-12 flex-wrap">
         {OurProducts.map((cat) => (
           <Card
-            className="w-fit border-0 outline-0 shadow-none px-1 active:scale-95 transition-transform"
+            className="w-fit border-0 outline-0 shadow-none px-1 active:scale-95 transition-transform p-0"
             key={cat.id}
           >
             <CardContent className="flex items-center justify-center p-2">

@@ -41,6 +41,11 @@ export default function SearchByAilment() {
       displayName: "Respiratory Health",
     },
     {
+      id: "cardiac-care",
+      imagePath: "/assets/ailments/cardiac.png",
+      displayName: "Cardiac Health",
+    },
+    {
       id: "constipation",
       imagePath: "/assets/ailments/constipation.png",
       displayName: "Constipation Relief",
@@ -66,6 +71,11 @@ export default function SearchByAilment() {
       displayName: "Infection Treatment",
     },
     {
+      id: "hygeine-care",
+      imagePath: "/assets/ailments/personal-hygeine.png",
+      displayName: "Personal Hygiene",
+    },
+    {
       id: "eye-ear-care",
       imagePath: "/assets/ailments/ear-eye.png",
       displayName: "Eye & Ear Health",
@@ -80,11 +90,7 @@ export default function SearchByAilment() {
       imagePath: "/assets/ailments/sexual-wellness.png",
       displayName: "Sexual Wellness",
     },
-    {
-      id: "cardiac-care",
-      imagePath: "/assets/ailments/cardiac.png",
-      displayName: "Cardiac Health",
-    },
+
     {
       id: "weight-care",
       imagePath: "/assets/ailments/weight-care.png",
@@ -100,11 +106,7 @@ export default function SearchByAilment() {
       imagePath: "/assets/ailments/hair-care.png",
       displayName: "Hair Health",
     },
-    {
-      id: "hygeine-care",
-      imagePath: "/assets/ailments/personal-hygeine.png",
-      displayName: "Personal Hygiene",
-    },
+
     {
       id: "oral-care",
       imagePath: "/assets/ailments/oral-care.png",
@@ -148,7 +150,7 @@ export default function SearchByAilment() {
           // slidesToScroll: 1,
         }}
         plugins={[autoPlayref.current]}
-        className="max-w-3/4 mx-auto"
+        className="max-w-3/4 lg:max-w-3/5 mx-auto"
       >
         <CarouselContent>
           {ailments.map((ailment, index) => (

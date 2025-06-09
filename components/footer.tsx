@@ -1,9 +1,69 @@
 "use client"
 
+import { useTransition } from "react"
 import { Input } from "./ui/input"
 import { Button } from "./ui/button"
 import { Mail, Phone, Clock, MapPin } from "lucide-react"
 import Link from "next/link"
+import { subscribeToNewsletter } from "@/actions/subscribers"
+import { toast } from "sonner"
+import { useFormStatus } from "react-dom"
+
+// Client component for handling submit button state
+function SubmitButton() {
+  const { pending } = useFormStatus()
+
+  return (
+    <Button
+      type="submit"
+      className="w-full bg-white text-brand hover:bg-white/90 transition-all duration-150 active:scale-95"
+      disabled={pending}
+    >
+      {pending ? "Subscribing..." : "Subscribe"}
+    </Button>
+  )
+}
+
+function NewsletterSubscriptionForm() {
+  const [isPending, startTransition] = useTransition()
+
+  const clientAction = async (formData: FormData) => {
+    startTransition(async () => {
+      try {
+        const result = await subscribeToNewsletter(formData)
+        if (result.success) {
+          toast.success(result.message)
+          // Reset the form
+          const form = document.getElementById(
+            "newsletter-form"
+          ) as HTMLFormElement
+          if (form) form.reset()
+        } else {
+          toast.error(result.error)
+        }
+      } catch (error) {
+        console.error("Newsletter subscription error:", error)
+        toast.error("Failed to subscribe. Please try again later.")
+      }
+    })
+  }
+
+  return (
+    <form action={clientAction} id="newsletter-form" className="space-y-2">
+      <div>
+        <Input
+          type="email"
+          name="email"
+          placeholder="Enter your email"
+          className="bg-white/10 border-white/20 placeholder:text-white/60 focus-visible:outline-0 focus-visible:border-0 focus-visible:ring-0"
+          disabled={isPending}
+          required
+        />
+      </div>
+      <SubmitButton />
+    </form>
+  )
+}
 
 export default function Footer() {
   return (
@@ -70,16 +130,7 @@ export default function Footer() {
             <p className="text-sm mb-4">
               Subscribe to our newsletter for updates and health tips.
             </p>
-            <form onSubmit={(e) => e.preventDefault()} className="space-y-2">
-              <Input
-                type="email"
-                placeholder="Enter your email"
-                className="bg-white/10 border-white/20 placeholder:text-white/60 focus-visible:outline-0 focus-visible:border-0 focus-visible:ring-0"
-              />
-              <Button className="w-full bg-white text-brand hover:bg-white/90 transition-all duration-150 active:scale-95">
-                Subscribe
-              </Button>
-            </form>
+            <NewsletterSubscriptionForm />
           </div>
         </div>
 

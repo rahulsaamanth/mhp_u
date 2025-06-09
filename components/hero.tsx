@@ -76,6 +76,102 @@ export default function Hero() {
             <section className="h-full relative min-w-full w-full overflow-hidden">
               <div className="absolute inset-0 z-0 lg:hidden">
                 <Image
+                  src="/assets/hero.jpg"
+                  alt="Background image"
+                  fill
+                  className="object-cover object-center"
+                  priority
+                />
+                <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/60 to-black/40 z-10" />
+              </div>
+
+              <div className="hidden lg:block absolute inset-0 z-0">
+                <div className="absolute top-0 left-0 bottom-0 w-1/2 bg-brand">
+                  <div className="absolute inset-0 bg-pattern opacity-10"></div>
+                </div>
+                <div className="absolute top-0 right-0 bottom-0 w-1/2">
+                  <Image
+                    src="/assets/hero.jpg"
+                    alt="Background image"
+                    fill
+                    className="object-cover object-center"
+                    priority
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-l from-transparent via-transparent to-brand opacity-100" />
+                </div>
+              </div>
+
+              <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-20 h-full">
+                <div className="max-w-xl space-y-8 @min-xs:space-y-16 sm:space-y-12 xl:space-y-20 z-10 h-full grid place-content-center">
+                  <div className="space-y-3 sm:space-y-4 xl:space-y-10">
+                    <h1
+                      className="text-4xl sm:text-5xl lg:text-6xl font-bold leading-tight tracking-tight text-white"
+                      style={{
+                        textShadow: "0 2px 4px rgba(0, 0, 0, 0.3)",
+                      }}
+                    >
+                      Natural Healing For Modern Living
+                    </h1>
+
+                    <span
+                      className="text-base sm:text-xl text-gray-200 max-w-lg italic hidden xl:inline-block"
+                      style={{
+                        textShadow: "0 1px 2px rgba(0, 0, 0, 0.5)",
+                      }}
+                    >
+                      Discover premium homeopathic remedies that harness the
+                      power of nature for your wellbeing.
+                    </span>
+                  </div>
+
+                  <div className="space-y-4 xl:space-y-6">
+                    <div className="bg-white/30 backdrop-blur-lg p-3 inline-block text-sm sm:text-base border border-white/40 shadow-md transition-all duration-300 hover:bg-white/40 leading-relaxed rounded-lg">
+                      <span
+                        className="font-bold sm:font-semibold text-white"
+                        style={{ textShadow: "0 1px 1px rgba(0, 0, 0, 0.4)" }}
+                      >
+                        Use code:{" "}
+                      </span>
+                      <span
+                        onClick={copyToClipboard}
+                        className="relative bg-white text-brand p-1 sm:px-3.5 sm:py-2 rounded font-bold cursor-copy hover:bg-gray-100 active:bg-gray-200 shadow-sm transition-all duration-300 group"
+                        aria-label="Copy coupon code WELCOME10"
+                      >
+                        WELCOME10
+                        {copied && (
+                          <span className="absolute -top-8 left-1/2 transform -translate-x-1/2 bg-black/80 text-white text-xs py-1 px-2 rounded whitespace-nowrap">
+                            Copied!
+                          </span>
+                        )}
+                        <span className="absolute inset-0 border-2 border-transparent group-hover:border-white/40 rounded pointer-events-none"></span>
+                      </span>
+                      <span
+                        className="ml-2 text-white font-bold sm:font-semibold"
+                        style={{ textShadow: "0 1px 1px rgba(0, 0, 0, 0.4)" }}
+                      >
+                        for 10% off{" "}
+                        <span className="max-sm:hidden">
+                          on orders above ₹300
+                        </span>
+                      </span>
+                    </div>
+
+                    <Link
+                      href="/products/all"
+                      className="inline-flex items-center justify-center cursor-pointer px-4 py-3 bg-transparent text-white hover:text-brand border-2 hover:bg-white hover:shadow-lg font-bold transition-all duration-300 tracking-wide focus:bg-white focus:text-brand"
+                    >
+                      Shop & Save Now
+                    </Link>
+                  </div>
+                </div>
+              </div>
+            </section>
+          </CarouselItem>
+
+          <CarouselItem className="h-[60vh]">
+            <section className="h-full relative min-w-full w-full overflow-hidden">
+              <div className="absolute inset-0 z-0 lg:hidden">
+                <Image
                   src="/assets/hero2.jpg"
                   alt="Background image"
                   fill
@@ -164,102 +260,6 @@ export default function Hero() {
                       className="inline-flex items-center justify-center cursor-pointer px-4 py-2 bg-transparent text-white hover:text-stone-900 border-2 hover:bg-white hover:shadow-lg font-bold transition-all duration-300 tracking-wide focus:bg-white focus:text-stone-900"
                     >
                       Explore All Brands
-                    </Link>
-                  </div>
-                </div>
-              </div>
-            </section>
-          </CarouselItem>
-
-          <CarouselItem className="h-[60vh]">
-            <section className="h-full relative min-w-full w-full overflow-hidden">
-              <div className="absolute inset-0 z-0 lg:hidden">
-                <Image
-                  src="/assets/hero.jpg"
-                  alt="Background image"
-                  fill
-                  className="object-cover object-center"
-                  priority
-                />
-                <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/60 to-black/40 z-10" />
-              </div>
-
-              <div className="hidden lg:block absolute inset-0 z-0">
-                <div className="absolute top-0 left-0 bottom-0 w-1/2 bg-brand">
-                  <div className="absolute inset-0 bg-pattern opacity-10"></div>
-                </div>
-                <div className="absolute top-0 right-0 bottom-0 w-1/2">
-                  <Image
-                    src="/assets/hero.jpg"
-                    alt="Background image"
-                    fill
-                    className="object-cover object-center"
-                    priority
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-l from-transparent via-transparent to-brand opacity-100" />
-                </div>
-              </div>
-
-              <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-20 h-full">
-                <div className="max-w-xl space-y-8 @min-xs:space-y-16 sm:space-y-12 xl:space-y-20 z-10 h-full grid place-content-center">
-                  <div className="space-y-3 sm:space-y-4 xl:space-y-10">
-                    <h1
-                      className="text-4xl sm:text-5xl lg:text-6xl font-bold leading-tight tracking-tight text-white"
-                      style={{
-                        textShadow: "0 2px 4px rgba(0, 0, 0, 0.3)",
-                      }}
-                    >
-                      Natural Healing For Modern Living
-                    </h1>
-
-                    <span
-                      className="text-base sm:text-xl text-gray-200 max-w-lg italic hidden xl:inline-block"
-                      style={{
-                        textShadow: "0 1px 2px rgba(0, 0, 0, 0.5)",
-                      }}
-                    >
-                      Discover premium homeopathic remedies that harness the
-                      power of nature for your wellbeing.
-                    </span>
-                  </div>
-
-                  <div className="space-y-4 xl:space-y-6">
-                    <div className="bg-white/30 backdrop-blur-lg p-3 inline-block text-sm sm:text-base border border-white/40 shadow-md transition-all duration-300 hover:bg-white/40 leading-relaxed rounded-lg">
-                      <span
-                        className="font-bold sm:font-semibold text-white"
-                        style={{ textShadow: "0 1px 1px rgba(0, 0, 0, 0.4)" }}
-                      >
-                        Use code:{" "}
-                      </span>
-                      <span
-                        onClick={copyToClipboard}
-                        className="relative bg-white text-brand p-1 sm:px-3.5 sm:py-2 rounded font-bold cursor-copy hover:bg-gray-100 active:bg-gray-200 shadow-sm transition-all duration-300 group"
-                        aria-label="Copy coupon code WELCOME10"
-                      >
-                        WELCOME10
-                        {copied && (
-                          <span className="absolute -top-8 left-1/2 transform -translate-x-1/2 bg-black/80 text-white text-xs py-1 px-2 rounded whitespace-nowrap">
-                            Copied!
-                          </span>
-                        )}
-                        <span className="absolute inset-0 border-2 border-transparent group-hover:border-white/40 rounded pointer-events-none"></span>
-                      </span>
-                      <span
-                        className="ml-2 text-white font-bold sm:font-semibold"
-                        style={{ textShadow: "0 1px 1px rgba(0, 0, 0, 0.4)" }}
-                      >
-                        for 10% off{" "}
-                        <span className="max-sm:hidden">
-                          on orders above ₹300
-                        </span>
-                      </span>
-                    </div>
-
-                    <Link
-                      href="/products/all"
-                      className="inline-flex items-center justify-center cursor-pointer px-4 py-3 bg-transparent text-white hover:text-brand border-2 hover:bg-white hover:shadow-lg font-bold transition-all duration-300 tracking-wide focus:bg-white focus:text-brand"
-                    >
-                      Shop & Save Now
                     </Link>
                   </div>
                 </div>

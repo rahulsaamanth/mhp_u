@@ -92,7 +92,7 @@ const DesktopNavigation = () => {
       </Button>
 
       {/* ABOUT US */}
-      <Popover
+      {/* <Popover
         open={aboutPopover.isOpen}
         onOpenChange={aboutPopover.onOpenChange}
       >
@@ -124,7 +124,7 @@ const DesktopNavigation = () => {
             }}
           />
         </PopoverContent>
-      </Popover>
+      </Popover> */}
 
       {/* HOMEOPATHIC */}
       <Popover

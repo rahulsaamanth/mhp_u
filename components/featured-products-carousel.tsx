@@ -43,7 +43,7 @@ export default function FeaturedProductsCarousel({
         containScroll: "trimSnaps",
       }}
       plugins={[autoPlayref.current]}
-      className="w-3/4 mx-auto"
+      className="max-w-3/4 lg:max-w-3/5 mx-auto"
     >
       <CarouselContent className="mx-auto">
         {products.map((product, idx) => (
