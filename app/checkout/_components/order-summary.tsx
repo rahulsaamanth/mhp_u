@@ -134,7 +134,7 @@ export default function OrderSummary({
                 {item.potency && <span>• {item.potency}</span>}
                 {item.packSize && <span>• {item.packSize}</span>}
               </div>
-              <p className="text-sm font-medium">
+              <p className="text-sm font-medium font-sans">
                 {formatCurrency(item.price * item.quantity)}
               </p>
             </div>
@@ -203,12 +203,12 @@ export default function OrderSummary({
         <div className="space-y-2 text-sm">
           <div className="flex justify-between">
             <span>Subtotal</span>
-            <span>{formatCurrency(subtotal)}</span>
+            <span className="font-sans">{formatCurrency(subtotal)}</span>
           </div>
 
           <div className="flex justify-between">
             <span>Shipping</span>
-            <span>{formatCurrency(shippingFee)}</span>
+            <span className="font-sans">{formatCurrency(shippingFee)}</span>
           </div>
 
           {appliedCoupon && (
@@ -220,7 +220,7 @@ export default function OrderSummary({
 
           <div className="flex justify-between font-medium text-lg pt-2 border-t">
             <span>Total</span>
-            <span>{formatCurrency(total)}</span>
+            <span className="font-sans">{formatCurrency(total)}</span>
           </div>
         </div>
       </div>

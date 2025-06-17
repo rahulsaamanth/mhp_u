@@ -105,7 +105,7 @@ async function getRelatedProducts(
   productId: string,
   categoryId: string,
   form: string,
-  manufacturerId: string
+  manufacturerName: string
 ): Promise<ProductCardProps[]> {
   try {
     return await executeRawQuery<ProductCardProps>(
@@ -146,7 +146,8 @@ async function getRelatedProducts(
           -- Products from same manufacturer
           SELECT p.*, 2 as priority
           FROM "Product" p
-          WHERE p."manufacturerId" = $3 AND p."id" != $2 AND p.status = 'ACTIVE'
+          JOIN "Manufacturer" man ON p."manufacturerId" = man."id"
+          WHERE man."name" = $3 AND p."id" != $2 AND p.status = 'ACTIVE'
           AND p."categoryId" != $1  -- Exclude products already included from category
           LIMIT 3
         )
@@ -155,9 +156,10 @@ async function getRelatedProducts(
           -- Products with same form
           SELECT p.*, 3 as priority
           FROM "Product" p
+          JOIN "Manufacturer" man ON p."manufacturerId" = man."id" 
           WHERE p.form = $4 AND p."id" != $2 AND p.status = 'ACTIVE'
           AND p."categoryId" != $1  -- Exclude products already included from category
-          AND p."manufacturerId" != $3  -- Exclude products already included from manufacturer
+          AND man."name" != $3  -- Exclude products already included from manufacturer
           LIMIT 3
         )
       )
@@ -183,7 +185,7 @@ async function getRelatedProducts(
       ORDER BY p."id", priority ASC
       LIMIT 12
       `,
-      [categoryId, productId, manufacturerId, form]
+      [categoryId, productId, manufacturerName, form]
     )
   } catch (error) {
     console.error("Error fetching related products:", error)

@@ -46,6 +46,16 @@ export default function SearchByAilment() {
       displayName: "Cardiac Health",
     },
     {
+      id: "weight-care",
+      imagePath: "/assets/ailments/weight-care.png",
+      displayName: "Weight Management",
+    },
+    {
+      id: "bone-muscle-care",
+      imagePath: "/assets/ailments/bone-joint.png",
+      displayName: "Bone & Joint Health",
+    },
+    {
       id: "constipation",
       imagePath: "/assets/ailments/constipation.png",
       displayName: "Constipation Relief",
@@ -91,16 +101,6 @@ export default function SearchByAilment() {
       displayName: "Sexual Wellness",
     },
 
-    {
-      id: "weight-care",
-      imagePath: "/assets/ailments/weight-care.png",
-      displayName: "Weight Management",
-    },
-    {
-      id: "bone-muscle-care",
-      imagePath: "/assets/ailments/bone-joint.png",
-      displayName: "Bone & Joint Health",
-    },
     {
       id: "hair-care",
       imagePath: "/assets/ailments/hair-care.png",

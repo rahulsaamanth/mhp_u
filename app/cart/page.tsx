@@ -128,7 +128,7 @@ const CartItemComponent = memo(
                 max={item.totalStock ? Math.min(10, item.totalStock) : 10}
                 onChange={handleQuantityChange}
               />
-              <div className="font-medium">
+              <div className="font-medium font-sans">
                 {formatCurrency(item.price * item.quantity)}
               </div>
             </div>
@@ -481,7 +481,7 @@ const CartPage = () => {
           <div className="space-y-2">
             <div className="flex justify-between">
               <span>Subtotal</span>
-              <span>{formatCurrency(totalAmount)}</span>
+              <span className="font-sans">{formatCurrency(totalAmount)}</span>
             </div>
             <div className="flex justify-between">
               <span>Shipping</span>
@@ -489,7 +489,7 @@ const CartPage = () => {
             </div>
             <div className="flex justify-between font-bold pt-2 border-t">
               <span>Total</span>
-              <span>{formatCurrency(totalAmount)}</span>
+              <span className="font-sans">{formatCurrency(totalAmount)}</span>
             </div>
           </div>
           <Button

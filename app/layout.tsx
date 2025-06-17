@@ -10,12 +10,12 @@ import { Providers } from "@/lib/providers"
 import { generateOrganizationSchema } from "@/lib/schema"
 import type { Metadata } from "next"
 import { SessionProvider } from "next-auth/react"
-import { DM_Sans } from "next/font/google"
+import { Raleway } from "next/font/google"
 import { NuqsAdapter } from "nuqs/adapters/next/app"
 import { CartProvider } from "./cart/_components/cart-provider"
 import "./styles/globals.css"
 
-const dmSans = DM_Sans({ subsets: ["latin"] })
+const raleway = Raleway({ subsets: ["latin"] })
 
 export const metadata: Metadata = {
   title: "Homeo South - Buy Homeopathic Medicines Online",
@@ -39,7 +39,7 @@ export default async function RootLayout({
         <head>
           <JsonLd data={orgSchema} />
         </head>
-        <body className={`${dmSans.className} antialiased`}>
+        <body className={`${raleway.className} antialiased`}>
           <NuqsAdapter>
             <Providers>
               <CartProvider>

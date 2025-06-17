@@ -146,16 +146,18 @@ export default function ProductCard({
               <div className="mb-4 pt-2">
                 <p
                   className={cn(
-                    "text-2xl font-semibold space-x-3",
-                    featured && "lg:text-5xl"
+                    "font-semibold space-x-3 flex items-end",
+                    featured && "lg:text-3xl"
                   )}
                 >
                   {discount > 0 && (
-                    <span className="text-base text-gray-500 line-through">
+                    <span className="text-sm text-gray-500 line-through font-sans">
                       ₹{mrp}
                     </span>
                   )}
-                  <span className="text-brand-foreground">₹{sellingPrice}</span>
+                  <span className="text-xl text-brand-foreground font-bold font-sans">
+                    ₹{sellingPrice}
+                  </span>
                 </p>
               </div>
               <div className="grid grid-cols-2 gap-2 mt-auto">
