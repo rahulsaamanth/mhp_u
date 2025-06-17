@@ -15,7 +15,7 @@ const PrivacyPolicyPage = () => {
 
       <div className="space-y-6">
         <p className="mb-4">
-          "Mangalore Homeopathic Pharmacy" trading as "HomeoSouth" is the owner
+          "Mangalore Homoeopathic Pharmacy" trading as "HomeoSouth" is the owner
           and operator of website www.homeosouth.com and follows the regulations
           of data protection law and takes the protection of your personal data
           seriously.

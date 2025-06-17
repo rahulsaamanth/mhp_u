@@ -57,7 +57,7 @@ const ShippingPolicyPage = () => {
                 respective delivery policies apply
               </li>
               <li>
-                Mangalore Homeopathic Pharmacy (operating as HomeoSouth)
+                Mangalore Homoeopathic Pharmacy (operating as HomeoSouth)
                 reserves the right to charge for orders rejected by recipients
                 for any reason
               </li>
@@ -73,7 +73,7 @@ const ShippingPolicyPage = () => {
                 entitle customers to damages or compensation
               </li>
               <li>
-                Mangalore Homeopathic Pharmacy reserves the right to decline
+                Mangalore Homoeopathic Pharmacy reserves the right to decline
                 service to any customer without explanation
               </li>
               <li>

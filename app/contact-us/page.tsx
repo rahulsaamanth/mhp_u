@@ -23,7 +23,7 @@ const ContactPage = () => {
             <div>
               <h2 className="text-xl font-semibold mb-2">Our Location</h2>
               <p className="text-gray-700">
-                Mangalore Homeopathic Pharmacy,
+                Mangalore Homoeopathic Pharmacy,
                 <br />
                 1st floor, Serrao Bhavan,
                 <br />
@@ -70,7 +70,7 @@ const ContactPage = () => {
                 info@homeosouth.com
               </Link>
               <p className="text-xs text-gray-500 mt-1">
-                (Digital brand of Mangalore Homeopathic Pharmacy)
+                (Digital brand of Mangalore Homoeopathic Pharmacy)
               </p>
             </div>
           </div>

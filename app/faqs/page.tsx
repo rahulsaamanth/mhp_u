@@ -37,17 +37,17 @@ const FAQPage = () => {
         <Accordion type="single" collapsible className="w-full">
           <AccordionItem value="about-our-business">
             <AccordionTrigger className="text-lg">
-              What is the relationship between Mangalore Homeopathic Pharmacy
+              What is the relationship between Mangalore Homoeopathic Pharmacy
               and HomeoSouth?
             </AccordionTrigger>
             <AccordionContent>
               <p>
-                Mangalore Homeopathic Pharmacy is our registered business name
+                Mangalore Homoeopathic Pharmacy is our registered business name
                 and physical store located in Mangalore. HomeoSouth is the
                 digital brand name representing our online presence at
                 homeosouth.com. Both entities are the same business, with
                 HomeoSouth being the consumer-facing digital brand of our
-                established Mangalore Homeopathic Pharmacy business.
+                established Mangalore Homoeopathic Pharmacy business.
               </p>
             </AccordionContent>
           </AccordionItem>

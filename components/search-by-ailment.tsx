@@ -150,7 +150,7 @@ export default function SearchByAilment() {
           // slidesToScroll: 1,
         }}
         plugins={[autoPlayref.current]}
-        className="max-w-3/4 lg:max-w-3/5 mx-auto"
+        className="max-w-3/4 2xl:max-w-3/5 mx-auto"
       >
         <CarouselContent>
           {ailments.map((ailment, index) => (

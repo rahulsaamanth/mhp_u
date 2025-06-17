@@ -50,7 +50,7 @@ const RefundPolicyPage = () => {
             <h3 className="text-xl font-semibold">2. Our Right to Cancel</h3>
             <ul className="list-disc pl-8">
               <li>
-                Mangalore Homeopathic Pharmacy (operating as HomeoSouth)
+                Mangalore Homoeopathic Pharmacy (operating as HomeoSouth)
                 reserves the right to cancel any order without assigning any
                 reason or ground
               </li>
