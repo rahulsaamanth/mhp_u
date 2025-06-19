@@ -8,8 +8,9 @@ const TermsAndConditionsPage = () => {
       <div className="bg-green-50 border-l-4 border-brand p-4 mb-6">
         <p className="text-sm">
           <span className="font-semibold">Important:</span> "Mangalore
-          Homeopathic Pharmacy" is our registered business name. "HomeoSouth" is
-          the digital brand representing our online presence at homeosouth.com.
+          Homoeopathic Pharmacy" is our registered business name. "HomeoSouth"
+          is the digital brand representing our online presence at
+          homeosouth.com.
         </p>
       </div>
 
@@ -17,7 +18,7 @@ const TermsAndConditionsPage = () => {
         <h2 className="text-2xl font-bold">General Agreement</h2>
         <p>
           These Terms and Conditions govern the use of our website and the
-          purchase of homeopathic products offered by Mangalore Homeopathic
+          purchase of homeopathic products offered by Mangalore Homoeopathic
           Pharmacy, a business operating under the brand name{" "}
           <span className="uppercase bg-brand/10 p-1">HOMEOSOUTH</span> at
           homeosouth.com (hereinafter referred to as "we", "us", or "our").

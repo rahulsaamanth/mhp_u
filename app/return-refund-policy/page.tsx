@@ -9,7 +9,7 @@ const RefundPolicyPage = () => {
 
       <div className="bg-green-50 border-l-4 border-brand p-4 mb-6">
         <p className="text-sm">
-          <span className="font-semibold">Note:</span> Mangalore Homeopathic
+          <span className="font-semibold">Note:</span> Mangalore Homoeopathic
           Pharmacy is our registered business name. HomeoSouth is the digital
           brand representing our online presence.
         </p>
@@ -42,6 +42,7 @@ const RefundPolicyPage = () => {
               <li>
                 For orders placed using online payment methods, refunds will be
                 processed within 72 business hours after cancellation approval
+                and will take upto 7 business days to reflect in your account
               </li>
             </ul>
           </div>
@@ -104,7 +105,8 @@ const RefundPolicyPage = () => {
             <ul className="list-disc pl-8">
               <li>
                 For orders cancelled within 24 hours of order confirmation,
-                refunds will be processed within 72 business hours
+                refunds will be processed within 72 business hours and will take
+                upto 7 business days to reflect in your account
               </li>
               <li>
                 For orders that could not be executed, collected amounts will be

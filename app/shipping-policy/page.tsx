@@ -7,7 +7,7 @@ const ShippingPolicyPage = () => {
 
       <div className="bg-green-50 border-l-4 border-brand p-4 mb-6">
         <p className="text-sm">
-          <span className="font-semibold">Note:</span> Mangalore Homeopathic
+          <span className="font-semibold">Note:</span> Mangalore Homoeopathic
           Pharmacy is our registered business name. HomeoSouth is the digital
           brand representing our online presence.
         </p>

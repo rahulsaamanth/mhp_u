@@ -11,102 +11,104 @@ interface Ailment {
 const ailments: Ailment[] = [
   {
     id: "skin-care",
-    imagePath: "/assets/ailments/skin-care.webp",
+    imagePath: "/assets/ailments/skin-care.png",
     displayName: "Skin Care",
   },
   {
     id: "mind-care",
-    imagePath: "/assets/ailments/mind-care.webp",
-    displayName: "Mind Care",
+    imagePath: "/assets/ailments/mind-care.png",
+    displayName: "Mental Wellness",
   },
   {
     id: "stomach-care",
-    imagePath: "/assets/ailments/stomach-care.webp",
-    displayName: "Stomach Care",
+    imagePath: "/assets/ailments/stomach-care.png",
+    displayName: "Digestive Health",
   },
   {
     id: "women-care",
-    imagePath: "/assets/ailments/women-care.webp",
+    imagePath: "/assets/ailments/women-care.png",
     displayName: "Women Care",
   },
   {
     id: "respiratory-care",
-    imagePath: "/assets/ailments/respiratory-care.webp",
-    displayName: "Respiratory Care",
-  },
-  {
-    id: "constipation",
-    imagePath: "/assets/ailments/constipation.webp",
-    displayName: "Constipation",
-  },
-  {
-    id: "diabetes",
-    imagePath: "/assets/ailments/diabetes.webp",
-    displayName: "Diabetes",
-  },
-  {
-    id: "kidney-liver-care",
-    imagePath: "/assets/ailments/kidney-liver-care.webp",
-    displayName: "Kidney Liver Care",
-  },
-  {
-    id: "cough-cold-care",
-    imagePath: "/assets/ailments/cough-cold-care.webp",
-    displayName: "Cough Cold Care",
-  },
-  {
-    id: "infections",
-    imagePath: "/assets/ailments/infections.webp",
-    displayName: "Infections",
-  },
-  {
-    id: "eye-ear-care",
-    imagePath: "/assets/ailments/eye-ear-care.webp",
-    displayName: "Eye Ear Care",
-  },
-  {
-    id: "weakness",
-    imagePath: "/assets/ailments/weakness.webp",
-    displayName: "Weakness",
-  },
-  {
-    id: "sexualwellness",
-    imagePath: "/assets/ailments/sexualwellness.webp",
-    displayName: "Sexual Wellness",
+    imagePath: "/assets/ailments/respiratory-care.png",
+    displayName: "Respiratory Health",
   },
   {
     id: "cardiac-care",
-    imagePath: "/assets/ailments/cardiac-care.webp",
-    displayName: "Cardiac Care",
+    imagePath: "/assets/ailments/cardiac.png",
+    displayName: "Cardiac Health",
   },
   {
     id: "weight-care",
-    imagePath: "/assets/ailments/weight-care.webp",
-    displayName: "Weight Care",
+    imagePath: "/assets/ailments/weight-care.png",
+    displayName: "Weight Management",
   },
   {
     id: "bone-muscle-care",
-    imagePath: "/assets/ailments/bone-muscle-care.webp",
-    displayName: "Bone Muscle Care",
+    imagePath: "/assets/ailments/bone-joint.png",
+    displayName: "Bone & Joint Health",
   },
   {
-    id: "hair-care",
-    imagePath: "/assets/ailments/hair-care.webp",
-    displayName: "Hair Care",
+    id: "constipation",
+    imagePath: "/assets/ailments/constipation.png",
+    displayName: "Constipation Relief",
+  },
+  {
+    id: "diabetes",
+    imagePath: "/assets/ailments/diabetes.png",
+    displayName: "Diabetes Management",
+  },
+  {
+    id: "kidney-liver-care",
+    imagePath: "/assets/ailments/kidney-liver.png",
+    displayName: "Kidney & Liver Health",
+  },
+  {
+    id: "cough-cold-care",
+    imagePath: "/assets/ailments/cough-cold.png",
+    displayName: "Cough & Cold Relief",
+  },
+  {
+    id: "infections",
+    imagePath: "/assets/ailments/infections.png",
+    displayName: "Infection Treatment",
   },
   {
     id: "hygeine-care",
-    imagePath: "/assets/ailments/hygeine-care.webp",
-    displayName: "Hygeine Care",
+    imagePath: "/assets/ailments/personal-hygeine.png",
+    displayName: "Personal Hygiene",
   },
   {
+    id: "eye-ear-care",
+    imagePath: "/assets/ailments/ear-eye.png",
+    displayName: "Eye & Ear Health",
+  },
+  {
+    id: "weakness",
+    imagePath: "/assets/ailments/vitality.png",
+    displayName: "Energy & Vitality",
+  },
+  {
+    id: "sexualwellness",
+    imagePath: "/assets/ailments/sexual-wellness.png",
+    displayName: "Sexual Wellness",
+  },
+
+  {
+    id: "hair-care",
+    imagePath: "/assets/ailments/hair-care.png",
+    displayName: "Hair Health",
+  },
+
+  {
     id: "oral-care",
-    imagePath: "/assets/ailments/oral-care.webp",
-    displayName: "Oral Care",
+    imagePath: "/assets/ailments/oral-care.png",
+    displayName: "Dental Health",
   },
   {
     id: "baby-care",
-    imagePath: "/assets/ailments/baby-care.webp",
+    imagePath: "/assets/ailments/baby-care.png",
     displayName: "Baby Care",
   },
 ]

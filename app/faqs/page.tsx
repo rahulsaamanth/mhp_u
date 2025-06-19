@@ -17,7 +17,7 @@ const FAQPage = () => {
         <div className="bg-green-50 border-l-4 border-brand p-4 mb-6">
           <p className="text-sm">
             <span className="font-semibold">Important Note:</span> Mangalore
-            Homeopathic Pharmacy is our registered business name and physical
+            Homoeopathic Pharmacy is our registered business name and physical
             store. HomeoSouth is the digital brand representing our online
             presence.
           </p>

@@ -59,7 +59,7 @@ export default async function RootLayout({
             toastOptions={{
               duration: 1500,
             }}
-            position="top-right"
+            position="top-center"
           />
         </body>
       </html>
