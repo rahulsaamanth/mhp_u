@@ -114,7 +114,7 @@ async function getRelatedProducts(
         SELECT 
           pv."productId",
           jsonb_agg(DISTINCT pv."potency") FILTER (WHERE pv."potency" != 'NONE') AS potencies,
-          jsonb_agg(DISTINCT pv."packSize") AS "packSizes"
+          jsonb_agg(DISTINCT pv."packSize" ORDER BY pv."packSize") AS "packSizes"
         FROM "ProductVariant" pv
         GROUP BY pv."productId"
       ),
@@ -131,7 +131,7 @@ async function getRelatedProducts(
         WHERE pv."variantImage" IS NOT NULL 
           AND pv."variantImage" != '{}' 
           AND array_length(pv."variantImage", 1) > 0
-        ORDER BY pv."productId", pv."id" ASC
+        ORDER BY pv."productId", pv."packSize" ASC, pv."id" ASC
       ),
       RelatedProducts AS (
         (

@@ -72,9 +72,9 @@ export default async function PopularProducts() {
         </h2>
         <div className="h-0.5 flex-1 bg-gradient-to-l from-transparent to-primary"></div>
       </div>
-      <div className="space-y-8 max-w-fit mx-auto py-8 md:px-16 xl:px-28">
+      <div className="space-y-8 max-w-3/5 mx-auto py-8">
         {popularProducts.length > 0 && (
-          <div className="grid grid-cols-1 2xl:grid-cols-2 gap-8 px-4">
+          <div className="grid grid-cols-1 2xl:grid-cols-2 gap-8">
             {/* Left side - featured product (full height) */}
             <div className="h-full flex lg:w-2/3 lg:mx-auto 2xl:w-auto 2xl:mx-0 items-center justify-center">
               <ProductCard

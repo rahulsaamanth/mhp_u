@@ -182,45 +182,57 @@ async function executeProductsQuery(
 ): Promise<ProductCardProps[]> {
   return await executeRawQuery<ProductCardProps>(
     `
-    WITH CategoryProducts AS (
-      SELECT
-        p."id",
-        p."name",
-        p."form",
-        p."unit",
-        c."name" as "category",
-        m."name" as "manufacturer",
-        (SELECT pv."id" FROM "ProductVariant" pv WHERE pv."productId" = p."id" LIMIT 1) as "variantId",
-        (SELECT pv."variantImage" FROM "ProductVariant" pv WHERE pv."productId" = p."id" AND pv."variantImage" IS NOT NULL AND pv."variantImage" != '{}' AND array_length(pv."variantImage", 1) > 0 ORDER BY pv."id" ASC LIMIT 1) as "image",
-        (SELECT pv."mrp" FROM "ProductVariant" pv WHERE pv."productId" = p."id" LIMIT 1) as "mrp",
-        (SELECT pv."sellingPrice" FROM "ProductVariant" pv WHERE pv."productId" = p."id" LIMIT 1) as "sellingPrice",
-        (SELECT pv."discountType" FROM "ProductVariant" pv WHERE pv."productId" = p."id" LIMIT 1) as "discountType",
-        (SELECT pv."discount" FROM "ProductVariant" pv WHERE pv."productId" = p."id" LIMIT 1) as "discount",
-        (SELECT jsonb_agg(DISTINCT pv."packSize") FROM "ProductVariant" pv WHERE pv."productId" = p."id") as "packSizes",
-        (
-          CASE 
-            WHEN (
-              SELECT COUNT(DISTINCT pv."potency") = 1 AND MAX(pv."potency") = 'NONE'  
-              FROM "ProductVariant" pv
-              WHERE pv."productId" = p."id"
-            ) THEN NULL
-            ELSE (
-              SELECT jsonb_agg(DISTINCT pv."potency")
-              FROM "ProductVariant" pv
-              WHERE pv."productId" = p."id"
-            )
-          END
-        ) as "potencies"
-      FROM "Product" p
-      JOIN "Category" c ON p."categoryId" = c."id"
-      JOIN "Manufacturer" m ON p."manufacturerId" = m."id"
-      WHERE ${conditions}
-      AND p.status = 'ACTIVE'
-      GROUP BY p."id", c."name", m."name"
-      ORDER BY p.name ASC
+    WITH ProductVariants AS (
+      SELECT 
+        pv."productId",
+        jsonb_agg(DISTINCT pv."potency") FILTER (WHERE pv."potency" != 'NONE') AS potencies,
+        jsonb_agg(DISTINCT pv."packSize" ORDER BY pv."packSize") AS packsizes
+      FROM "ProductVariant" pv
+      GROUP BY pv."productId"
+    ),
+    FirstVariantWithImage AS (
+      SELECT DISTINCT ON (pv."productId")
+        pv."id" AS variantid,
+        pv."productId",
+        pv."variantImage" AS image,
+        pv."mrp",
+        pv."sellingPrice",
+        pv."discountType",
+        pv."discount"
+      FROM "ProductVariant" pv
+      WHERE pv."variantImage" IS NOT NULL 
+        AND pv."variantImage" != '{}' 
+        AND array_length(pv."variantImage", 1) > 0
+      ORDER BY pv."productId", pv."packSize" ASC, pv."id" ASC
     )
-    SELECT * FROM CategoryProducts
-  `,
+    SELECT
+      p."id",
+      p."name",
+      p."form",
+      p."unit",
+      c."name" as "category",
+      m."name" as "manufacturer",
+      fv.variantid AS "variantId",
+      fv.image,
+      fv.mrp,
+      fv."sellingPrice",
+      fv."discountType",
+      fv.discount,
+      CASE 
+        WHEN pvs.potencies = '[null]' OR pvs.potencies IS NULL THEN NULL
+        ELSE pvs.potencies
+      END AS "potencies",
+      pvs.packsizes AS "packSizes"
+    FROM "Product" p
+    JOIN "Category" c ON p."categoryId" = c."id"
+    JOIN "Manufacturer" m ON p."manufacturerId" = m."id"
+    LEFT JOIN ProductVariants pvs ON pvs."productId" = p."id"
+    LEFT JOIN FirstVariantWithImage fv ON fv."productId" = p."id"
+    WHERE ${conditions}
+    AND p.status = 'ACTIVE'
+    GROUP BY p."id", c."name", m."name", fv.variantid, fv.image, fv.mrp, fv."sellingPrice", fv."discountType", fv.discount, pvs.potencies, pvs.packsizes
+    ORDER BY p.name ASC
+    `,
     params
   )
 }
@@ -231,44 +243,56 @@ async function executeAllProductsQuery(
 ): Promise<ProductCardProps[]> {
   return await executeRawQuery<ProductCardProps>(
     `
-    WITH CategoryProducts AS (
-      SELECT
-        p."id",
-        p."name",
-        p."form",
-        p."unit",
-        c."name" as "category",
-        m."name" as "manufacturer",
-        (SELECT pv."id" FROM "ProductVariant" pv WHERE pv."productId" = p."id" LIMIT 1) as "variantId",
-        (SELECT pv."variantImage" FROM "ProductVariant" pv WHERE pv."productId" = p."id" AND pv."variantImage" IS NOT NULL AND pv."variantImage" != '{}' AND array_length(pv."variantImage", 1) > 0 ORDER BY pv."id" ASC LIMIT 1) as "image",
-        (SELECT pv."mrp" FROM "ProductVariant" pv WHERE pv."productId" = p."id" LIMIT 1) as "mrp",
-        (SELECT pv."sellingPrice" FROM "ProductVariant" pv WHERE pv."productId" = p."id" LIMIT 1) as "sellingPrice",
-        (SELECT pv."discountType" FROM "ProductVariant" pv WHERE pv."productId" = p."id" LIMIT 1) as "discountType",
-        (SELECT pv."discount" FROM "ProductVariant" pv WHERE pv."productId" = p."id" LIMIT 1) as "discount",
-        (SELECT jsonb_agg(DISTINCT pv."packSize") FROM "ProductVariant" pv WHERE pv."productId" = p."id") as "packSizes",
-        (
-          CASE 
-            WHEN (
-              SELECT COUNT(DISTINCT pv."potency") = 1 AND MAX(pv."potency") = 'NONE'  
-              FROM "ProductVariant" pv
-              WHERE pv."productId" = p."id"
-            ) THEN NULL
-            ELSE (
-              SELECT jsonb_agg(DISTINCT pv."potency")
-              FROM "ProductVariant" pv
-              WHERE pv."productId" = p."id"
-            )
-          END
-        ) as "potencies"
-      FROM "Product" p
-      JOIN "Category" c ON p."categoryId" = c."id"
-      JOIN "Manufacturer" m ON p."manufacturerId" = m."id"
-      WHERE ${conditions}
-      GROUP BY p."id", c."name", m."name"
-      ORDER BY p.name ASC
+    WITH ProductVariants AS (
+      SELECT 
+        pv."productId",
+        jsonb_agg(DISTINCT pv."potency") FILTER (WHERE pv."potency" != 'NONE') AS potencies,
+        jsonb_agg(DISTINCT pv."packSize" ORDER BY pv."packSize") AS packsizes
+      FROM "ProductVariant" pv
+      GROUP BY pv."productId"
+    ),
+    FirstVariantWithImage AS (
+      SELECT DISTINCT ON (pv."productId")
+        pv."id" AS variantid,
+        pv."productId",
+        pv."variantImage" AS image,
+        pv."mrp",
+        pv."sellingPrice",
+        pv."discountType",
+        pv."discount"
+      FROM "ProductVariant" pv
+      WHERE pv."variantImage" IS NOT NULL 
+        AND pv."variantImage" != '{}' 
+        AND array_length(pv."variantImage", 1) > 0
+      ORDER BY pv."productId", pv."packSize" ASC, pv."id" ASC
     )
-    SELECT * FROM CategoryProducts
-  `,
+    SELECT
+      p."id",
+      p."name",
+      p."form",
+      p."unit",
+      c."name" as "category",
+      m."name" as "manufacturer",
+      fv.variantid AS "variantId",
+      fv.image,
+      fv.mrp,
+      fv."sellingPrice",
+      fv."discountType",
+      fv.discount,
+      CASE 
+        WHEN pvs.potencies = '[null]' OR pvs.potencies IS NULL THEN NULL
+        ELSE pvs.potencies
+      END AS "potencies",
+      pvs.packsizes AS "packSizes"
+    FROM "Product" p
+    JOIN "Category" c ON p."categoryId" = c."id"
+    JOIN "Manufacturer" m ON p."manufacturerId" = m."id"
+    LEFT JOIN ProductVariants pvs ON pvs."productId" = p."id"
+    LEFT JOIN FirstVariantWithImage fv ON fv."productId" = p."id"
+    WHERE ${conditions}
+    GROUP BY p."id", c."name", m."name", fv.variantid, fv.image, fv.mrp, fv."sellingPrice", fv."discountType", fv.discount, pvs.potencies, pvs.packsizes
+    ORDER BY p.name ASC
+    `,
     params
   )
 }

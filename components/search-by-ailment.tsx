@@ -146,43 +146,34 @@ export default function SearchByAilment() {
           align: "start",
           // dragFree: true,
           containScroll: "trimSnaps",
-
           // slidesToScroll: 1,
         }}
         plugins={[autoPlayref.current]}
-        className="max-w-3/4 2xl:max-w-3/5 mx-auto"
+        className="max-w-3/5 mx-auto"
       >
-        <CarouselContent>
+        <CarouselContent className="mx-auto">
           {ailments.map((ailment, index) => (
             <CarouselItem
               key={index}
-              className="basis-full sm:basis-1/2 lg:basis-1/3 xl:basis-1/4 2xl:basis-1/6"
+              className="basis-full sm:basis-1/2 lg:basis-1/3 2xl:basis-1/5 p-0"
             >
-              <Card className="w-full border-0 outline-0 shadow-none cursor-default px-1">
-                <CardContent className="flex items-center justify-center p-2">
+              <Card className="w-full h-full border-0 outline-0 shadow-none cursor-default">
+                <CardContent className="flex flex-col items-center justify-center h-full">
                   <Link
                     href={`/products/all?ailment=${ailment.id}`}
-                    className="block focus:outline-none focus-visible:ring-2 focus-visible:ring-brand/40 rounded-md"
+                    className="block w-full h-full focus:outline-none focus-visible:ring-2 focus-visible:ring-brand/40 rounded-md"
                   >
-                    <div
-                      // className="relative outline outline-zinc-200 p-2 rounded-xl hover:outline-none focus:outline-none active:outline-none
-                      // transition-all duration-200
-                      // before:content-[''] before:absolute before:inset-0 before:outline-brand-foreground before:outline-dashed before:outline-2
-                      // before:opacity-0 before:rounded-xl before:-outline-offset-1
-                      // hover:before:opacity-100 focus:before:opacity-100 active:before:opacity-100
-                      // before:transition-opacity before:duration-500 before:pointer-events-none cursor-pointer"
-                      className="outline-1 outline-primary-foreground border-transparent hover:border-brand-foreground focus:border-brand-foreground active:border-brand-foreground border-2 hover:border-dashed focus:border-dashed active:border-dashed -outline-offset-2 ring-1 ring-stone-200 hover:ring-0 focus:ring-0 active:ring-0 transition-all duration-300 ease-out shadow-md hover:shadow-none focus:shadow-none active:shadow-none rounded-xl p-2"
-                    >
+                    <div className="flex flex-col items-center justify-center h-full outline-1 outline-primary-foreground border-transparent hover:border-brand-foreground focus:border-brand-foreground active:border-brand-foreground border-2 hover:border-dashed focus:border-dashed active:border-dashed -outline-offset-2 ring-1 ring-stone-200 hover:ring-0 focus:ring-0 active:ring-0 transition-all duration-300 ease-out shadow-md hover:shadow-none focus:shadow-none active:shadow-none rounded-xl p-2">
                       <Image
                         src={ailment.imagePath}
                         alt={ailment.displayName}
                         width={200}
                         height={160}
                         quality={100}
-                        className="size-48 object-cover rounded-xl"
+                        className="size-36 object-cover"
                         loading="lazy"
                       />
-                      <h3 className="text-center font-semibold py-2 uppercase text-sm text-nowrap">
+                      <h3 className="text-center font-semibold py-2 uppercase text-xs xl:text-sm text-nowrap">
                         {ailment.displayName}
                       </h3>
                     </div>

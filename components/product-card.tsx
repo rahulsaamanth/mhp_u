@@ -52,7 +52,7 @@ export default function ProductCard({
       href={`/product/${id}`}
       className="w-full h-fit p-0 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand/40 rounded-sm"
     >
-      <Card className="group w-full h-fit flex flex-col cursor-pointer rounded-none active:scale-[0.98] outline-1 outline-primary-foreground border-transparent hover:border-brand focus:border-brand active:border-brand border-2 hover:border-dashed focus:border-dashed active:border-dashed -outline-offset-2 ring-1 ring-stone-200 hover:ring-0 focus:ring-0 active:ring-0 transition-all duration-300 ease-out shadow-md hover:shadow-none focus:shadow-none active:shadow-none">
+      <Card className="group w-full h-fit flex flex-col cursor-pointer rounded-none active:scale-[0.98] outline-1 outline-primary-foreground border-transparent hover:border-brand focus:border-brand active:border-brand border-2 hover:border-dashed focus:border-dashed active:border-dashed -outline-offset-2 ring-1 ring-stone-200 hover:ring-0 focus:ring-0 active:ring-0 transition-all duration-500 ease-out shadow-md hover:shadow-none focus:shadow-none active:shadow-none">
         <CardContent className="p-0 flex flex-col">
           <div className="relative flex flex-col">
             {discount > 0 && (
@@ -63,7 +63,7 @@ export default function ProductCard({
             <div
               className={cn(
                 "w-full overflow-hidden flex-shrink-0",
-                featured ? "h-[240px] md:h-[360px] 2xl:h-[540px]" : "h-48"
+                featured ? "h-[240px] md:h-[360px] 2xl:h-[460px]" : "h-48"
               )}
             >
               <FallbackImage
@@ -72,7 +72,7 @@ export default function ProductCard({
                 alt={name}
                 width={500}
                 height={500}
-                className="w-full h-full object-contain rounded-lg p-4 my-2 group-hover:scale-105 transition-all duration-400 ease-out"
+                className="w-full h-full object-contain rounded-lg p-4 my-2 group-hover:scale-105 transition-all duration-500 ease-out"
                 unoptimized={true}
               />
             </div>
@@ -83,11 +83,7 @@ export default function ProductCard({
                   featured && "md:text-lg lg:text-xl xl:text-2xl"
                 )}
               >
-                <span
-                  className="underline-animate w-auto inline-block text-center group-active:after:w-full 
-          group-focus:after:w-full md:group-hover:after:w-full"
-                  title={name}
-                >
+                <span className="underline-animate text-balance" title={name}>
                   {`${name}`}
                 </span>
               </h3>
