@@ -149,13 +149,13 @@ export default function SearchByAilment() {
           // slidesToScroll: 1,
         }}
         plugins={[autoPlayref.current]}
-        className="max-w-3/5 mx-auto"
+        className="w-4/5 2xl:max-w-3/5 mx-auto"
       >
         <CarouselContent className="mx-auto">
           {ailments.map((ailment, index) => (
             <CarouselItem
               key={index}
-              className="basis-full sm:basis-1/2 lg:basis-1/3 2xl:basis-1/5 p-0"
+              className="basis-full sm:basis-1/3 lg:basis-1/4 2xl:basis-1/5 p-0"
             >
               <Card className="w-full h-full border-0 outline-0 shadow-none cursor-default">
                 <CardContent className="flex flex-col items-center justify-center h-full">
@@ -184,13 +184,13 @@ export default function SearchByAilment() {
           ))}
         </CarouselContent>
         <CarouselPrevious
-          className="absolute -left-6 sm:-left-16 md:-left-24 top-1/2 transform -translate-y-1/2 h-8 w-8 sm:h-10 sm:w-10 bg-brand"
+          className="absolute -left-4 sm:-left-10 md:-left-16 lg:-left-20 top-1/2 transform -translate-y-1/2 h-8 w-8 sm:h-10 sm:w-10 bg-brand hover:bg-brand/90 shadow-md z-10"
           variant="default"
           onMouseDown={handleNavigation}
         />
 
         <CarouselNext
-          className="absolute -right-6 sm:-right-16 md:-right-24 top-1/2 transform -translate-y-1/2 h-8 w-8 sm:h-10 sm:w-10 bg-brand"
+          className="absolute -right-4 sm:-right-10 md:-right-16 lg:-right-20 top-1/2 transform -translate-y-1/2 h-8 w-8 sm:h-10 sm:w-10 bg-brand hover:bg-brand/90 shadow-md z-10"
           variant="default"
           onMouseDown={handleNavigation}
         />

@@ -72,7 +72,7 @@ export default function Hero() {
         setApi={setApi}
       >
         <CarouselContent>
-          <CarouselItem className="h-[50vh] md:h-[60vh]">
+          <CarouselItem className="h-[48vh] xs:h-[40vh]">
             <section className="h-full relative min-w-full w-full overflow-hidden">
               <div className="absolute inset-0 z-0 lg:hidden">
                 <Image
@@ -101,11 +101,11 @@ export default function Hero() {
                 </div>
               </div>
 
-              <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-20 h-full">
-                <div className="max-w-xl space-y-8 @min-xs:space-y-16 sm:space-y-12 xl:space-y-20 z-10 h-full grid place-content-center">
-                  <div className="space-y-3 sm:space-y-4 xl:space-y-10">
+              <div className="max-w-7xl mx-auto px-3 sm:px-4 lg:px-6 relative z-20 h-full">
+                <div className="max-w-xs xs:max-w-sm sm:max-w-md md:max-w-lg lg:max-w-xl space-y-3 xs:space-y-4 sm:space-y-5 xl:space-y-6 z-10 h-full grid place-content-center">
+                  <div className="space-y-2 sm:space-y-3 xl:space-y-6">
                     <h1
-                      className="text-4xl sm:text-5xl lg:text-6xl font-bold leading-tight tracking-tight text-white"
+                      className="text-2xl xs:text-3xl sm:text-4xl lg:text-5xl font-bold leading-tight tracking-tight text-white"
                       style={{
                         textShadow: "0 2px 4px rgba(0, 0, 0, 0.3)",
                       }}
@@ -114,7 +114,7 @@ export default function Hero() {
                     </h1>
 
                     <span
-                      className="text-base sm:text-xl text-gray-200 max-w-lg italic hidden xl:inline-block"
+                      className="text-base sm:text-lg lg:text-xl text-gray-200 max-w-xs md:max-w-md lg:max-w-lg italic hidden md:inline-block"
                       style={{
                         textShadow: "0 1px 2px rgba(0, 0, 0, 0.5)",
                       }}
@@ -124,17 +124,17 @@ export default function Hero() {
                     </span>
                   </div>
 
-                  <div className="space-y-4 xl:space-y-6">
-                    <div className="bg-white/30 backdrop-blur-lg p-3 inline-block text-sm sm:text-base border border-white/40 shadow-md transition-all duration-300 hover:bg-white/40 leading-relaxed rounded-lg">
+                  <div className="space-y-3 sm:space-y-4 xl:space-y-6 flex flex-col">
+                    <div className="bg-white/30 backdrop-blur-lg p-1.5 sm:p-2 inline-block text-xs xs:text-sm sm:text-base border border-white/40 shadow-md transition-all duration-300 hover:bg-white/40 leading-relaxed rounded-lg self-start">
                       <span
                         className="font-bold sm:font-semibold text-white"
                         style={{ textShadow: "0 1px 1px rgba(0, 0, 0, 0.4)" }}
                       >
-                        Use code:{" "}
+                        Use:{" "}
                       </span>
                       <span
                         onClick={copyToClipboard}
-                        className="relative bg-white text-brand p-1 sm:px-3.5 sm:py-2 rounded font-bold cursor-copy hover:bg-gray-100 active:bg-gray-200 shadow-sm transition-all duration-300 group"
+                        className="relative bg-white text-brand px-1.5 py-0.5 xs:p-1.5 sm:px-2.5 sm:py-1.5 rounded font-bold cursor-copy hover:bg-gray-100 active:bg-gray-200 shadow-sm transition-all duration-300 group"
                         aria-label="Copy coupon code WELCOME10"
                       >
                         WELCOME10
@@ -146,21 +146,19 @@ export default function Hero() {
                         <span className="absolute inset-0 border-2 border-transparent group-hover:border-white/40 rounded pointer-events-none"></span>
                       </span>
                       <span
-                        className="ml-2 text-white font-bold sm:font-semibold"
+                        className="ml-1 xs:ml-2 text-white text-xs xs:text-sm sm:text-base font-bold sm:font-semibold"
                         style={{ textShadow: "0 1px 1px rgba(0, 0, 0, 0.4)" }}
                       >
-                        for 10% off{" "}
-                        <span className="max-sm:hidden">
-                          on orders above ₹300
-                        </span>
+                        10% off{" "}
+                        <span className="max-sm:hidden">above ₹300</span>
                       </span>
                     </div>
 
                     <Link
                       href="/products/all"
-                      className="inline-flex items-center justify-center cursor-pointer px-4 py-3 bg-transparent text-white hover:text-brand border-2 hover:bg-white hover:shadow-lg font-bold transition-all duration-300 tracking-wide focus:bg-white focus:text-brand"
+                      className="inline-flex items-center justify-center cursor-pointer px-2.5 py-1.5 xs:px-3.5 xs:py-2 sm:px-4 sm:py-2.5 bg-transparent text-white hover:text-brand border border-white hover:bg-white hover:shadow-lg font-bold transition-all duration-300 tracking-wide focus:bg-white focus:text-brand text-sm xs:text-base sm:text-lg self-start"
                     >
-                      Shop & Save Now
+                      Shop Now & Save
                     </Link>
                   </div>
                 </div>
@@ -168,7 +166,7 @@ export default function Hero() {
             </section>
           </CarouselItem>
 
-          <CarouselItem className="h-[50vh] md:h-[60vh]">
+          <CarouselItem className="h-[48vh] xs:h-[40vh]">
             <section className="h-full relative min-w-full w-full overflow-hidden">
               <div className="absolute inset-0 z-0 lg:hidden">
                 <Image
@@ -197,11 +195,11 @@ export default function Hero() {
                 </div>
               </div>
 
-              <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-20 h-full">
-                <div className="max-w-xl @max-xs:space-y-4 space-y-6 sm:space-y-8 xl:space-y-10 z-10 h-full grid place-content-center">
-                  <div className="space-y-3">
+              <div className="max-w-7xl mx-auto px-3 sm:px-4 lg:px-6 relative z-20 h-full">
+                <div className="max-w-xs xs:max-w-sm sm:max-w-md md:max-w-lg lg:max-w-xl space-y-3 xs:space-y-4 sm:space-y-5 z-10 h-full grid place-content-center">
+                  <div className="space-y-2 sm:space-y-3">
                     <h2
-                      className="text-3xl sm:text-4xl lg:text-5xl font-bold leading-tight tracking-tight text-white"
+                      className="text-2xl xs:text-2xl sm:text-3xl lg:text-4xl font-bold leading-tight tracking-tight text-white"
                       style={{
                         textShadow: "0 2px 4px rgba(0, 0, 0, 0.3)",
                       }}
@@ -210,7 +208,7 @@ export default function Hero() {
                     </h2>
 
                     <span
-                      className="text-base sm:text-xl text-gray-200 max-w-lg hidden xl:inline-block italic"
+                      className="text-base sm:text-lg lg:text-xl text-gray-200 max-w-xs md:max-w-md lg:max-w-lg hidden md:inline-block italic"
                       style={{
                         textShadow: "0 1px 2px rgba(0, 0, 0, 0.5)",
                       }}
@@ -220,7 +218,7 @@ export default function Hero() {
                     </span>
                   </div>
 
-                  <div className="grid grid-cols-2 xs:grid-cols-3 sm:grid-cols-3 lg:grid-cols-6 gap-2 sm:gap-3">
+                  <div className="grid grid-cols-2 xs:grid-cols-2 sm:grid-cols-3 lg:grid-cols-3 xl:grid-cols-4 gap-1 xs:gap-1.5 sm:gap-2">
                     {[
                       "sbl.png",
                       "Reckeweg.png",
@@ -237,7 +235,7 @@ export default function Hero() {
                     ].map((brand, index) => (
                       <div
                         key={index}
-                        className={`bg-white/90 backdrop-blur-sm rounded-lg p-1.5 xs:p-2 shadow-lg h-9 xs:h-12 sm:h-16 md:h-16 lg:h-16 w-full flex items-center justify-center transition-all duration-300 hover:scale-105 hover:bg-white hover:shadow-xl
+                        className={`bg-white/90 backdrop-blur-sm rounded-lg p-1 xs:p-1.5 sm:p-2 shadow-lg h-8 xs:h-10 sm:h-12 md:h-14 lg:h-14 w-full flex items-center justify-center transition-all duration-300 hover:scale-105 hover:bg-white hover:shadow-xl
                  ${index >= 4 && index < 6 ? "hidden md:flex" : ""} 
                  ${index >= 6 && index < 8 ? "hidden xl:flex" : ""}
                  ${index >= 8 ? "hidden xl:flex" : ""}
@@ -254,10 +252,10 @@ export default function Hero() {
                     ))}
                   </div>
 
-                  <div>
+                  <div className="mt-1 sm:mt-2">
                     <Link
                       href="/brands"
-                      className="inline-flex items-center justify-center cursor-pointer px-4 py-2 bg-transparent text-white hover:text-stone-900 border-2 hover:bg-white hover:shadow-lg font-bold transition-all duration-300 tracking-wide focus:bg-white focus:text-stone-900"
+                      className="inline-flex items-center justify-center cursor-pointer px-2.5 py-1.5 xs:px-3.5 xs:py-2 sm:px-4 sm:py-2.5 bg-transparent text-white hover:text-stone-900 border border-white hover:bg-white hover:shadow-lg font-bold transition-all duration-300 tracking-wide focus:bg-white focus:text-stone-900 text-sm xs:text-base sm:text-lg self-start"
                     >
                       Explore All Brands
                     </Link>
@@ -268,7 +266,7 @@ export default function Hero() {
           </CarouselItem>
         </CarouselContent>
 
-        <div className="flex justify-center space-x-1.5 absolute bottom-4 left-0 right-0">
+        <div className="flex justify-center space-x-1.5 absolute bottom-2 xs:bottom-3 sm:bottom-4 left-0 right-0">
           {[0, 1].map((index) => (
             <button
               key={index}
@@ -284,12 +282,12 @@ export default function Hero() {
         </div>
 
         <CarouselPrevious
-          className="hidden xl:block absolute left-0 top-1/2 -translate-y-1/2 h-28 w-14 rounded-r-full rounded-l-none border-2 border-white/70 bg-brand/70 backdrop-blur-sm hover:bg-brand/90 transition-all shadow-lg z-30 text-white"
-          size="lg"
+          className="hidden xl:block absolute left-0 top-1/2 -translate-y-1/2 h-10 sm:h-14 xl:h-28 w-10 sm:w-14 rounded-r-full rounded-l-none border-2 border-white/70 bg-brand/70 backdrop-blur-sm hover:bg-brand/90 transition-all shadow-lg z-30 text-white"
+          size="sm"
         />
         <CarouselNext
-          className="hidden xl:block absolute right-0 top-1/2 -translate-y-1/2 h-28 w-14 rounded-l-full rounded-r-none border-2 border-white/70 bg-brand/70 backdrop-blur-sm hover:bg-brand/90 transition-all shadow-lg z-30 text-white"
-          size="lg"
+          className="hidden xl:block absolute right-0 top-1/2 -translate-y-1/2 h-10 sm:h-14 xl:h-28 w-10 sm:w-14 rounded-l-full rounded-r-none border-2 border-white/70 bg-brand/70 backdrop-blur-sm hover:bg-brand/90 transition-all shadow-lg z-30 text-white"
+          size="sm"
         />
       </Carousel>
     </div>
