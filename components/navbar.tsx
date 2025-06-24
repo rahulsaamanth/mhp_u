@@ -181,18 +181,18 @@ const DesktopNavigation = () => {
               homeopathicPopover.onOpenChange(false)
             }}
           />
-          <SubmenuLink
+          {/* <SubmenuLink
             href="/products/bach-flower"
             title="Bach Flower Remedies"
             onClick={() => {
               homeopathicPopover.onOpenChange(false)
             }}
-          />
+          /> */}
         </PopoverContent>
       </Popover>
 
       {/* PERSONAL CARE */}
-      <Popover
+      {/* <Popover
         open={personalCarePopover.isOpen}
         onOpenChange={personalCarePopover.onOpenChange}
       >
@@ -247,7 +247,7 @@ const DesktopNavigation = () => {
             }}
           />
         </PopoverContent>
-      </Popover>
+      </Popover> */}
 
       {/* AILMENT */}
       <Button
@@ -282,7 +282,7 @@ const DesktopNavigation = () => {
       </Button>
 
       {/* OTHER PRODUCTS */}
-      <Popover
+      {/* <Popover
         open={otherProductsPopover.isOpen}
         onOpenChange={otherProductsPopover.onOpenChange}
       >
@@ -326,7 +326,7 @@ const DesktopNavigation = () => {
             }}
           />
         </PopoverContent>
-      </Popover>
+      </Popover> */}
 
       {/* ABOUT HOMEOPATHY */}
       <Button
