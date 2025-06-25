@@ -80,6 +80,9 @@ const RefundPolicyPage = () => {
               <li>Product(s) delivered are past their expiration date</li>
               <li>Product(s) delivered do not match your order</li>
             </ul>
+            <p className="mt-3 font-medium text-brand">
+              We offer 1 day return if the product is damaged or defective.
+            </p>
           </div>
 
           <div>
@@ -121,6 +124,18 @@ const RefundPolicyPage = () => {
                 For order values above ₹1000 and wholesale/bulk orders, refund
                 processing time may vary based on payment method and banking
                 processes
+              </li>
+              <li>
+                <span className="font-medium">
+                  Approved refunds will be credited to the original payment
+                  method within 5-7 business days
+                </span>
+              </li>
+              <li>
+                <span className="font-medium">
+                  Exchange/Replacement deliveries will be done within 5-7
+                  business days
+                </span>
               </li>
             </ul>
           </div>

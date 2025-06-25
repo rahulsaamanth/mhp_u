@@ -69,6 +69,11 @@ const ShippingPolicyPage = () => {
             <ul className="list-disc pl-8">
               <li>We strive to ensure prompt delivery of all orders</li>
               <li>
+                <span className="font-medium">
+                  All orders will be delivered within 5-7 business days
+                </span>
+              </li>
+              <li>
                 Delayed or early deliveries, regardless of reason, do not
                 entitle customers to damages or compensation
               </li>

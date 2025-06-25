@@ -150,7 +150,7 @@ export default function Footer() {
                 </li>
                 <li>
                   <Link
-                    href="/products/homeopathy/mother-tinctures"
+                    href="/products/homeopathy/mothertinctures"
                     className="transition-all duration-200 active:scale-95 active:text-gray-400 relative after:content-[''] after:absolute after:bottom-0 after:left-0 after:h-[1px] after:bg-current after:w-0 hover:after:w-full after:transition-all after:duration-300"
                   >
                     Mother Tinctures
@@ -166,7 +166,7 @@ export default function Footer() {
                 </li>
                 <li>
                   <Link
-                    href="/products/homeopathy/bio-combinations"
+                    href="/products/homeopathy/biocombinations"
                     className="transition-all duration-200 active:scale-95 active:text-gray-400 relative after:content-[''] after:absolute after:bottom-0 after:left-0 after:h-[1px] after:bg-current after:w-0 hover:after:w-full after:transition-all after:duration-300"
                   >
                     Bio Combinations
@@ -174,6 +174,7 @@ export default function Footer() {
                 </li>
               </ul>
             </div>
+            {/* Commented out Other Products section
             <div>
               <h4 className="font-semibold mb-3">Other Products</h4>
               <ul className="space-y-2 text-sm">
@@ -211,6 +212,7 @@ export default function Footer() {
                 </li>
               </ul>
             </div>
+            */}
             <div>
               <h4 className="font-semibold mb-3">Support</h4>
               <ul className="space-y-2 text-sm">

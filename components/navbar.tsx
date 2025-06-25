@@ -174,13 +174,13 @@ const DesktopNavigation = () => {
               homeopathicPopover.onOpenChange(false)
             }}
           />
-          <SubmenuLink
+          {/* <SubmenuLink
             href="/products/trituration"
             title="Trituration Tablets"
             onClick={() => {
               homeopathicPopover.onOpenChange(false)
             }}
-          />
+          /> */}
           {/* <SubmenuLink
             href="/products/bach-flower"
             title="Bach Flower Remedies"
@@ -250,7 +250,7 @@ const DesktopNavigation = () => {
       </Popover> */}
 
       {/* AILMENT */}
-      <Button
+      {/* <Button
         variant="link"
         className={cn(
           "h-auto cursor-pointer p-0 font-medium hover:text-brand hover:underline hover:underline-offset-8 text-xs lg:text-base text-brand-foreground",
@@ -263,7 +263,7 @@ const DesktopNavigation = () => {
         >
           AILMENT
         </Link>
-      </Button>
+      </Button> */}
 
       {/* BRANDS */}
       <Button
