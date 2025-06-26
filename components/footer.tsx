@@ -174,7 +174,7 @@ export default function Footer() {
                 </li>
               </ul>
             </div>
-            {/* Commented out Other Products section
+            Commented out Other Products section
             <div>
               <h4 className="font-semibold mb-3">Other Products</h4>
               <ul className="space-y-2 text-sm">
@@ -212,7 +212,6 @@ export default function Footer() {
                 </li>
               </ul>
             </div>
-            */}
             <div>
               <h4 className="font-semibold mb-3">Support</h4>
               <ul className="space-y-2 text-sm">

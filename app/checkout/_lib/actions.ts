@@ -12,12 +12,7 @@ import {
   payment,
 } from "@rahulsaamanth/mhp-schema"
 import { and, eq, gt, isNull, or } from "drizzle-orm"
-import Razorpay from "razorpay"
-
-const razorpay = new Razorpay({
-  key_id: process.env.RAZORPAY_KEY_ID!,
-  key_secret: process.env.RAZORPAY_KEY_SECRET!,
-})
+import crypto from "crypto"
 
 export type CouponData = {
   id: string
@@ -116,15 +111,20 @@ export type CheckoutFormData = {
   city: string
   state: string
   pincode: string
-  paymentMethod: "COD" | "ONLINE"
+  paymentMethod: "COD" | "PHONEPE"
 }
 
 export type CreateOrderResponse = {
   orderId: string | null
-  razorpayOrderId: string | null
   amount: number
   success: boolean
   message: string
+  phonePeData?: {
+    merchantTransactionId: string
+    merchantUserId: string
+    checksum: string
+    [key: string]: any
+  }
 }
 
 export async function processCheckout(
@@ -221,57 +221,68 @@ export async function processCheckout(
         success: true,
         orderId: _order.id,
         message: "Order placed successfully! You can pay cash on delivery.",
-        razorpayOrderId: null,
         amount: totalAmount,
       }
-    }
+    } else if (data.paymentMethod === "PHONEPE") {
+      // Generate a unique transaction ID
+      const merchantTransactionId = `PPTX${Date.now()}${Math.floor(
+        Math.random() * 1000
+      )}`
+      const merchantUserId = `MUID${user.id}`
 
-    if (data.paymentMethod === "ONLINE") {
-      try {
-        const razorpayOrder = await razorpay.orders.create({
-          amount: totalAmount * 100,
-          currency: "INR",
-          receipt: _order.id,
-          notes: {
-            orderId: _order.id,
-          },
-        })
+      // Create payment record with PENDING status
+      await db.insert(payment).values({
+        orderId: _order.id,
+        amount: totalAmount,
+        status: "PENDING",
+        paymentType: "UPI",
+        gatewayOrderId: merchantTransactionId, // Using the existing field for transaction ID
+      })
 
-        await db.insert(payment).values({
-          orderId: _order.id,
-          amount: totalAmount,
-          status: "PENDING",
-          paymentType: "UPI",
-          gateway: "RAZORPAY",
-          gatewayOrderId: razorpayOrder.id,
-        })
+      // For PhonePe integration, we need to generate a checksum
+      // This is a simplified version; in production, use the proper crypto methods
+      const payload = {
+        merchantId: process.env.PHONEPE_MERCHANT_ID!,
+        merchantTransactionId,
+        merchantUserId,
+        amount: totalAmount * 100, // PhonePe expects amount in paise
+        redirectUrl: `${process.env.NEXT_PUBLIC_APP_URL}/api/phonepe/callback?orderId=${_order.id}`,
+        redirectMode: "POST",
+        callbackUrl: `${process.env.NEXT_PUBLIC_APP_URL}/api/phonepe/callback`,
+        mobileNumber: data.phone,
+        paymentInstrument: {
+          type: "PAY_PAGE",
+        },
+      }
 
-        return {
-          success: true,
-          orderId: _order.id,
-          razorpayOrderId: razorpayOrder.id,
-          amount: totalAmount,
-          message: "Order created. Please complete payment.",
-        }
-      } catch (error) {
-        console.error("Razorpay order creation failed:", error)
-        await db.delete(order).where(eq(order.id, _order.id))
-        await db.delete(address).where(eq(address.id, _address.id))
+      // In a real implementation, generate the checksum as per PhonePe's documentation
+      // This is a placeholder. You'll need to implement the proper checksum generation.
+      const salt = process.env.PHONEPE_SALT_KEY || ""
+      const encodedPayload = Buffer.from(JSON.stringify(payload)).toString(
+        "base64"
+      )
+      const string = encodedPayload + "/pg/v1/pay" + salt
+      const sha256 = crypto.createHash("sha256").update(string).digest("hex")
+      const checksum = sha256 + "###" + process.env.PHONEPE_SALT_INDEX
 
-        return {
-          success: false,
-          orderId: null,
-          razorpayOrderId: null,
-          amount: 0,
-          message: "Failed to create payment order",
-        }
+      return {
+        success: true,
+        orderId: _order.id,
+        message: "Redirecting to payment gateway...",
+        amount: totalAmount,
+        phonePeData: {
+          merchantTransactionId,
+          merchantUserId,
+          checksum,
+          payload: encodedPayload,
+        },
       }
     }
 
+    // Default case - should never reach here with proper validation
     return {
       success: false,
       orderId: null,
-      razorpayOrderId: null,
       amount: 0,
       message: "Invalid payment method",
     }
@@ -281,7 +292,6 @@ export async function processCheckout(
       success: false,
       amount: 0,
       orderId: null,
-      razorpayOrderId: null,
       message: "Something went wrong while processing your order",
     }
   }

@@ -174,25 +174,25 @@ const DesktopNavigation = () => {
               homeopathicPopover.onOpenChange(false)
             }}
           />
-          {/* <SubmenuLink
+          <SubmenuLink
             href="/products/trituration"
             title="Trituration Tablets"
             onClick={() => {
               homeopathicPopover.onOpenChange(false)
             }}
-          /> */}
-          {/* <SubmenuLink
+          />
+          <SubmenuLink
             href="/products/bach-flower"
             title="Bach Flower Remedies"
             onClick={() => {
               homeopathicPopover.onOpenChange(false)
             }}
-          /> */}
+          />
         </PopoverContent>
       </Popover>
 
       {/* PERSONAL CARE */}
-      {/* <Popover
+      <Popover
         open={personalCarePopover.isOpen}
         onOpenChange={personalCarePopover.onOpenChange}
       >
@@ -247,10 +247,10 @@ const DesktopNavigation = () => {
             }}
           />
         </PopoverContent>
-      </Popover> */}
+      </Popover>
 
       {/* AILMENT */}
-      {/* <Button
+      <Button
         variant="link"
         className={cn(
           "h-auto cursor-pointer p-0 font-medium hover:text-brand hover:underline hover:underline-offset-8 text-xs lg:text-base text-brand-foreground",
@@ -263,9 +263,9 @@ const DesktopNavigation = () => {
         >
           AILMENT
         </Link>
-      </Button> */}
-
-      {/* BRANDS */}
+      </Button>
+      {/* 
+      BRANDS */}
       <Button
         variant="link"
         className={cn(
@@ -282,7 +282,7 @@ const DesktopNavigation = () => {
       </Button>
 
       {/* OTHER PRODUCTS */}
-      {/* <Popover
+      <Popover
         open={otherProductsPopover.isOpen}
         onOpenChange={otherProductsPopover.onOpenChange}
       >
@@ -326,9 +326,9 @@ const DesktopNavigation = () => {
             }}
           />
         </PopoverContent>
-      </Popover> */}
+      </Popover>
 
-      {/* ABOUT HOMEOPATHY */}
+      {/*  ABOUT HOMEOPATHY */}
       <Button
         variant="link"
         className={cn(
@@ -346,5 +346,4 @@ const DesktopNavigation = () => {
     </div>
   )
 }
-
 export default DesktopNavbar

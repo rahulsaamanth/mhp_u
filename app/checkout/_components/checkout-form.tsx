@@ -20,7 +20,6 @@ import {
 import { toast } from "sonner"
 import { cartEvents } from "@/lib/cart-events"
 import { formatCurrency } from "@/lib/formatters"
-import { useRazorpay } from "./razorpay-provider"
 
 interface CheckoutFormProps {
   cartItems: CartItem[]
@@ -34,7 +33,6 @@ export default function CheckoutForm({
   const [isProcessing, setIsProcessing] = useState(false)
   const [showConfirmation, setShowConfirmation] = useState(false)
   const [formData, setFormData] = useState<CheckoutFormData | null>(null)
-  const { isRazorpayLoaded } = useRazorpay()
   const router = useRouter()
 
   const {
@@ -51,99 +49,56 @@ export default function CheckoutForm({
   const paymentMethod = watch("paymentMethod")
 
   const handleFormSubmit = (data: CheckoutFormData) => {
-    if (data.paymentMethod === "ONLINE" && !isRazorpayLoaded) {
-      toast.error(
-        "Payment gateway is still loading. Please try again in a moment."
-      )
-      return
-    }
+    // Allow both COD and PhonePe payment methods
     setFormData(data)
     setShowConfirmation(true)
   }
 
-  const handleRazorpayPayment = async (
+  const handlePhonePePayment = async (
     orderId: string,
     amount: number,
-    razorpayOrderId: string
+    phonePeData: any
   ) => {
-    if (!isRazorpayLoaded || !(window as any).Razorpay) {
-      toast.error("Payment gateway is not ready. Please try again.")
-      return
-    }
-
-    const options = {
-      key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID,
-      amount: amount * 100,
-      currency: "INR",
-      name: "HOMEOSOUTH",
-      description: "Payment for your order",
-      image: "/the_logo1.png",
-      order_id: razorpayOrderId,
-      handler: async (response: any) => {
-        try {
-          const verifyResponse = await fetch("/api/razorpay/verify", {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-              razorpay_payment_id: response.razorpay_payment_id,
-              razorpay_order_id: response.razorpay_order_id,
-              razorpay_signature: response.razorpay_signature,
-            }),
-          })
-
-          const verifyData = await verifyResponse.json()
-
-          if (verifyData.success) {
-            cartEvents.notifyCartChanged()
-            toast.success("Payment successful!")
-            router.push(`/order-confirmation/${orderId}`)
-          } else {
-            toast.error("Payment verification failed. Please contact support.")
-          }
-        } catch (error) {
-          console.error("Payment verification failed:", error)
-          toast.error("Payment verification failed. Please try again.")
-        }
-      },
-      prefill: {
-        name: formData?.fullName || "",
-        email: formData?.email || "",
-        contact: formData?.phone || "",
-      },
-      notes: {
-        address: `${formData?.address}, ${formData?.city}, ${formData?.state} - ${formData?.pincode}`,
-      },
-      theme: {
-        color: "#16a34a",
-      },
-      modal: {
-        confirm_close: true,
-        escape: false,
-      },
-    }
-
     try {
-      const razorpay = new (window as any).Razorpay(options)
-      razorpay.on("payment.failed", function (response: any) {
-        console.error("Payment failed:", response.error)
-        toast.error("Payment failed. Please try again.")
+      // Call our own PhonePe API to initiate the payment
+      const response = await fetch("/api/phonepe", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          amount,
+          orderId,
+          merchantTransactionId: phonePeData.merchantTransactionId,
+          customerPhone: formData?.phone,
+          customerEmail: formData?.email,
+        }),
       })
-      razorpay.open()
+
+      const paymentData = await response.json()
+
+      if (
+        paymentData.success &&
+        paymentData.data?.instrumentResponse?.redirectInfo?.url
+      ) {
+        // Redirect to PhonePe payment page
+        window.location.href =
+          paymentData.data.instrumentResponse.redirectInfo.url
+      } else {
+        toast.error("Failed to initiate payment. Please try again.")
+        console.error(
+          "PhonePe payment initialization failed:",
+          paymentData.error
+        )
+      }
     } catch (error) {
-      console.error("Failed to initialize Razorpay:", error)
+      console.error("PhonePe payment initialization failed:", error)
       toast.error("Failed to initialize payment. Please try again.")
     }
   }
 
   const processOrder = async () => {
     if (!formData) return
-
-    if (formData.paymentMethod === "ONLINE" && !isRazorpayLoaded) {
-      toast.error("Payment gateway is not ready. Please try again.")
-      return
-    }
 
     setIsProcessing(true)
     setShowConfirmation(false)
@@ -156,14 +111,12 @@ export default function CheckoutForm({
           cartEvents.notifyCartChanged()
           toast.success(result.message)
           router.push(`/order-confirmation/${result.orderId}`)
-        } else if (
-          formData.paymentMethod === "ONLINE" &&
-          result.razorpayOrderId
-        ) {
-          await handleRazorpayPayment(
+        } else if (formData.paymentMethod === "PHONEPE" && result.phonePeData) {
+          // Handle PhonePe payment flow
+          await handlePhonePePayment(
             result.orderId!,
             result.amount,
-            result.razorpayOrderId
+            result.phonePeData
           )
         }
       } else {
@@ -305,17 +258,8 @@ export default function CheckoutForm({
 
           <RadioGroup
             defaultValue="COD"
-            value={watch("paymentMethod")}
-            onValueChange={(value) => {
-              const event = {
-                target: {
-                  name: "paymentMethod",
-                  value: value,
-                },
-              }
-              register("paymentMethod").onChange(event)
-            }}
             className="space-y-3"
+            {...register("paymentMethod")}
           >
             <div className="flex items-center space-x-2 border p-4 rounded-md">
               <RadioGroupItem value="COD" id="cod" />
@@ -328,11 +272,14 @@ export default function CheckoutForm({
             </div>
 
             <div className="flex items-center space-x-2 border p-4 rounded-md">
-              <RadioGroupItem value="ONLINE" id="online" />
-              <Label htmlFor="online" className="flex-grow cursor-pointer">
-                <div className="font-medium">Online Payment</div>
+              <RadioGroupItem value="PHONEPE" id="phonepe" />
+              <Label htmlFor="phonepe" className="flex-grow cursor-pointer">
+                <div className="font-medium flex items-center">
+                  <span>PhonePe</span>
+                  {/* Add PhonePe logo here */}
+                </div>
                 <div className="text-sm text-gray-500">
-                  Credit/Debit card, UPI, Net Banking
+                  Pay securely using UPI, wallet, or cards via PhonePe
                 </div>
               </Label>
             </div>
@@ -347,9 +294,9 @@ export default function CheckoutForm({
           >
             {isProcessing
               ? "Processing..."
-              : paymentMethod === "COD"
-              ? "Place Order"
-              : "Proceed to Payment"}
+              : paymentMethod === "PHONEPE"
+              ? "Proceed to Pay"
+              : "Place Order"}
           </Button>
         </div>
       </form>
@@ -424,7 +371,11 @@ export default function CheckoutForm({
               disabled={isProcessing}
               className="cursor-pointer"
             >
-              {isProcessing ? "Processing..." : "Confirm Order"}
+              {isProcessing
+                ? "Processing..."
+                : formData?.paymentMethod === "PHONEPE"
+                ? "Pay Now"
+                : "Confirm Order"}
             </Button>
           </DialogFooter>
         </DialogContent>
