@@ -174,7 +174,8 @@ export default function Footer() {
                 </li>
               </ul>
             </div>
-            Commented out Other Products section
+
+            {/* Other Products */}
             <div>
               <h4 className="font-semibold mb-3">Other Products</h4>
               <ul className="space-y-2 text-sm">

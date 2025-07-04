@@ -49,53 +49,11 @@ export default function CheckoutForm({
   const paymentMethod = watch("paymentMethod")
 
   const handleFormSubmit = (data: CheckoutFormData) => {
-    // Allow both COD and PhonePe payment methods
+    // Process the form data
     setFormData(data)
     setShowConfirmation(true)
   }
 
-  const handlePhonePePayment = async (
-    orderId: string,
-    amount: number,
-    phonePeData: any
-  ) => {
-    try {
-      // Call our own PhonePe API to initiate the payment
-      const response = await fetch("/api/phonepe", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          amount,
-          orderId,
-          merchantTransactionId: phonePeData.merchantTransactionId,
-          customerPhone: formData?.phone,
-          customerEmail: formData?.email,
-        }),
-      })
-
-      const paymentData = await response.json()
-
-      if (
-        paymentData.success &&
-        paymentData.data?.instrumentResponse?.redirectInfo?.url
-      ) {
-        // Redirect to PhonePe payment page
-        window.location.href =
-          paymentData.data.instrumentResponse.redirectInfo.url
-      } else {
-        toast.error("Failed to initiate payment. Please try again.")
-        console.error(
-          "PhonePe payment initialization failed:",
-          paymentData.error
-        )
-      }
-    } catch (error) {
-      console.error("PhonePe payment initialization failed:", error)
-      toast.error("Failed to initialize payment. Please try again.")
-    }
-  }
 
   const processOrder = async () => {
     if (!formData) return
@@ -111,13 +69,6 @@ export default function CheckoutForm({
           cartEvents.notifyCartChanged()
           toast.success(result.message)
           router.push(`/order-confirmation/${result.orderId}`)
-        } else if (formData.paymentMethod === "PHONEPE" && result.phonePeData) {
-          // Handle PhonePe payment flow
-          await handlePhonePePayment(
-            result.orderId!,
-            result.amount,
-            result.phonePeData
-          )
         }
       } else {
         toast.error(result.message)
@@ -271,18 +222,6 @@ export default function CheckoutForm({
               </Label>
             </div>
 
-            <div className="flex items-center space-x-2 border p-4 rounded-md">
-              <RadioGroupItem value="PHONEPE" id="phonepe" />
-              <Label htmlFor="phonepe" className="flex-grow cursor-pointer">
-                <div className="font-medium flex items-center">
-                  <span>PhonePe</span>
-                  {/* Add PhonePe logo here */}
-                </div>
-                <div className="text-sm text-gray-500">
-                  Pay securely using UPI, wallet, or cards via PhonePe
-                </div>
-              </Label>
-            </div>
           </RadioGroup>
         </div>
 
@@ -294,8 +233,6 @@ export default function CheckoutForm({
           >
             {isProcessing
               ? "Processing..."
-              : paymentMethod === "PHONEPE"
-              ? "Proceed to Pay"
               : "Place Order"}
           </Button>
         </div>
@@ -373,8 +310,6 @@ export default function CheckoutForm({
             >
               {isProcessing
                 ? "Processing..."
-                : formData?.paymentMethod === "PHONEPE"
-                ? "Pay Now"
                 : "Confirm Order"}
             </Button>
           </DialogFooter>
