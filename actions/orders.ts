@@ -59,7 +59,6 @@ export async function getUserOrders() {
         o."totalAmountPaid" as total,
         CASE 
           WHEN p."paymentType" = 'CASH_ON_DELIVERY' THEN 'Cash on Delivery'
-          WHEN p."paymentType" = 'UPI' THEN 'Online - Razorpay'
           ELSE 'Online Payment'
         END as "paymentMethod",
         jsonb_build_object(

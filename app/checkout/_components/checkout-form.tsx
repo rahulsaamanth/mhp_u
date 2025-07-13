@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useRef } from "react"
+import { useState } from "react"
 import { useRouter } from "next/navigation"
 import { useForm } from "react-hook-form"
 import { CartItem } from "@/store/cart"
@@ -45,8 +45,6 @@ export default function CheckoutForm({
       paymentMethod: "COD",
     },
   })
-
-  const paymentMethod = watch("paymentMethod")
 
   const handleFormSubmit = (data: CheckoutFormData) => {
     // Process the form data
