@@ -8,6 +8,7 @@ import FeaturedProductsCarousel from "@/components/featured-products-carousel"
 import FeaturedProducts from "@/components/featured-products"
 import ScrollToTop from "../_components/scroll-to-top"
 import { generateBreadcrumbSchema, generateProductSchema } from "@/lib/schema"
+import { HtmlRenderer } from "@/utils/html-renderer"
 
 interface ProductDetailsProps {
   id: string
@@ -263,7 +264,7 @@ export default async function ProductPage({
                 <h2 className="text-lg font-semibold">Description</h2>
                 <div className="text-gray-700 text-sm space-y-2">
                   {product.description ? (
-                    <p>{product.description}</p>
+                    <HtmlRenderer html={product.description} />
                   ) : (
                     <p>No description available for this product.</p>
                   )}
